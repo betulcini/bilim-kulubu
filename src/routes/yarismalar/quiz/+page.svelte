@@ -3,9 +3,15 @@
     import { sfx } from '$lib/sound.js';
     import { page } from '$app/stores';
     import { onMount } from 'svelte';
+    import { browser } from '$app/environment';
 
     // Query parametresinden konuyu al (örn: ?konu=fizik)
-    $: konu =$page.url.searchParams.get('konu') || 'fizik';
+    // NOT: prerender edilen bir sayfada url.searchParams'a build/SSR anında erişilemez,
+    // bu yüzden sadece tarayıcıda (hydration sonrası) okunuyor.
+    let konu = 'fizik';
+    $: if (browser) {
+        konu = $page.url.searchParams.get('konu') || 'fizik';
+    }
 
     // Konulara göre soru havuzları
     const quizData = {
