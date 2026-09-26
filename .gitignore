@@ -4,3 +4,8 @@ node_modules
 /package-lock.json
 .DS_Store
 *.local
+
+# Ortam değişkenleri — Supabase anahtarları burada, ASLA commit edilmemeli
+.env
+.env.*
+!.env.example

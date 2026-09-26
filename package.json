@@ -9,6 +9,9 @@
     "prepare": "svelte-kit sync",
     "check": "svelte-kit sync && svelte-check --tsconfig ./jsconfig.json"
   },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.4"
+  },
   "devDependencies": {
     "@sveltejs/adapter-static": "^3.0.6",
     "@sveltejs/kit": "^2.5.28",
