@@ -84,6 +84,72 @@
             ozet: 'Kuantum teorisinin kurucusu ve evrensel Planck sabiti\'nin keşfettirdiği fizikçi.',
             detay: 'Enerjinin kesintisiz bir akış olmadığını, belirli paketler (kuantalar) halinde yayıldığını öne sürerek modern fiziğin kapılarını aralamıştır. Çalışmalarıyla 1918 Nobel Fizik Ödülü\'nü almıştır.',
             soz: 'Yeni bir bilimsel hakikat, karşı çıkanları ikna ederek değil, onların ölmesini ve yeni neslin o hakikatle büyümesini sağlayarak zafer kazanır.'
+        },
+        {
+            id: 'einstein',
+            ad: 'Albert Einstein',
+            alan: 'Teorik Fizik',
+            kategori: 'Fizik',
+            donem: '1879 - 1955',
+            rozet: '🌠',
+            ozet: 'Görelilik teorisiyle uzay, zaman ve kütle-enerji ilişkisini yeniden tanımlayan fizikçi.',
+            detay: 'Özel ve genel görelilik teorilerini geliştirerek Newton fiziğinin sınırlarını aşmış, kütle-enerji eşdeğerliğini (E=mc²) ortaya koymuştur. Fotoelektrik etki üzerine çalışmasıyla 1921 Nobel Fizik Ödülü\'nü kazanmıştır.',
+            soz: 'Hayal gücü bilgiden daha önemlidir.'
+        },
+        {
+            id: 'darwin',
+            ad: 'Charles Darwin',
+            alan: 'Evrimsel Biyoloji',
+            kategori: 'Biyoloji & Tıp',
+            donem: '1809 - 1882',
+            rozet: '🐢',
+            ozet: 'Doğal seçilim yoluyla evrim teorisini ortaya koyan doğa bilimci.',
+            detay: 'Beagle gemisiyle yaptığı dünya turu sırasında topladığı gözlemlerle "Türlerin Kökeni" adlı eserini yazmış ve türlerin doğal seçilim yoluyla zaman içinde evrildiğini öne sürmüştür. Modern biyolojinin temel taşlarından biri kabul edilir.',
+            soz: 'Hayatta kalan tür, en güçlü ya da en zeki olan değil, değişime en iyi uyum sağlayandır.'
+        },
+        {
+            id: 'lovelace',
+            ad: 'Ada Lovelace',
+            alan: 'Matematik & Bilgisayar Bilimi',
+            kategori: 'Mühendislik & Buluş',
+            donem: '1815 - 1852',
+            rozet: '💻',
+            ozet: 'Dünyanın ilk bilgisayar programcısı kabul edilen matematikçi.',
+            detay: 'Charles Babbage\'ın Analitik Motoru üzerine yazdığı notlarda, bir makinenin sadece hesaplama değil, sembol işleme yapabileceğini öngörmüş ve bu makine için ilk algoritmayı tasarlamıştır. Bu çalışma, modern programlamanın kavramsal temelini oluşturur.',
+            soz: 'Hayal gücü, keşif yeteneğimizin en güçlü aracıdır.'
+        },
+        {
+            id: 'mendeleev',
+            ad: 'Dmitri Mendeleev',
+            alan: 'Kimya',
+            kategori: 'Kimya',
+            donem: '1834 - 1907',
+            rozet: '🧬',
+            ozet: 'Elementleri atom ağırlığına göre sınıflandırarak periyodik tabloyu oluşturan kimyager.',
+            detay: 'Bilinen elementleri özelliklerine göre düzenleyerek periyodik tabloyu geliştirmiş, henüz keşfedilmemiş elementlerin varlığını ve özelliklerini bile önceden tahmin etmiştir. Bu sistematik yaklaşım modern kimyanın omurgasını oluşturur.',
+            soz: 'Bilimde ölçmeden önce hayal kurmak gerekir; ama sonunda her zaman ölçmek gerekir.'
+        },
+        {
+            id: 'ibn-i-sina',
+            ad: 'İbn-i Sina',
+            alan: 'Tıp & Felsefe',
+            kategori: 'Biyoloji & Tıp',
+            donem: '980 - 1037',
+            rozet: '📜',
+            ozet: 'Modern tıbbın temellerini atan, yüzyıllarca Avrupa\'da ders kitabı olarak okutulan hekim.',
+            detay: 'Yazdığı "El-Kanun fi\'t-Tıb" (Tıbbın Kanunu) adlı eser, yüzyıllar boyunca hem İslam dünyasında hem de Avrupa üniversitelerinde temel tıp kaynağı olarak kullanılmıştır. Bulaşıcı hastalıklar, anatomi ve farmakoloji alanlarında öncü çalışmalar yapmıştır.',
+            soz: 'Bilgi, ruhun gıdasıdır.'
+        },
+        {
+            id: 'pasteur',
+            ad: 'Louis Pasteur',
+            alan: 'Mikrobiyoloji',
+            kategori: 'Biyoloji & Tıp',
+            donem: '1822 - 1895',
+            rozet: '🦠',
+            ozet: 'Mikrop teorisinin öncüsü, pastörizasyon ve kuduz aşısının mucidi.',
+            detay: 'Hastalıkların mikroorganizmalardan kaynaklandığını gösteren mikrop teorisini geliştirmiş, sütün ve içeceklerin güvenli hale getirilmesini sağlayan pastörizasyon yöntemini icat etmiştir. Kuduz için ilk etkili aşıyı da o geliştirmiştir.',
+            soz: 'Şans, yalnızca hazırlıklı zihinlere gülümser.'
         }
     ];
 
@@ -139,21 +205,28 @@
 
     <!-- Bilim İnsanları Kart Grid Yapısı -->
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
-        {#each filteredScientists as scientist}
-           <div class="bracket-card" style="..." role="button" tabindex="0" on:click={() => openModal(scientist)} on:keydown={(e) => e.key === 'Enter' && openModal(scientist)}>
-                    <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-                        <span style="font-size: 2.2rem;">{scientist.rozet}</span>
-                        <span class="badge dev">{scientist.donem}</span>
-                    </div>
-                    <h3 style="margin-bottom: 6px; font-size: var(--fs-lg);">{scientist.ad}</h3>
-                    <p style="font-size: var(--fs-xs); color: var(--accent); font-weight: 600; margin-bottom: 12px;">{scientist.alan}</p>
-                    <p style="font-size: var(--fs-sm); color: var(--text-muted); line-height: 1.5; margin-bottom: 16px;">{scientist.ozet}</p>
+        {#each filteredScientists as scientist (scientist.id)}
+            <div
+                class="bracket-card"
+                style="cursor: pointer; display: flex; flex-direction: column;"
+                role="button"
+                tabindex="0"
+                on:click={() => openModal(scientist)}
+                on:keydown={(e) => e.key === 'Enter' && openModal(scientist)}
+            >
+                <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                    <span style="font-size: 2.2rem;">{scientist.rozet}</span>
+                    <span class="badge dev">{scientist.donem}</span>
                 </div>
+                <h3 style="margin-bottom: 6px; font-size: var(--fs-lg);">{scientist.ad}</h3>
+                <p style="font-size: var(--fs-xs); color: var(--accent); font-weight: 600; margin-bottom: 12px;">{scientist.alan}</p>
+                <p style="font-size: var(--fs-sm); color: var(--text-muted); line-height: 1.5; margin-bottom: 16px;">{scientist.ozet}</p>
+
                 <div style="display: flex; align-items: center; justify-content: space-between; border-top: 1px solid var(--border); padding-top: 12px; margin-top: auto;">
                     <span style="font-size: var(--fs-xs); color: var(--text-muted);">Detayları İncele</span>
                     <span style="color: var(--accent);">→</span>
                 </div>
-
+            </div>
         {:else}
             <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">
                 Aradığınız kriterlere uygun bilim insanı bulunamadı.
@@ -165,32 +238,47 @@
 
 <!-- Detay Modalı -->
 {#if activeModalScientist}
-<div style="position: fixed; inset: 0; ..." role="button" tabindex="0" on:click={closeModal} on:keydown={(e) => e.key === 'Escape' && closeModal()}>
-    <div class="bracket-card" style="..." role="dialog" aria-modal="true" tabindex="-1" on:click|stopPropagation>
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <div style="display: flex; align-items: center; gap: 12px;">
-                    <span style="font-size: 2.5rem;">{activeModalScientist.rozet}</span>
-                    <div>
-                        <h2 style="margin: 0; font-size: 1.5rem;">{activeModalScientist.ad}</h2>
-                        <span style="font-size: var(--fs-xs); color: var(--text-muted);">{activeModalScientist.donem} · {activeModalScientist.alan}</span>
-                    </div>
+<div
+    style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px;"
+    role="button"
+    tabindex="0"
+    on:click={closeModal}
+    on:keydown={(e) => e.key === 'Escape' && closeModal()}
+>
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+    <div
+        class="bracket-card"
+        style="max-width: 520px; width: 100%; max-height: 85vh; overflow-y: auto;"
+        role="dialog"
+        aria-modal="true"
+        tabindex="-1"
+        on:click|stopPropagation
+    >
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <div style="display: flex; align-items: center; gap: 12px;">
+                <span style="font-size: 2.5rem;">{activeModalScientist.rozet}</span>
+                <div>
+                    <h2 style="margin: 0; font-size: 1.5rem;">{activeModalScientist.ad}</h2>
+                    <span style="font-size: var(--fs-xs); color: var(--text-muted);">{activeModalScientist.donem} · {activeModalScientist.alan}</span>
                 </div>
-                <button class="btn btn-ghost" style="padding: 6px 10px;" on:click={closeModal}>✕</button>
             </div>
+            <button class="btn btn-ghost" style="padding: 6px 10px;" on:click={closeModal}>✕</button>
+        </div>
 
-            <p style="font-size: var(--fs-base); line-height: 1.6; color: var(--text); margin-bottom: 20px;">
-                {activeModalScientist.detay}
+        <p style="font-size: var(--fs-base); line-height: 1.6; color: var(--text); margin-bottom: 20px;">
+            {activeModalScientist.detay}
+        </p>
+
+        <div style="background: var(--bg-alt); padding: 14px; border-radius: var(--radius-sm); border-left: 3px solid var(--accent); margin-bottom: 25px;">
+            <p style="margin: 0; font-style: italic; font-size: var(--fs-sm); color: var(--text);">
+                "{activeModalScientist.soz}"
             </p>
+        </div>
 
-            <div style="background: var(--bg-alt); padding: 14px; border-radius: var(--radius-sm); border-left: 3px solid var(--accent); margin-bottom: 25px;">
-                <p style="margin: 0; font-style: italic; font-size: var(--fs-sm); color: var(--text);">
-                    "{activeModalScientist.soz}"
-                </p>
-            </div>
-
-            <div style="display: flex; justify-content: flex-end;">
-                <button class="btn btn-primary" on:click={closeModal}>Kapat</button>
-            </div>
+        <div style="display: flex; justify-content: flex-end;">
+            <button class="btn btn-primary" on:click={closeModal}>Kapat</button>
         </div>
     </div>
+</div>
 {/if}
