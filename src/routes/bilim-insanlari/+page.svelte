@@ -153,7 +153,7 @@
                     <span style="font-size: var(--fs-xs); color: var(--text-muted);">Detayları İncele</span>
                     <span style="color: var(--accent);">→</span>
                 </div>
-            </div>
+
         {:else}
             <div style="grid-column: 1 / -1; text-align: center; padding: 40px; color: var(--text-muted);">
                 Aradığınız kriterlere uygun bilim insanı bulunamadı.
