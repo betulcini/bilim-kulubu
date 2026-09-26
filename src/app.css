@@ -243,6 +243,11 @@ select {
     color: var(--text-muted);
     border-color: var(--border);
 }
+.badge.danger {
+    background: var(--danger-soft);
+    color: var(--danger);
+    border-color: color-mix(in srgb, var(--danger) 35%, transparent);
+}
 
 /* ---------- düğmeler (buttons) ---------- */
 

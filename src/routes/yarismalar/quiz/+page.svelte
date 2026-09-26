@@ -125,13 +125,50 @@
     let isFinished = false;
     let playerName = '';
 
+    // --- Soru başına süre sınırı ---
+    const SORU_SURESI = 20; // saniye
+    let timeLeft = SORU_SURESI;
+    let timerId = null;
+
+    function clearTimer() {
+        if (timerId) {
+            clearInterval(timerId);
+            timerId = null;
+        }
+    }
+
+    function startTimer() {
+        clearTimer();
+        timeLeft = SORU_SURESI;
+        timerId = setInterval(() => {
+            timeLeft -= 1;
+            if (timeLeft <= 0) {
+                clearTimer();
+                if (selectedOption === null) {
+                    // Süre doldu, otomatik olarak yanlış sayılır
+                    sfx.error();
+                    selectedOption = '__sure_doldu__';
+                }
+            }
+        }, 1000);
+    }
+
     onMount(() => {
         const saved = localStorage.getItem('bilim_kulubu_player_name');
         if (saved) playerName = saved;
+        startTimer();
+        return () => clearTimer();
     });
+
+    // Soru değiştikçe (konu değişimi dahil) süreyi sıfırla
+    $: if (browser && currentQuestionIndex >= 0 && !isFinished) {
+        currentQuiz; // reaktif bağımlılık: konu değişirse de tetiklensin
+        startTimer();
+    }
 
     function handleAnswer(opt) {
         if (selectedOption !== null) return;
+        clearTimer();
         sfx.nav();
         selectedOption = opt;
 
@@ -146,10 +183,18 @@
             currentQuestionIndex++;
         } else {
             isFinished = true;
-            // Skoru kaydet
-            const savedScores = JSON.parse(localStorage.getItem('biyoloji_scores') || '[]');
-            savedScores.push({ name: playerName || 'Bilim Meraklısı', score: score, date: new Date().toLocaleDateString('tr-TR') });
-            localStorage.setItem('biyoloji_scores', JSON.stringify(savedScores));
+            clearTimer();
+            // Skoru kaydet (tüm konular ortak listede, konu bilgisiyle birlikte)
+            const savedScores = JSON.parse(localStorage.getItem('btk_quiz_scores') || '[]');
+            savedScores.push({
+                name: playerName || 'Bilim Meraklısı',
+                score,
+                subject: konu,
+                subjectTitle: currentQuiz.title,
+                date: new Date().toLocaleDateString('tr-TR'),
+                ts: Date.now()
+            });
+            localStorage.setItem('btk_quiz_scores', JSON.stringify(savedScores));
         }
     }
 
@@ -158,10 +203,14 @@
         selectedOption = null;
         score = 0;
         isFinished = false;
+        startTimer();
     }
 </script>
 
-<svelte:head><title>{currentQuiz.title} · Yarışmalar</title></svelte:head>
+<svelte:head>
+    <title>{currentQuiz.title} · Yarışmalar</title>
+    <meta name="description" content={currentQuiz.desc} />
+</svelte:head>
 
 <PageHeader eyebrow="Bilgi Quizi" title={currentQuiz.title} desc={currentQuiz.desc} />
 
@@ -179,6 +228,13 @@
             {@const q = currentQuiz.questions[currentQuestionIndex]}
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                 <span class="badge dev">Soru {currentQuestionIndex + 1} / {currentQuiz.questions.length}</span>
+                <span class="badge {timeLeft <= 5 && selectedOption === null ? 'danger' : 'info'}" style="font-variant-numeric: tabular-nums;">
+                    ⏱ {selectedOption === null ? timeLeft : SORU_SURESI} sn
+                </span>
+            </div>
+
+            <div style="height: 4px; border-radius: 999px; background: var(--bg-alt); overflow: hidden; margin-bottom: 18px;">
+                <div style="height: 100%; border-radius: 999px; background: {timeLeft <= 5 ? 'var(--danger)' : 'var(--accent)'}; width: {selectedOption === null ? (timeLeft / SORU_SURESI) * 100 : 100}%; transition: width 1s linear;"></div>
             </div>
 
             <h3 style="margin-bottom: 20px; font-size: var(--fs-lg); line-height: 1.5;">{q.soru}</h3>
@@ -198,7 +254,11 @@
             {#if selectedOption !== null}
                 <div style="padding: 14px; border-radius: var(--radius-sm); background: var(--bg-alt); border: 1px solid var(--border-strong); margin-bottom: 20px;">
                     <p style="margin: 0 0 6px 0; font-size: var(--fs-sm); font-weight: bold; color: {selectedOption === q.dogru ? 'var(--accent)' : 'var(--danger)'};">
-                        {selectedOption === q.dogru ? 'Doğru Cevap! 🎉' : `Yanlış! Doğru cevap: ${q.dogru}`}
+                        {selectedOption === q.dogru
+                            ? 'Doğru Cevap! 🎉'
+                            : selectedOption === '__sure_doldu__'
+                                ? `Süre doldu! ⏰ Doğru cevap: ${q.dogru}`
+                                : `Yanlış! Doğru cevap: ${q.dogru}`}
                     </p>
                     <p style="margin: 0; font-size: var(--fs-xs); color: var(--text-muted);">{q.aciklama}</p>
                 </div>

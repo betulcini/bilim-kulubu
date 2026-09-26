@@ -1,14 +1,55 @@
 <script>
 	import PageHeader from '$lib/components/PageHeader.svelte';
-	import { competitionFilters, competitions, leaderboard } from '$lib/data/competitions.js';
+	import { competitionFilters, competitions, leaderboard as demoLeaderboard } from '$lib/data/competitions.js';
 	import { sfx } from '$lib/sound.js';
+	import { browser } from '$app/environment';
+	import { onMount } from 'svelte';
 
 	let activeFilter = 'Tümü';
 	$: visibleCompetitions = activeFilter === 'Tümü' ? competitions : competitions.filter((competition) => competition.tur === activeFilter);
 	function badgeClass(durum) { return durum === 'Katıl' || durum === 'Kayıt açık' ? 'live' : 'dev'; }
+
+	// --- Gerçek quiz skorlarından skor tablosu ---
+	const rozetler = ['🏆', '🥈', '🥉'];
+	let leaderboard = demoLeaderboard;
+	let leaderboardIsDemo = true;
+
+	onMount(() => {
+		if (!browser) return;
+		try {
+			const raw = JSON.parse(localStorage.getItem('btk_quiz_scores') || '[]');
+			if (!Array.isArray(raw) || raw.length === 0) return;
+
+			// Her yarışmacının en yüksek skorunu al (isim bazında, büyük/küçük harf duyarsız)
+			const enIyiSkorlar = new Map();
+			for (const kayit of raw) {
+				const isim = (kayit.name || 'Bilim Meraklısı').trim();
+				const anahtar = isim.toLocaleLowerCase('tr-TR');
+				const mevcut = enIyiSkorlar.get(anahtar);
+				if (!mevcut || kayit.score > mevcut.puan) {
+					enIyiSkorlar.set(anahtar, { ad: isim, puan: kayit.score });
+				}
+			}
+
+			const gercekListe = [...enIyiSkorlar.values()]
+				.sort((a, b) => b.puan - a.puan)
+				.slice(0, 8)
+				.map((kisi, i) => ({ sira: i + 1, ad: kisi.ad, puan: kisi.puan, rozet: rozetler[i] || '•' }));
+
+			if (gercekListe.length > 0) {
+				leaderboard = gercekListe;
+				leaderboardIsDemo = false;
+			}
+		} catch (e) {
+			// localStorage okunamazsa örnek veriyle devam edilir
+		}
+	});
 </script>
 
-<svelte:head><title>Yarışmalar · Bilim ve Teknoloji Kulübü</title></svelte:head>
+<svelte:head>
+	<title>Yarışmalar · Bilim ve Teknoloji Kulübü</title>
+	<meta name="description" content="Fizik, biyoloji, kimya ve astronomi quizlerini çöz, kulüp skor tablosunda yerini al ve yarışmalara katıl." />
+</svelte:head>
 <PageHeader eyebrow="Yarışmalar" title="Bilgini yarıştır" desc="Quizleri çöz, çevrimiçi turnuvalara katıl veya kulüp içindeki yüz yüze yarışmalarda takımınla yer al." />
 
 <div class="content-max competitions-page">
@@ -33,7 +74,11 @@
 	<section class="leaderboard-section" aria-labelledby="skor-tablosu">
 		<div class="leaderboard-heading"><div><p class="section-kicker">Sezon 2026–2027</p><h2 id="skor-tablosu">Skor tablosu</h2></div><span class="badge live">Güncel sıralama</span></div>
 		<div class="leaderboard-card"><table><thead><tr><th>Sıra</th><th>Yarışmacı</th><th>Puan</th></tr></thead><tbody>{#each leaderboard as player}<tr><td><span class="rank">{player.rozet} {player.sira}</span></td><td>{player.ad}</td><td><strong>{player.puan.toLocaleString('tr-TR')}</strong></td></tr>{/each}</tbody></table></div>
-		<p class="leaderboard-note">Quiz ve kulüp yarışmalarından kazanılan puanlar sezon boyunca bu tabloda toplanır.</p>
+		<p class="leaderboard-note">
+			{leaderboardIsDemo
+				? 'Henüz kaydedilmiş quiz sonucu yok — örnek bir tablo gösteriliyor. Bir quiz çözüldüğünde bu tablo gerçek skorlarla güncellenir (bu cihazda saklanır).'
+				: 'Bu cihazda çözülen quizlerden elde edilen en yüksek skorlara göre sıralanmıştır.'}
+		</p>
 	</section>
 </div>
 

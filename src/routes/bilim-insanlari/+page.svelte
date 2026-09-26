@@ -171,14 +171,43 @@
     function closeModal() {
         activeModalScientist = null;
     }
+
+    // --- Günün Bilim İnsanı: yılın gününe göre deterministik seçim ---
+    // Aynı gün içinde herkese aynı kişiyi gösterir, gün değişince otomatik değişir.
+    function gununBilimInsani() {
+        const bugun = new Date();
+        const yilBasi = new Date(bugun.getFullYear(), 0, 0);
+        const gunSayisi = Math.floor((bugun - yilBasi) / 86400000);
+        return scientists[gunSayisi % scientists.length];
+    }
+    const gununKisisi = gununBilimInsani();
 </script>
 
-<svelte:head><title>Bilim İnsanları Galerisi · Bilim Kulübü</title></svelte:head>
+<svelte:head>
+    <title>Bilim İnsanları Galerisi · Bilim Kulübü</title>
+    <meta name="description" content="Tesla, Einstein, Curie, Darwin ve daha fazlası — tarihin en etkili bilim insanlarının hayatını ve mirasını keşfedin." />
+</svelte:head>
 
 <PageHeader eyebrow="İlham Veren Yaşamlar" title="Bilim İnsanları Galerisi" desc="Tarihin seyrini değiştiren dâhileri, buluşlarını ve insanlığa bıraktıkları mirası keşfedin." />
 
 <div class="content-max" style="margin-bottom: 60px;">
-    
+
+    <!-- Günün Bilim İnsanı -->
+    <button
+        type="button"
+        class="bracket-card gunun-kisisi-card"
+        style="width: 100%; text-align: left; cursor: pointer; margin-bottom: 30px; display: flex; align-items: center; gap: 18px; flex-wrap: wrap; font: inherit; color: inherit;"
+        on:click={() => openModal(gununKisisi)}
+    >
+        <span style="font-size: 3rem; line-height: 1;">{gununKisisi.rozet}</span>
+        <div style="flex: 1; min-width: 200px;">
+            <span class="badge live" style="margin-bottom: 8px;">🌟 Günün Bilim İnsanı</span>
+            <h3 style="margin: 6px 0 4px;">{gununKisisi.ad}</h3>
+            <p style="margin: 0; color: var(--text-muted); font-size: var(--fs-sm);">{gununKisisi.ozet}</p>
+        </div>
+        <span style="color: var(--accent); font-weight: 600; white-space: nowrap;">Detayları gör →</span>
+    </button>
+
     <!-- Filtreler ve Arama Alanı -->
     <div style="display: flex; flex-direction: column; gap: 15px; margin-bottom: 30px;">
         <div style="display: flex; gap: 10px; flex-wrap: wrap;">
