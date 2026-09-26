@@ -219,3 +219,7 @@
 
     </div>
 </div>
+
+<script>
+    export const prerender = false;
+</script>
