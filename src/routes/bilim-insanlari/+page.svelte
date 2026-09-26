@@ -140,8 +140,7 @@
     <!-- Bilim İnsanları Kart Grid Yapısı -->
     <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
         {#each filteredScientists as scientist}
-            <div class="bracket-card" style="display: flex; flex-direction: column; justify-content: space-between; transition: transform 0.2s ease, border-color 0.2s ease; cursor: pointer;" on:click={() => openModal(scientist)}>
-                <div>
+           <div class="bracket-card" style="..." role="button" tabindex="0" on:click={() => openModal(scientist)} on:keydown={(e) => e.key === 'Enter' && openModal(scientist)}>
                     <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
                         <span style="font-size: 2.2rem;">{scientist.rozet}</span>
                         <span class="badge dev">{scientist.donem}</span>
@@ -166,8 +165,8 @@
 
 <!-- Detay Modalı -->
 {#if activeModalScientist}
-    <div style="position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px;" on:click={closeModal}>
-        <div class="bracket-card" style="background: var(--bg); max-width: 600px; width: 100%; position: relative; border-color: var(--accent);" on:click|stopPropagation>
+<div style="position: fixed; inset: 0; ..." role="button" tabindex="0" on:click={closeModal} on:keydown={(e) => e.key === 'Escape' && closeModal()}>
+    <div class="bracket-card" style="..." role="dialog" aria-modal="true" tabindex="-1" on:click|stopPropagation>
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
                 <div style="display: flex; align-items: center; gap: 12px;">
                     <span style="font-size: 2.5rem;">{activeModalScientist.rozet}</span>
