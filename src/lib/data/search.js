@@ -8,7 +8,7 @@ export const searchItems = [
 	{ title: 'Galeri', href: '/galeri', text: 'etkinlik fotoğraf anı' },
 	{ title: 'Öneri Kutusu', href: '/oneri', text: 'fikir proje etkinlik önerisi mesaj' },
 	{ title: 'Yarışmalar', href: '/yarismalar', text: 'kahoot bilgi yarışması' },
-	{ title: 'Oyunlar', href: '/oyunlar', text: 'bilim bilgi yarışması hafıza kartları' },
+	{ title: 'Oyunlar', href: '/oyunlar', text: 'bilim bilgi yarışması kart eşleştirme adam asmaca' },
 	{ title: 'Hakkında ve İletişim', href: '/hakkinda-iletisim', text: 'kulüp katılım iletişim danışman' },
 	{ title: 'Ayarlar', href: '/ayarlar', text: 'tema ses profil' }
 ];

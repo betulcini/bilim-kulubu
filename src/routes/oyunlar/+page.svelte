@@ -6,8 +6,8 @@
 
         {
             href: '/oyunlar/hafiza',
-            baslik: 'Hafıza Kartları',
-            aciklama: 'Bilim sembollerini eşleştir, en az hamlede tamamlamaya çalış.',
+            baslik: 'Kart Eşleştirme',
+            aciklama: 'Soru/tepkime kartını doğru cevap/ürün kartıyla eşleştir — 20 konu, 200+ kart çifti.',
             aktif: true
         },
         {
@@ -19,7 +19,7 @@
         {
             href: '/oyunlar/adam-asmaca',
             baslik: 'Bilimsel Adam Asmaca',
-            aciklama: 'Apoptoz, endosimbiyoz, kaos teorisi gibi üst düzey kavramları çöz.',
+            aciklama: 'Fizik, biyoloji, kimya ve daha fazlasından 690+ terimi harf harf çöz.',
             aktif: true
         },
         {

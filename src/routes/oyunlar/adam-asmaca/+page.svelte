@@ -2,19 +2,9 @@
     import PageHeader from '$lib/components/PageHeader.svelte';
     import { sfx } from '$lib/sound.js';
     import { onMount } from 'svelte';
+    import { wordList } from '$lib/data/bilim-kelimeleri.js';
 
-    const wordList = [
-        { word: "APOPTOZ", hint: "Programlanmış hücre ölümü süreci." },
-        { word: "ENDOSİMBİYOZ", hint: "Mitokondri ve kloroplastın kökenini açıklayan hücresel ortak yaşam teorisi." },
-        { word: "KAOS", hint: "Başlangıç koşullarına aşırı duyarlılık gösteren dinamik sistemler teorisi." },
-        { word: "ENTROPİ", hint: "Termodinamiğin ikinci kanunu; evrendeki düzensizlik ölçüsü." },
-        { word: "FOTOLİZ", hint: "Işık yardımıyla su moleküllerinin elektron, proton ve oksijene ayrışması." },
-        { word: "HOMEOSTAZİ", hint: "Canlının iç dengesini kararlı tutma hali." },
-        { word: "KUANTUM", hint: "Enerjinin kesikli (paketçikler halinde) yayılması veya soğurulması durumu." },
-        { word: "BİYOMİKRASİ", hint: "Doğadaki form ve süreçlerin mühendislik tasarımlarında taklit edilmesi." }
-    ];
-
-    let currentWordObj = { word: '', hint: '' };
+    let currentWordObj = { word: '', hint: '', field: '' };
     let guessedLetters = new Set();
     let wrongGuessCount = 0;
     const maxWrong = 6;
@@ -39,7 +29,12 @@
         startNewGame();
     });
 
-    const alphabet = "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ";
+    // Boşluk hariç, harflerin gerçekten tahmin edilip edilmediğini kontrol eder
+    function isRevealed(char) {
+        return char === ' ' || guessedLetters.has(char);
+    }
+
+    const alphabet = "ABCÇDEFGĞHIİJKLMNOÖPQRSŞTUÜVWXYZ";
 
     function guessLetter(letter) {
         if (finished || guessedLetters.has(letter)) return;
@@ -54,7 +49,7 @@
                 won = false;
             }
         } else {
-            const isWon = currentWordObj.word.split('').every(char => guessedLetters.has(char));
+            const isWon = currentWordObj.word.split('').every(char => isRevealed(char));
             if (isWon) {
                 finished = true;
                 won = true;
@@ -72,7 +67,7 @@
     <div class="bracket-card" style="max-width: 800px; margin: 0 auto; text-align: center;">
         
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-            <span class="badge dev">Kategori: Bilimsel Terimler</span>
+            <span class="badge dev">Kategori: {currentWordObj.field || 'Bilimsel Terimler'}</span>
             <span style="color: var(--danger);">Hata Hakkı: {wrongGuessCount} / {maxWrong}</span>
         </div>
 
@@ -88,8 +83,8 @@
             💡 İpucu: {currentWordObj.hint}
         </p>
 
-        <div style="font-family: var(--font-display); font-size: clamp(1.8rem, 4vw, 2.5rem); letter-spacing: 8px; margin: 25px 0; font-weight: bold; color: var(--accent);">
-            {currentWordObj.word.split('').map(char => guessedLetters.has(char) ? char : '_').join(' ')}
+        <div style="font-family: var(--font-display); font-size: clamp(1.3rem, 4vw, 2.5rem); letter-spacing: clamp(3px, 1.2vw, 8px); line-height: 1.6; margin: 25px 0; font-weight: bold; color: var(--accent); word-break: break-word;">
+            {currentWordObj.word.split('').map(char => char === ' ' ? '   ' : (guessedLetters.has(char) ? char : '_')).join(' ')}
         </div>
 
         {#if !finished}
