@@ -4,23 +4,22 @@
 	import { sfx } from '$lib/sound.js';
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
+	import { supabase } from '$lib/supabaseClient.js';
 
 	let activeFilter = 'Tümü';
 	$: visibleCompetitions = activeFilter === 'Tümü' ? competitions : competitions.filter((competition) => competition.tur === activeFilter);
 	function badgeClass(durum) { return durum === 'Katıl' || durum === 'Kayıt açık' ? 'live' : 'dev'; }
 
-	// --- Gerçek quiz skorlarından skor tablosu ---
+	// --- Skor tablosu: önce gerçek/ortak Supabase verisi, yoksa bu cihazdaki tahmini veri, o da yoksa örnek veri ---
 	const rozetler = ['🏆', '🥈', '🥉'];
 	let leaderboard = demoLeaderboard;
-	let leaderboardIsDemo = true;
+	let leaderboardSource = 'demo'; // 'shared' | 'local' | 'demo'
 
-	onMount(() => {
-		if (!browser) return;
+	function fromLocalStorage() {
 		try {
 			const raw = JSON.parse(localStorage.getItem('btk_quiz_scores') || '[]');
-			if (!Array.isArray(raw) || raw.length === 0) return;
+			if (!Array.isArray(raw) || raw.length === 0) return null;
 
-			// Her yarışmacının en yüksek skorunu al (isim bazında, büyük/küçük harf duyarsız)
 			const enIyiSkorlar = new Map();
 			for (const kayit of raw) {
 				const isim = (kayit.name || 'Bilim Meraklısı').trim();
@@ -31,17 +30,44 @@
 				}
 			}
 
-			const gercekListe = [...enIyiSkorlar.values()]
+			const liste = [...enIyiSkorlar.values()]
 				.sort((a, b) => b.puan - a.puan)
 				.slice(0, 8)
 				.map((kisi, i) => ({ sira: i + 1, ad: kisi.ad, puan: kisi.puan, rozet: rozetler[i] || '•' }));
 
-			if (gercekListe.length > 0) {
-				leaderboard = gercekListe;
-				leaderboardIsDemo = false;
-			}
+			return liste.length > 0 ? liste : null;
 		} catch (e) {
-			// localStorage okunamazsa örnek veriyle devam edilir
+			return null;
+		}
+	}
+
+	onMount(async () => {
+		if (!browser) return;
+
+		// 1) Önce gerçek/ortak skor tablosunu dene (tüm kullanıcılar arasında, giriş yapmış olanlardan)
+		const { data, error } = await supabase
+			.from('leaderboard_view')
+			.select('full_name, class_name, best_score')
+			.order('best_score', { ascending: false })
+			.limit(8);
+
+		if (!error && data && data.length > 0) {
+			leaderboard = data.map((kisi, i) => ({
+				sira: i + 1,
+				ad: kisi.full_name || 'Bilim Meraklısı',
+				sinif: kisi.class_name,
+				puan: kisi.best_score,
+				rozet: rozetler[i] || '•'
+			}));
+			leaderboardSource = 'shared';
+			return;
+		}
+
+		// 2) Ortak tablo boşsa, bu cihazdaki (giriş yapılmamış) tahmini veriyi göster
+		const yerelListe = fromLocalStorage();
+		if (yerelListe) {
+			leaderboard = yerelListe;
+			leaderboardSource = 'local';
 		}
 	});
 </script>
@@ -75,9 +101,13 @@
 		<div class="leaderboard-heading"><div><p class="section-kicker">Sezon 2026–2027</p><h2 id="skor-tablosu">Skor tablosu</h2></div><span class="badge live">Güncel sıralama</span></div>
 		<div class="leaderboard-card"><table><thead><tr><th>Sıra</th><th>Yarışmacı</th><th>Puan</th></tr></thead><tbody>{#each leaderboard as player}<tr><td><span class="rank">{player.rozet} {player.sira}</span></td><td>{player.ad}</td><td><strong>{player.puan.toLocaleString('tr-TR')}</strong></td></tr>{/each}</tbody></table></div>
 		<p class="leaderboard-note">
-			{leaderboardIsDemo
-				? 'Henüz kaydedilmiş quiz sonucu yok — örnek bir tablo gösteriliyor. Bir quiz çözüldüğünde bu tablo gerçek skorlarla güncellenir (bu cihazda saklanır).'
-				: 'Bu cihazda çözülen quizlerden elde edilen en yüksek skorlara göre sıralanmıştır.'}
+			{#if leaderboardSource === 'demo'}
+				Henüz kaydedilmiş quiz sonucu yok — örnek bir tablo gösteriliyor. Giriş yapıp bir quiz çözüldüğünde bu tablo gerçek skorlarla güncellenir.
+			{:else if leaderboardSource === 'local'}
+				Henüz giriş yapmış kimse skor kaydetmedi — bu cihazdaki quiz sonuçlarına göre tahmini bir sıralama gösteriliyor. <a href="/giris" style="color: var(--accent);">Giriş yaparsan</a> skorun herkese görünen ortak tabloya eklenir.
+			{:else}
+				Giriş yapmış üyelerin en yüksek quiz skorlarına göre sıralanmıştır.
+			{/if}
 		</p>
 	</section>
 </div>

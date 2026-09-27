@@ -10,6 +10,7 @@
 	import Icon from '$lib/components/Icon.svelte';
 	import SearchDialog from '$lib/components/SearchDialog.svelte';
 	import AmbientScience from '$lib/components/AmbientScience.svelte';
+	import { user, authReady, initAuth, signOut } from '$lib/stores/auth.js';
 
 	let mobileOpen = false;
 	let isMobile = false;
@@ -19,6 +20,7 @@
 
 	onMount(() => {
 		theme.init();
+		initAuth();
 		const media = window.matchMedia('(max-width: 900px)');
 		const updateViewport = () => {
 			isMobile = media.matches;
@@ -126,6 +128,21 @@
 		</nav>
 
 		<div class="sidebar-foot">
+			<div class="auth-box">
+				{#if $authReady && $user}
+					<a href="/profil" class="auth-user" on:click={() => sfx.nav()}>
+						<span class="auth-avatar">{($user.full_name || $user.email || '?').charAt(0).toUpperCase()}</span>
+						<span class="auth-name">{$user.full_name || $user.email}</span>
+					</a>
+					<button class="icon-btn" on:click={async () => { await signOut(); sfx.nav(); }} aria-label="Çıkış yap" title="Çıkış yap">
+						<Icon name="close" size={16} />
+					</button>
+				{:else if $authReady}
+					<a href="/giris" class="pill-btn" style="width: 100%; justify-content: center; text-decoration: none;" on:click={() => sfx.nav()}>
+						<span>Giriş Yap</span>
+					</a>
+				{/if}
+			</div>
 			<button class="pill-btn" on:click={cycleTheme}>
 				<Icon name={themeIcon} size={17} />
 				<span>{themeLabel} tema</span>
@@ -362,6 +379,47 @@
 	.pill-btn:hover {
 		border-color: var(--accent);
 		color: var(--accent);
+	}
+
+	.auth-box {
+		display: flex;
+		align-items: center;
+		gap: 8px;
+	}
+	.auth-user {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		flex: 1;
+		min-width: 0;
+		padding: 6px 10px;
+		border-radius: var(--radius-sm);
+		text-decoration: none;
+		color: var(--text);
+	}
+	.auth-user:hover {
+		background: var(--surface-hover);
+	}
+	.auth-avatar {
+		flex-shrink: 0;
+		width: 28px;
+		height: 28px;
+		border-radius: 50%;
+		background: var(--accent);
+		color: var(--bg);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: 13px;
+	}
+	.auth-name {
+		font-size: var(--fs-xs);
+		font-weight: 600;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.scrim {

@@ -5,6 +5,8 @@
     import { onMount } from 'svelte';
     import { browser } from '$app/environment';
     import { quizData } from '$lib/data/bilim-quizleri.js';
+    import { supabase } from '$lib/supabaseClient.js';
+    import { user } from '$lib/stores/auth.js';
 
     // Query parametresinden konuyu al (örn: ?konu=fizik)
     // NOT: prerender edilen bir sayfada url.searchParams'a build/SSR anında erişilemez,
@@ -37,6 +39,7 @@
     let score = 0;
     let isFinished = false;
     let playerName = '';
+    let savedToLeaderboard = false;
 
     // Konu değiştiğinde (URL parametresi ile) yeni bir tur başlat
     $: if (konu !== lastKonu) {
@@ -99,14 +102,14 @@
         }
     }
 
-    function nextQuestion() {
+    async function nextQuestion() {
         selectedOption = null;
         if (currentQuestionIndex < roundQuestions.length - 1) {
             currentQuestionIndex++;
         } else {
             isFinished = true;
             clearTimer();
-            // Skoru kaydet (tüm konular ortak listede, konu bilgisiyle birlikte)
+            // Skoru localStorage'a kaydet (cihazda kişisel geçmiş için, herkes)
             const savedScores = JSON.parse(localStorage.getItem('btk_quiz_scores') || '[]');
             savedScores.push({
                 name: playerName || 'Bilim Meraklısı',
@@ -117,6 +120,17 @@
                 ts: Date.now()
             });
             localStorage.setItem('btk_quiz_scores', JSON.stringify(savedScores));
+
+            // Giriş yapmış kullanıcıysa gerçek/ortak skor tablosuna da kaydet
+            if ($user) {
+                const { error } = await supabase.from('quiz_scores').insert({
+                    user_id: $user.id,
+                    subject: konu,
+                    subject_title: categoryMeta.title,
+                    score
+                });
+                if (!error) savedToLeaderboard = true;
+            }
         }
     }
 
@@ -126,6 +140,7 @@
         selectedOption = null;
         score = 0;
         isFinished = false;
+        savedToLeaderboard = false;
         startTimer();
     }
 
@@ -149,7 +164,12 @@
         <!-- Oyuncu ve Skor Bilgisi -->
         <div style="margin-bottom: 20px; display: flex; gap: 12px; align-items: center; background: var(--bg-alt); padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
             <span style="font-size: var(--fs-sm); color: var(--text-muted);">Yarışmacı:</span>
-            <input type="text" bind:value={playerName} on:input={() => localStorage.setItem('bilim_kulubu_player_name', playerName)} placeholder="Adınızı girin..." style="background: transparent; border: none; color: var(--text); font-weight: bold; flex: 1; outline: none;" />
+            {#if $user}
+                <span style="font-weight: bold; flex: 1;">{$user.full_name || $user.email}</span>
+                <span class="badge dev">Giriş yapıldı</span>
+            {:else}
+                <input type="text" bind:value={playerName} on:input={() => localStorage.setItem('bilim_kulubu_player_name', playerName)} placeholder="Adınızı girin..." style="background: transparent; border: none; color: var(--text); font-weight: bold; flex: 1; outline: none;" />
+            {/if}
             <span class="badge live">Puan: {score}</span>
         </div>
 
@@ -208,6 +228,13 @@
                 <p style="text-align: center; margin: 15px auto; color: var(--text-muted);">
                     {categoryMeta.title} testini başarıyla bitirdin ve toplam <b style="color: var(--accent);">{score} puan</b> kazandın.
                 </p>
+                {#if savedToLeaderboard}
+                    <p style="font-size: var(--fs-sm); color: var(--accent);">✓ Skorun ortak skor tablosuna eklendi.</p>
+                {:else}
+                    <p style="font-size: var(--fs-sm); color: var(--text-muted);">
+                        Bu skor ortak skor tablosuna eklenmedi. <a href="/giris" style="color: var(--accent);">Giriş yaparsan</a> skorların sıralamaya kaydedilir.
+                    </p>
+                {/if}
                 <div style="display: flex; justify-content: center; gap: 12px; margin-top: 25px;">
                     <button class="btn btn-primary" on:click={restartQuiz}>Tekrar Çöz</button>
                     <a href="/yarismalar" class="btn btn-ghost" style="text-decoration: none;">Yarışmalar Menüsüne Dön</a>
