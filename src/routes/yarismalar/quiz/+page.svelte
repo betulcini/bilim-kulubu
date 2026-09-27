@@ -4,6 +4,7 @@
     import { page } from '$app/stores';
     import { onMount } from 'svelte';
     import { browser } from '$app/environment';
+    import { quizData } from '$lib/data/bilim-quizleri.js';
 
     // Query parametresinden konuyu al (örn: ?konu=fizik)
     // NOT: prerender edilen bir sayfada url.searchParams'a build/SSR anında erişilemez,
@@ -12,118 +13,40 @@
     $: if (browser) {
         konu = $page.url.searchParams.get('konu') || 'fizik';
     }
+    $: categoryMeta = quizData[konu] || quizData.fizik;
 
-    // Konulara göre soru havuzları
-    const quizData = {
-        fizik: {
-            title: 'Fizik Hızlı Quiz',
-            desc: 'Kuvvet, enerji, ışık ve temel fizik yasaları üzerine bilgi turu.',
-            questions: [
-                {
-                    soru: 'Newton\'un ikinci hareket yasasına göre (F = m·a), kütlesi 2 kg olan bir cismi 6 m/s² ivmeyle hızlandırmak için kaç Newton kuvvet gerekir?',
-                    secenekler: ['6 N', '8 N', '12 N', '36 N'],
-                    dogru: '12 N',
-                    aciklama: 'F = m · a formülünden F = 2 · 6 = 12 Newton bulunur.'
-                },
-                {
-                    soru: 'Aşağıdakilerden hangisi vektörel bir büyüklüktür?',
-                    secenekler: ['Kütle', 'Sıcaklık', 'Hız', 'Zaman'],
-                    dogru: 'Hız',
-                    aciklama: 'Vektörel büyüklükler yön ve doğrultu gerektirir; hız vektöreldir, kütle ve zaman skalerdir.'
-                },
-                {
-                    soru: 'Işığın boşluktaki hızı (c) yaklaşık olarak saniyede kaç kilometredir?',
-                    secenekler: ['300.000 km', '150.000 km', '3.000.000 km', '30.000 km'],
-                    dogru: '300.000 km',
-                    aciklama: 'Işık hızı saniyede yaklaşık 3 × 10^8 m/s (300.000 km/sn) kadardır.'
-                }
-            ]
-        },
-        biyoloji: {
-            title: 'Biyoloji Keşif Quiz',
-            desc: 'Hücre organelleri, kalıtım ve canlılar dünyasından temel kavramlar.',
-            questions: [
-                {
-                    soru: 'Ökaryot bir hücrede hücrenin enerji ihtiyacını karşılayan (ATP sentezleyen) temel organel hangisidir?',
-                    secenekler: ['Ribozom', 'Mitokondri', 'Golgi Cihazı', 'Endoplazmik Retikulum'],
-                    dogru: 'Mitokondri',
-                    aciklama: 'Mitokondri, oksijenli solunum yaparak hücrenin ATP ihtiyacını karşılayan enerji merkezidir.'
-                },
-                {
-                    soru: 'Bitki hücrelerinde fotosentez olayının gerçekleştiği organel aşağıdakilerden hangisidir?',
-                    secenekler: ['Mitokondri', 'Koful', 'Kloroplast', 'Lizozom'],
-                    dogru: 'Kloroplast',
-                    aciklama: 'Kloroplast, klorofil pigmenti barındırarak ışık enerjisini kimyasal bağ enerjisine çevirir.'
-                },
-                {
-                    soru: 'DNA molekülünün yapı taşını oluşturan nükleotidin temel bileşenleri nelerdir?',
-                    secenekler: [
-                        'Glikoz, nişasta, yağ asidi',
-                        'Azotlu organik baz, deoksiriboz şekeri, fosfat',
-                        'Amino asit, enzim, su',
-                        'Glerol, protein, mineral'
-                    ],
-                    dogru: 'Azotlu organik baz, deoksiriboz şekeri, fosfat',
-                    aciklama: 'Bir nükleotit; 5 karbonlu şeker, fosfat grubu ve azotlu organik bazdan oluşur.'
-                }
-            ]
-        },
-        astronomi: {
-            title: 'Astronomi Görev Quiz',
-            desc: 'Gezegenler, yıldız evrimi ve evrenin yapısı üzerine hızlı bir test.',
-            questions: [
-                {
-                    soru: 'Güneş sistemindeki en büyük gezegen hangisidir?',
-                    secenekler: ['Satürn', 'Dünya', 'Jüpiter', 'Neptün'],
-                    dogru: 'Jüpiter',
-                    aciklama: 'Jüpiter, Güneş sisteminin kütle ve hacim olarak en büyük gaz devi gezegenidir.'
-                },
-                {
-                    soru: 'Güneş\'e en yakın olan gezegen aşağıdakilerden hangisidir?',
-                    secenekler: ['Venüs', 'Merkür', 'Mars', 'Dünya'],
-                    dogru: 'Merkür',
-                    aciklama: 'Merkür, Güneş sisteminde güneşe en yakın birinci gezegendir.'
-                },
-                {
-                    soru: 'Yıldızların enerji kaynağı olan temel nükleer tepkime türü nedir?',
-                    secenekler: ['Nükleer Fisyon (Bölünme)', 'Nükleer Füzyon (Kaynaşma)', 'Kimyasal Yanma', 'Radyoaktif Bozunum'],
-                    dogru: 'Nükleer Füzyon (Kaynaşma)',
-                    aciklama: 'Yıldızlar çekirdeklerinde hidrojen atomlarını helyuma füzyon (kaynaşma) yoluyla dönüştürerek devasa enerji üretir.'
-                }
-            ]
-        },
-        kimya: {
-            title: 'Kimya Laboratuvarı Quiz',
-            desc: 'Elementler, periyodik tablo ve kimyasal bağlar hakkında mini sınav.',
-            questions: [
-                {
-                    soru: 'Periyodik tabloda "H" simgesiyle gösterilen element hangisidir?',
-                    secenekler: ['Helyum', 'Hidrojen', 'Hafniyum', 'Holmiyum'],
-                    dogru: 'Hidrojen',
-                    aciklama: 'H simgesi evrendeki en hafif ve en bol element olan Hidrojen\'e aittir.'
-                },
-                {
-                    soru: 'Saf suyun (H2O) oda koşullarındaki pH değeri kaçtır?',
-                    secenekler: ['0', '7', '14', '5'],
-                    dogru: '7',
-                    aciklama: 'Nötr maddelerin pH değeri 25°C\'de tam olarak 7\'dir.'
-                },
-                {
-                    soru: 'Aşağıdakilerden hangisi ametal özellik gösteren bir elementtir?',
-                    secenekler: ['Demir (Fe)', 'Sodyum (Na)', 'Oksijen (O)', 'Bakır (Cu)'],
-                    dogru: 'Oksijen (O)',
-                    aciklama: 'Oksijen periyodik tablonun 6A grubunda yer alan bir ametaldir; diğerleri metaldir.'
-                }
-            ]
+    // Her turda soru havuzundan rastgele bir alt küme seçilir (tekrar oynamada çeşitlilik)
+    const ROUND_SIZE = 8;
+    function shuffle(arr) {
+        const a = [...arr];
+        for (let i = a.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [a[i], a[j]] = [a[j], a[i]];
         }
-    };
+        return a;
+    }
+    function pickRound(catKey) {
+        const cat = quizData[catKey] || quizData.fizik;
+        return shuffle(cat.questions).slice(0, Math.min(ROUND_SIZE, cat.questions.length));
+    }
 
-    $: currentQuiz = quizData[konu] || quizData.fizik;
+    let roundQuestions = pickRound(konu); // SSR-güvenli ilk tur (varsayılan: fizik)
+    let lastKonu = konu;
     let currentQuestionIndex = 0;
     let selectedOption = null;
     let score = 0;
     let isFinished = false;
     let playerName = '';
+
+    // Konu değiştiğinde (URL parametresi ile) yeni bir tur başlat
+    $: if (konu !== lastKonu) {
+        lastKonu = konu;
+        roundQuestions = pickRound(konu);
+        currentQuestionIndex = 0;
+        selectedOption = null;
+        score = 0;
+        isFinished = false;
+    }
 
     // --- Soru başına süre sınırı ---
     const SORU_SURESI = 20; // saniye
@@ -156,13 +79,12 @@
     onMount(() => {
         const saved = localStorage.getItem('bilim_kulubu_player_name');
         if (saved) playerName = saved;
-        startTimer();
         return () => clearTimer();
     });
 
-    // Soru değiştikçe (konu değişimi dahil) süreyi sıfırla
-    $: if (browser && currentQuestionIndex >= 0 && !isFinished) {
-        currentQuiz; // reaktif bağımlılık: konu değişirse de tetiklensin
+    // Soru değiştikçe (tur başlangıcı dahil) süreyi sıfırla
+    $: if (browser && roundQuestions.length > 0 && !isFinished) {
+        currentQuestionIndex; // reaktif bağımlılık
         startTimer();
     }
 
@@ -172,14 +94,14 @@
         sfx.nav();
         selectedOption = opt;
 
-        if (opt === currentQuiz.questions[currentQuestionIndex].dogru) {
+        if (opt === roundQuestions[currentQuestionIndex].dogru) {
             score += 25;
         }
     }
 
     function nextQuestion() {
         selectedOption = null;
-        if (currentQuestionIndex < currentQuiz.questions.length - 1) {
+        if (currentQuestionIndex < roundQuestions.length - 1) {
             currentQuestionIndex++;
         } else {
             isFinished = true;
@@ -190,7 +112,7 @@
                 name: playerName || 'Bilim Meraklısı',
                 score,
                 subject: konu,
-                subjectTitle: currentQuiz.title,
+                subjectTitle: categoryMeta.title,
                 date: new Date().toLocaleDateString('tr-TR'),
                 ts: Date.now()
             });
@@ -199,20 +121,27 @@
     }
 
     function restartQuiz() {
+        roundQuestions = pickRound(konu);
         currentQuestionIndex = 0;
         selectedOption = null;
         score = 0;
         isFinished = false;
         startTimer();
     }
+
+    function zorlukBadge(z) {
+        if (z === 'Kolay') return 'info';
+        if (z === 'Zor') return 'danger';
+        return 'dev';
+    }
 </script>
 
 <svelte:head>
-    <title>{currentQuiz.title} · Yarışmalar</title>
-    <meta name="description" content={currentQuiz.desc} />
+    <title>{categoryMeta.title} · Yarışmalar</title>
+    <meta name="description" content={categoryMeta.desc} />
 </svelte:head>
 
-<PageHeader eyebrow="Bilgi Quizi" title={currentQuiz.title} desc={currentQuiz.desc} />
+<PageHeader eyebrow="Bilgi Quizi" title={categoryMeta.title} desc={categoryMeta.desc} />
 
 <div class="content-max" style="margin-bottom: 60px;">
     <div class="bracket-card" style="max-width: 800px; margin: 0 auto;">
@@ -225,9 +154,12 @@
         </div>
 
         {#if !isFinished}
-            {@const q = currentQuiz.questions[currentQuestionIndex]}
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-                <span class="badge dev">Soru {currentQuestionIndex + 1} / {currentQuiz.questions.length}</span>
+            {@const q = roundQuestions[currentQuestionIndex]}
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 8px;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                    <span class="badge dev">Soru {currentQuestionIndex + 1} / {roundQuestions.length}</span>
+                    <span class="badge {zorlukBadge(q.zorluk)}">{q.zorluk}</span>
+                </div>
                 <span class="badge {timeLeft <= 5 && selectedOption === null ? 'danger' : 'info'}" style="font-variant-numeric: tabular-nums;">
                     ⏱ {selectedOption === null ? timeLeft : SORU_SURESI} sn
                 </span>
@@ -264,7 +196,7 @@
                 </div>
 
                 <button class="btn btn-primary" style="width: 100%; justify-content: center;" on:click={nextQuestion}>
-                    {currentQuestionIndex < currentQuiz.questions.length - 1 ? 'Sonraki Soru →' : 'Quizi Tamamla ve Sonuçları Gör 🏁'}
+                    {currentQuestionIndex < roundQuestions.length - 1 ? 'Sonraki Soru →' : 'Quizi Tamamla ve Sonuçları Gör 🏁'}
                 </button>
             {/if}
 
@@ -274,7 +206,7 @@
                 <div style="font-size: 3.5rem; margin-bottom: 10px;">🏆</div>
                 <h2>Tebrikler, Quizi Tamamladın!</h2>
                 <p style="text-align: center; margin: 15px auto; color: var(--text-muted);">
-                    {currentQuiz.title} testini başarıyla bitirdin ve toplam <b style="color: var(--accent);">{score} puan</b> kazandın.
+                    {categoryMeta.title} testini başarıyla bitirdin ve toplam <b style="color: var(--accent);">{score} puan</b> kazandın.
                 </p>
                 <div style="display: flex; justify-content: center; gap: 12px; margin-top: 25px;">
                     <button class="btn btn-primary" on:click={restartQuiz}>Tekrar Çöz</button>
