@@ -2,6 +2,7 @@ export const navItems = [
     { href: '/', label: 'Ana Sayfa', icon: 'home' },
     { href: '/yarismalar', label: 'Yarışmalar', icon: 'trophy' },
     { href: '/oyunlar', label: 'Oyunlar', icon: 'games' },
+    { href: '/bilim-takvimi', label: 'Bilim Takvimi', icon: 'announce' },
     { href: '/bilim-insanlari', label: 'Bilim İnsanları', icon: 'users' },
     { href: '/duyurular', label: 'Bilim Duyuruları', icon: 'announce' },
     { href: '/kulup-gezileri', label: 'Kulüp Gezileri', icon: 'trips' },
