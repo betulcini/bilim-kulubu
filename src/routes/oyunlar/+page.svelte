@@ -23,6 +23,12 @@
             aktif: true
         },
         {
+            href: '/oyunlar/bilim-tabu',
+            baslik: 'Bilim Tabu',
+            aciklama: 'Yasaklı kelimeleri söylemeden bilimsel terimi anlat — iki takımlı, süreli, 840+ kartlık tabu.',
+            aktif: true
+        },
+        {
             href: null,
             baslik: 'Kimya Laboratuvarı Simülasyonu',
             aciklama: 'Sanal ortamda güvenli deney tasarlama oyunu.',
