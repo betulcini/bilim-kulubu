@@ -32,13 +32,22 @@
 			email,
 			password,
 			options: {
-				data: { full_name: fullName, class_name: sinif }
+				data: { full_name: fullName, class_name: sinif },
+				// Onay linki localhost'a değil, sitenin kendi adresine dönsün
+				emailRedirectTo: `${window.location.origin}/giris`
 			}
 		});
 		loading = false;
 
 		if (error) {
 			errorMsg = HATA_MESAJLARI[error.message] || 'Kayıt olunamadı: ' + error.message;
+			return;
+		}
+
+		// E-posta onayı açıkken, kayıtlı e-posta ile tekrar kayıt hata vermez;
+		// bunun yerine identities boş döner. Kullanıcıyı boşuna mail beklemesin.
+		if (data.user && data.user.identities && data.user.identities.length === 0) {
+			errorMsg = HATA_MESAJLARI['User already registered'];
 			return;
 		}
 
