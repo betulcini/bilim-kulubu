@@ -1,7 +1,10 @@
 <script>
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import { sfx } from '$lib/sound.js';
+	import { activity } from '$lib/stores/activity.js';
 	import { cardPairs, bolumler } from '$lib/data/kart-eslestirme.js';
+	activity.mark('games', 'hafiza');
+
 
 	const PAIR_COUNT = 6;
 	const PUAN = { Kolay: 10, Orta: 15, Zor: 25 };

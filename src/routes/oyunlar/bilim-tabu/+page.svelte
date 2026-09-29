@@ -2,7 +2,10 @@
 	import { onDestroy } from 'svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import { sfx } from '$lib/sound.js';
+	import { activity } from '$lib/stores/activity.js';
 	import { tabuKelimeleri, tabuKategorileri } from '$lib/data/bilim-tabu.js';
+
+	activity.mark('games', 'bilim-tabu');
 
 	// ---------- ayarlar ----------
 	let takimAdlari = ['Takım 1', 'Takım 2'];

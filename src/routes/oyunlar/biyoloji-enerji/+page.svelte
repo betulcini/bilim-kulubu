@@ -1,7 +1,10 @@
 <script>
     import PageHeader from '$lib/components/PageHeader.svelte';
     import { sfx } from '$lib/sound.js';
+    import { activity } from '$lib/stores/activity.js';
     import { onMount } from 'svelte';
+
+    activity.mark('games', 'biyoloji-enerji');
 
     // Şemadaki bölgeler: renk, etiket ve şeklin türü tek yerde
     const cellRegions = {

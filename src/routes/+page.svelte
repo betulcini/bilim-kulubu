@@ -6,6 +6,7 @@
     import { scientists } from '$lib/data/scientists.js';
     import { sfx } from '$lib/sound.js';
     import Icon from '$lib/components/Icon.svelte';
+    import SanaOzel from '$lib/components/SanaOzel.svelte';
 
     const renkler = ['var(--accent)', 'var(--accent-2)', 'var(--accent-3)'];
 
@@ -18,7 +19,10 @@
         '/galeri': 'Etkinliklerden fotoğraf ve anılar.',
         '/oneri': 'Kulüple ilgili öneri ve fikirlerini paylaş.',
         '/yarismalar': 'Kulübün düzenlediği Kahoot ve bilgi yarışmaları.',
-        '/oyunlar': 'Bilim temalı mini oyunlar.'
+        '/oyunlar': 'Bilim temalı mini oyunlar.',
+        '/bilim-takvimi': 'Tutulmalar, uzay olayları ve TÜBİTAK yarışma tarihleri tek takvimde.',
+        '/bilim-insanlari': 'Dünyayı değiştiren bilim insanlarının hayatları ve keşifleri.',
+        '/hakkinda-iletisim': 'Kulüp hakkında bilgi ve bize ulaşmanın yolları.'
     };
 
     const quickLinks = navItems
@@ -71,6 +75,8 @@
             </a>
         {/each}
     </div>
+
+    <SanaOzel compact />
 
     <section class="highlights">
         <h2>Bu ay öne çıkanlar</h2>

@@ -1,9 +1,11 @@
 <script>
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import { supabase } from '$lib/supabaseClient.js';
+	import InterestPicker from '$lib/components/InterestPicker.svelte';
 
 	let fullName = '';
 	let sinif = '';
+	let secilenIlgiler = [];
 	let email = '';
 	let password = '';
 	let passwordAgain = '';
@@ -26,13 +28,17 @@
 			errorMsg = 'Şifre en az 6 karakter olmalı.';
 			return;
 		}
+		if (secilenIlgiler.length === 0) {
+			errorMsg = 'Sana özel öneriler için en az bir ilgi alanı seç.';
+			return;
+		}
 
 		loading = true;
 		const { data, error } = await supabase.auth.signUp({
 			email,
 			password,
 			options: {
-				data: { full_name: fullName, class_name: sinif },
+				data: { full_name: fullName, class_name: sinif, interests: secilenIlgiler },
 				// Onay linki localhost'a değil, sitenin kendi adresine dönsün
 				emailRedirectTo: `${window.location.origin}/giris`
 			}
@@ -93,6 +99,10 @@
 				<label for="sinif" style="display: block; font-size: var(--fs-xs); color: var(--text-muted); margin-bottom: 6px;">Sınıf / şube <span style="opacity: 0.6;">(isteğe bağlı)</span></label>
 				<input id="sinif" type="text" bind:value={sinif} placeholder="Örn. 10-A"
 					style="width: 100%; padding: 10px 12px; border-radius: var(--radius-sm); border: 1px solid var(--border); background: var(--bg-alt); color: var(--text);" />
+			</div>
+			<div>
+				<InterestPicker bind:selected={secilenIlgiler} legend="Hangi bilim alanlarına yakınsın? (en az 1 seç)" />
+				<p style="font-size: var(--fs-xs); color: var(--text-muted); margin: 8px 0 0;">Buna göre profilinde ve anasayfada "Sana Özel" öneriler göreceksin. Sonra profilinden değiştirebilirsin.</p>
 			</div>
 			<div>
 				<label for="email" style="display: block; font-size: var(--fs-xs); color: var(--text-muted); margin-bottom: 6px;">E-posta</label>

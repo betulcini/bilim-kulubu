@@ -1,8 +1,11 @@
 <script>
     import PageHeader from '$lib/components/PageHeader.svelte';
     import { sfx } from '$lib/sound.js';
+    import { activity } from '$lib/stores/activity.js';
     import { onMount } from 'svelte';
     import { wordList } from '$lib/data/bilim-kelimeleri.js';
+    activity.mark('games', 'adam-asmaca');
+
 
     let currentWordObj = { word: '', hint: '', field: '' };
     let guessedLetters = new Set();

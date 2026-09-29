@@ -1,6 +1,7 @@
 <script>
     import PageHeader from '$lib/components/PageHeader.svelte';
     import { sfx } from '$lib/sound.js';
+    import { activity } from '$lib/stores/activity.js';
     import { scientists } from '$lib/data/bilim-insanlari.js';
 
     let searchQuery = '';
@@ -20,6 +21,7 @@
 
     function openModal(scientist) {
         sfx.nav();
+        activity.mark('scientists', scientist.id);
         activeModalScientist = scientist;
     }
 
