@@ -18,7 +18,10 @@
         '/galeri': 'Etkinliklerden fotoğraf ve anılar.',
         '/oneri': 'Kulüple ilgili öneri ve fikirlerini paylaş.',
         '/yarismalar': 'Kulübün düzenlediği Kahoot ve bilgi yarışmaları.',
-        '/oyunlar': 'Bilim temalı mini oyunlar.'
+        '/oyunlar': 'Bilim temalı mini oyunlar.',
+        '/bilim-takvimi': 'Tutulmalar, uzay olayları ve TÜBİTAK yarışma tarihleri tek takvimde.',
+        '/bilim-insanlari': 'Dünyayı değiştiren bilim insanlarının hayatları ve keşifleri.',
+        '/hakkinda-iletisim': 'Kulüp hakkında bilgi ve bize ulaşmanın yolları.'
     };
 
     const quickLinks = navItems

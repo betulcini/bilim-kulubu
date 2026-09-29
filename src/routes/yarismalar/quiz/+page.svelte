@@ -162,15 +162,17 @@
     <div class="bracket-card" style="max-width: 800px; margin: 0 auto;">
         
         <!-- Oyuncu ve Skor Bilgisi -->
-        <div style="margin-bottom: 20px; display: flex; gap: 12px; align-items: center; background: var(--bg-alt); padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
-            <span style="font-size: var(--fs-sm); color: var(--text-muted);">Yarışmacı:</span>
-            {#if $user}
-                <span style="font-weight: bold; flex: 1;">{$user.full_name || $user.email}</span>
-                <span class="badge dev">Giriş yapıldı</span>
-            {:else}
-                <input type="text" bind:value={playerName} on:input={() => localStorage.setItem('bilim_kulubu_player_name', playerName)} placeholder="Adınızı girin..." style="background: transparent; border: none; color: var(--text); font-weight: bold; flex: 1; outline: none;" />
-            {/if}
-            <span class="badge live">Puan: {score}</span>
+        <div class="player-bar">
+            <span class="player-label">Yarışmacı:</span>
+            <div class="player-id">
+                {#if $user}
+                    <span class="player-name">{$user.full_name || $user.email}</span>
+                    <span class="badge dev player-badge">Giriş yapıldı</span>
+                {:else}
+                    <input class="player-input" type="text" bind:value={playerName} on:input={() => localStorage.setItem('bilim_kulubu_player_name', playerName)} placeholder="Adınızı girin..." maxlength="30" aria-label="Adınız" />
+                {/if}
+            </div>
+            <span class="badge live player-score">Puan: {score}</span>
         </div>
 
         {#if !isFinished}
@@ -189,13 +191,12 @@
                 <div style="height: 100%; border-radius: 999px; background: {timeLeft <= 5 ? 'var(--danger)' : 'var(--accent)'}; width: {selectedOption === null ? (timeLeft / SORU_SURESI) * 100 : 100}%; transition: width 1s linear;"></div>
             </div>
 
-            <h3 style="margin-bottom: 20px; font-size: var(--fs-lg); line-height: 1.5;">{q.soru}</h3>
+            <h3 class="quiz-question">{q.soru}</h3>
 
             <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 20px;">
                 {#each q.secenekler as opt}
                     <button 
-                        class="btn {selectedOption === null ? 'btn-ghost' : (opt === q.dogru ? 'btn-primary' : (selectedOption === opt ? 'btn-danger' : 'btn-ghost'))}" 
-                        style="padding: 14px 18px; text-align: left; justify-content: flex-start; font-size: var(--fs-base);"
+                        class="btn quiz-option {selectedOption === null ? 'btn-ghost' : (opt === q.dogru ? 'btn-primary' : (selectedOption === opt ? 'btn-danger' : 'btn-ghost'))}" 
                         disabled={selectedOption !== null}
                         on:click={() => handleAnswer(opt)}>
                         🔹 {opt}
@@ -222,7 +223,7 @@
 
         {:else}
             <!-- Quiz Bitiş Ekranı -->
-            <div style="text-align: center; padding: 40px 20px;">
+            <div class="finish-box">
                 <div style="font-size: 3.5rem; margin-bottom: 10px;">🏆</div>
                 <h2>Tebrikler, Quizi Tamamladın!</h2>
                 <p style="text-align: center; margin: 15px auto; color: var(--text-muted);">
@@ -235,9 +236,9 @@
                         Bu skor ortak skor tablosuna eklenmedi. <a href="/giris" style="color: var(--accent);">Giriş yaparsan</a> skorların sıralamaya kaydedilir.
                     </p>
                 {/if}
-                <div style="display: flex; justify-content: center; gap: 12px; margin-top: 25px;">
+                <div class="finish-actions">
                     <button class="btn btn-primary" on:click={restartQuiz}>Tekrar Çöz</button>
-                    <a href="/yarismalar" class="btn btn-ghost" style="text-decoration: none;">Yarışmalar Menüsüne Dön</a>
+                    <a href="/yarismalar" class="btn btn-ghost" style="text-decoration: none; text-align: center;">Yarışmalar Menüsüne Dön</a>
                 </div>
             </div>
         {/if}
@@ -245,3 +246,117 @@
     </div>
 </div>
 
+<style>
+    .player-bar {
+        display: flex;
+        align-items: center;
+        gap: 8px 12px;
+        margin-bottom: 20px;
+        padding: 10px 14px;
+        background: var(--bg-alt);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+    }
+    .player-label {
+        flex: none;
+        font-size: var(--fs-sm);
+        color: var(--text-muted);
+    }
+    .player-id {
+        flex: 1 1 0;
+        min-width: 0;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+    .player-name {
+        flex: 1;
+        min-width: 0;
+        font-weight: bold;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    .player-input {
+        flex: 1;
+        width: 100%;
+        min-width: 0;
+        padding: 0;
+        background: transparent;
+        border: none;
+        outline: none;
+        color: var(--text);
+        font: inherit;
+        font-weight: bold;
+    }
+    .player-badge,
+    .player-score {
+        flex: none;
+        white-space: nowrap;
+    }
+
+    .quiz-question {
+        margin-bottom: 20px;
+        font-size: var(--fs-lg);
+        line-height: 1.5;
+        overflow-wrap: anywhere;
+    }
+    .quiz-option {
+        padding: 14px 18px;
+        text-align: left;
+        justify-content: flex-start;
+        font-size: var(--fs-base);
+        line-height: 1.4;
+        overflow-wrap: anywhere;
+    }
+
+    .finish-box {
+        text-align: center;
+        padding: 40px 20px;
+    }
+    .finish-actions {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+        margin-top: 25px;
+    }
+
+    @media (max-width: 520px) {
+        /* Üst satır: Yarışmacı ........ Puan / alt satır: ad alanı tam genişlik */
+        .player-bar {
+            flex-wrap: wrap;
+            padding: 10px 12px;
+        }
+        .player-label {
+            order: 1;
+            flex: 1;
+        }
+        .player-score {
+            order: 2;
+        }
+        .player-id {
+            order: 3;
+            flex: 1 1 100%;
+        }
+        .player-input {
+            padding: 6px 0;
+            border-top: 1px solid var(--border);
+            font-size: var(--fs-sm);
+        }
+        .quiz-question {
+            font-size: var(--fs-md);
+            margin-bottom: 16px;
+        }
+        .quiz-option {
+            padding: 12px 14px;
+            font-size: var(--fs-sm);
+        }
+        .finish-box {
+            padding: 24px 4px;
+        }
+        .finish-actions .btn {
+            flex: 1 1 100%;
+        }
+    }
+</style>

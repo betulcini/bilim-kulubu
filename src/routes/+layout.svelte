@@ -143,11 +143,11 @@
 					</a>
 				{/if}
 			</div>
-			<button class="pill-btn" on:click={cycleTheme}>
+			<button class="pill-btn theme-btn" on:click={cycleTheme} aria-label="{themeLabel} tema (değiştirmek için tıkla)" title="{themeLabel} tema">
 				<Icon name={themeIcon} size={17} />
-				<span>{themeLabel} tema</span>
+				<span class="theme-label">{themeLabel} tema</span>
 			</button>
-			<button class="pill-btn" on:click={toggleSound}>
+			<button class="pill-btn sound-pill" on:click={toggleSound}>
 				<Icon name={$soundEnabled ? 'sound-on' : 'sound-off'} size={17} />
 				<span>Ses {$soundEnabled ? 'açık' : 'kapalı'}</span>
 			</button>
@@ -513,5 +513,9 @@
 		nav a :global(svg) { width: 16px; height: 16px; }
 		.sidebar-foot { flex: none; flex-direction: row; gap: 6px; padding: 0; border: 0; }
 		.pill-btn { padding: 8px 10px; white-space: nowrap; }
+		/* Masaüstünde ses düğmesi üst çubukta zaten var; tema düğmesi sadece ikon */
+		.sound-pill { display: none; }
+		.theme-label { display: none; }
+		.theme-btn { padding: 8px 10px; }
 	}
 </style>
