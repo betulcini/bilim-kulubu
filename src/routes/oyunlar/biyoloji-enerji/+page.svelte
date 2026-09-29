@@ -126,23 +126,23 @@
     <div class="bracket-card" style="max-width: 850px; margin: 0 auto;">
         
         <!-- Oyuncu Bilgisi -->
-        <div style="margin-bottom: 20px; display: flex; gap: 12px; align-items: center; background: var(--bg-alt); padding: 10px 14px; border-radius: var(--radius-sm); border: 1px solid var(--border);">
-            <span style="font-size: var(--fs-sm); color: var(--text-muted);">Araştırmacı:</span>
-            <input type="text" bind:value={playerName} on:input={() => localStorage.setItem('bilim_kulubu_player_name', playerName)} placeholder="Adınızı girin..." style="background: transparent; border: none; color: var(--text); font-weight: bold; flex: 1; outline: none;" />
-            <span class="badge live">Toplam Puan: {totalEnergyScore}</span>
+        <div class="player-bar">
+            <span class="player-label">Araştırmacı:</span>
+            <input type="text" bind:value={playerName} on:input={() => localStorage.setItem('bilim_kulubu_player_name', playerName)} placeholder="Adınızı girin..." class="player-input" />
+            <span class="badge live score-badge">Toplam Puan: {totalEnergyScore}</span>
         </div>
 
         {#if selectedPathwayKey === null}
             <!-- Ana Menü: Süreç Seçimi -->
             <h3 style="margin-bottom: 15px; font-size: var(--fs-lg);">İncelemek İstediğiniz Metabolik Süreci Seçin:</h3>
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="path-grid">
                 {#each Object.entries(pathways) as [key, path]}
-                    <div style="background: var(--bg-alt); padding: 20px; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); display: flex; flex-direction: column; justify-content: space-between;">
+                    <div class="path-card">
                         <div>
                             <h4 style="margin-bottom: 8px; color: var(--accent);">{path.name}</h4>
                             <p style="font-size: var(--fs-sm); color: var(--text-muted); margin-bottom: 16px; line-height: 1.4;">{path.desc}</p>
                         </div>
-                        <button class="btn btn-primary" style="justify-content: center;" on:click={() => selectPathway(key)}>
+                        <button class="btn btn-primary" on:click={() => selectPathway(key)}>
                             Simülasyonu Başlat →
                         </button>
                     </div>
@@ -151,7 +151,7 @@
         {:else if !isCompleted}
             <!-- Aktif Süreç Ekranı -->
             {@const currentStage = pathways[selectedPathwayKey].stages[currentStageIndex]}
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
+            <div class="stage-head">
                 <span class="badge dev">{pathways[selectedPathwayKey].name}</span>
                 <span style="font-size: var(--fs-xs); color: var(--text-muted);">Adım {currentStageIndex + 1} / {pathways[selectedPathwayKey].stages.length}</span>
             </div>
@@ -162,11 +162,11 @@
             </p>
 
             <!-- Seçenekler -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px;">
+            <div class="opt-grid">
                 {#each currentStage.options as opt}
                     <button 
                         class="btn {stageFinished && opt === currentStage.correct ? 'btn-primary' : 'btn-ghost'}" 
-                        style="padding: 16px; text-align: center; justify-content: center; font-size: var(--fs-base);"
+                        style="padding: 16px;"
                         disabled={stageFinished}
                         on:click={() => selectOption(opt)}>
                         🧪 {opt}
@@ -183,9 +183,9 @@
                 </div>
             {/if}
 
-            <div style="display: flex; gap: 10px;">
+            <div class="action-row">
                 {#if stageFinished}
-                    <button class="btn btn-primary" style="flex: 1; justify-content: center;" on:click={nextStage}>
+                    <button class="btn btn-primary next-btn" on:click={nextStage}>
                         {currentStageIndex < pathways[selectedPathwayKey].stages.length - 1 ? 'Sonraki Adıma Geç →' : 'Süreci Tamamla ve Rapor Al 🏁'}
                     </button>
                 {/if}
@@ -194,13 +194,13 @@
 
         {:else}
             <!-- Modül Tamamlama Raporu -->
-            <div style="text-align: center; padding: 40px 20px;">
+            <div class="done-box">
                 <div style="font-size: 3.5rem; margin-bottom: 10px;">🏆</div>
                 <h2>Metabolik Süreç Başarıyla Simüle Edildi!</h2>
                 <p style="text-align: center; margin: 15px auto; color: var(--text-muted);">
                     {pathways[selectedPathwayKey].name} yolaklarını doğru moleküler basamaklarla yöneterek laboratuvar simülasyonunu tamamladın.
                 </p>
-                <div style="display: flex; justify-content: center; gap: 12px; margin-top: 25px;">
+                <div class="action-row center">
                     <button class="btn btn-primary" on:click={() => selectPathway(selectedPathwayKey)}>Süreci Tekrarla</button>
                     <button class="btn btn-ghost" on:click={resetToMenu}>Süreç Menüsüne Dön</button>
                 </div>
@@ -209,3 +209,77 @@
 
     </div>
 </div>
+
+<style>
+    .player-bar {
+        margin-bottom: 20px;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px 12px;
+        align-items: center;
+        background: var(--bg-alt);
+        padding: 10px 14px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border);
+    }
+    .player-label { font-size: var(--fs-sm); color: var(--text-muted); }
+    .player-input {
+        background: transparent;
+        border: none;
+        color: var(--text);
+        font-weight: bold;
+        flex: 1 1 140px;
+        min-width: 0;
+        outline: none;
+    }
+    .score-badge { white-space: nowrap; }
+
+    .path-grid,
+    .opt-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(min(100%, 240px), 1fr));
+        gap: 14px;
+    }
+    .opt-grid { margin-bottom: 20px; gap: 12px; }
+    .path-card {
+        background: var(--bg-alt);
+        padding: 20px;
+        border-radius: var(--radius-sm);
+        border: 1px solid var(--border-strong);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        min-width: 0;
+    }
+    .path-card h4 { overflow-wrap: anywhere; }
+    .path-card :global(.btn),
+    .opt-grid :global(.btn),
+    .action-row :global(.btn) {
+        max-width: 100%;
+        white-space: normal;
+        text-align: center;
+        line-height: 1.3;
+    }
+    .opt-grid :global(.btn) { overflow-wrap: anywhere; }
+
+    .stage-head {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        align-items: center;
+        gap: 8px 12px;
+        margin-bottom: 15px;
+    }
+    .stage-head :global(.badge) { min-width: 0; }
+
+    .action-row { display: flex; flex-wrap: wrap; gap: 10px; }
+    .action-row.center { justify-content: center; margin-top: 25px; }
+    .next-btn { flex: 1 1 200px; }
+    .done-box { text-align: center; padding: 40px 20px; }
+
+    @media (max-width: 520px) {
+        .path-card { padding: 16px; }
+        .done-box { padding: 24px 4px; }
+        .action-row :global(.btn) { flex: 1 1 100%; }
+    }
+</style>

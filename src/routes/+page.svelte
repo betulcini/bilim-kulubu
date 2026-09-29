@@ -6,7 +6,6 @@
     import { scientists } from '$lib/data/scientists.js';
     import { sfx } from '$lib/sound.js';
     import Icon from '$lib/components/Icon.svelte';
-    import SciMotif from '$lib/components/SciMotif.svelte';
 
     const renkler = ['var(--accent)', 'var(--accent-2)', 'var(--accent-3)'];
 
@@ -51,28 +50,7 @@
 </svelte:head>
 
 <section class="hero">
-    <!-- Okul Logosu Vektörel Arka Plan Katmanı (Mobilde de görünür) -->
-    <div style="
-        position: absolute; 
-        left: 14%; 
-        top: 50%; 
-        transform: translateY(-50%); 
-        width: 380px; 
-        height: 380px; 
-        background-image: url('/okul-logo.svg'); 
-        background-size: contain; 
-        background-repeat: no-repeat; 
-        background-position: center; 
-        opacity: 0.14; 
-        filter: grayscale(100%) brightness(250%);
-        pointer-events: none; 
-        z-index: 0;
-    "></div>
-
-    <!-- Mobilde gizlenen DNA/SciMotif motifi -->
-    <div class="sci-motif-wrap">
-        <SciMotif />
-    </div>
+    <div class="hero-logo" aria-hidden="true"></div>
 
     <div class="content-max hero-inner">
         <h1>Kulübün tüm çalışmaları tek ekranda.</h1>
@@ -164,7 +142,11 @@
     .hero-inner {
         position: relative;
         z-index: 1;
-        max-width: 62ch;
+        max-width: var(--content-max);
+    }
+    .hero-inner h1,
+    .hero-inner .lead {
+        max-width: min(58ch, 100%);
     }
     .lead {
         color: var(--text-muted);
@@ -307,14 +289,37 @@
         font-size: var(--fs-sm);
     }
 
-    /* Sadece DNA/SciMotif motifini mobilde gizle, logo kalsın */
-    @media (max-width: 768px) {
-        .sci-motif-wrap {
-            display: none !important;
-        }
+    /* Okul logosu: tema rengine boyanır, sağda durur, kenarlara doğru solar */
+    .hero-logo {
+        position: absolute;
+        right: max(24px, calc((100% - var(--content-max)) / 2 + 24px));
+        top: 50%;
+        transform: translateY(-50%);
+        width: clamp(320px, 40vw, 480px);
+        aspect-ratio: 1;
+        background: var(--accent-3);
+        opacity: 0.4;
+        -webkit-mask: url('/okul-logo.svg') center / contain no-repeat;
+        mask: url('/okul-logo.svg') center / contain no-repeat;
+        pointer-events: none;
+        z-index: 0;
+    }
+    :global([data-theme='light']) .hero-logo {
+        background: var(--accent);
+        opacity: 0.3;
+    }
+
+    @media (min-width: 901px) {
+        .hero-inner h1,
+        .hero-inner .lead { max-width: min(58ch, 58%); }
     }
 
     @media (max-width: 900px) {
         .hero { padding-top: 28px; }
+        .hero-logo {
+            right: -70px;
+            width: 320px;
+            opacity: 0.12;
+        }
     }
 </style>
