@@ -93,8 +93,8 @@
 						<input id="p-eposta" type="email" bind:value={form.eposta} placeholder="ornek@okul.edu.tr" />
 					</div>
 					<div class="field">
-						<label for="p-renk">Profil rengi</label>
-						<div class="swatches">
+						<span class="field-label">Profil rengi</span>
+						<div class="swatches" role="group" aria-label="Profil rengi">
 							{#each renkler as renk}
 								<button
 									type="button"
@@ -127,6 +127,11 @@
 		color: var(--text-muted);
 		font-size: var(--fs-sm);
 	}
+	.field-label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: var(--fs-xs);
+    }
 
 	.segmented,
 	.sound-row {
