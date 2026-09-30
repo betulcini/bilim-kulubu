@@ -1,4 +1,5 @@
 <script>
+	import Icon from '$lib/components/Icon.svelte';
     import PageHeader from '$lib/components/PageHeader.svelte';
     import { sfx } from '$lib/sound.js';
     import { page } from '$app/stores';
@@ -183,7 +184,7 @@
                     <span class="badge {zorlukBadge(q.zorluk)}">{q.zorluk}</span>
                 </div>
                 <span class="badge {timeLeft <= 5 && selectedOption === null ? 'danger' : 'info'}" style="font-variant-numeric: tabular-nums;">
-                    ⏱ {selectedOption === null ? timeLeft : SORU_SURESI} sn
+                    <Icon name="clock" size={14} /> {selectedOption === null ? timeLeft : SORU_SURESI} sn
                 </span>
             </div>
 
@@ -199,7 +200,7 @@
                         class="btn quiz-option {selectedOption === null ? 'btn-ghost' : (opt === q.dogru ? 'btn-primary' : (selectedOption === opt ? 'btn-danger' : 'btn-ghost'))}" 
                         disabled={selectedOption !== null}
                         on:click={() => handleAnswer(opt)}>
-                        🔹 {opt}
+                        {opt}
                     </button>
                 {/each}
             </div>
@@ -208,29 +209,29 @@
                 <div style="padding: 14px; border-radius: var(--radius-sm); background: var(--bg-alt); border: 1px solid var(--border-strong); margin-bottom: 20px;">
                     <p style="margin: 0 0 6px 0; font-size: var(--fs-sm); font-weight: bold; color: {selectedOption === q.dogru ? 'var(--accent)' : 'var(--danger)'};">
                         {selectedOption === q.dogru
-                            ? 'Doğru Cevap! 🎉'
+                            ? 'Doğru cevap!'
                             : selectedOption === '__sure_doldu__'
-                                ? `Süre doldu! ⏰ Doğru cevap: ${q.dogru}`
+                                ? `Süre doldu. Doğru cevap: ${q.dogru}`
                                 : `Yanlış! Doğru cevap: ${q.dogru}`}
                     </p>
                     <p style="margin: 0; font-size: var(--fs-xs); color: var(--text-muted);">{q.aciklama}</p>
                 </div>
 
                 <button class="btn btn-primary" style="width: 100%; justify-content: center;" on:click={nextQuestion}>
-                    {currentQuestionIndex < roundQuestions.length - 1 ? 'Sonraki Soru →' : 'Quizi Tamamla ve Sonuçları Gör 🏁'}
+                    {currentQuestionIndex < roundQuestions.length - 1 ? 'Sonraki Soru →' : 'Quizi Tamamla ve Sonuçları Gör'}
                 </button>
             {/if}
 
         {:else}
             <!-- Quiz Bitiş Ekranı -->
             <div class="finish-box">
-                <div style="font-size: 3.5rem; margin-bottom: 10px;">🏆</div>
+                <div class="ico-tile xl warm" style="margin: 0 auto 14px;"><Icon name="trophy" size={38} /></div>
                 <h2>Tebrikler, Quizi Tamamladın!</h2>
                 <p style="text-align: center; margin: 15px auto; color: var(--text-muted);">
                     {categoryMeta.title} testini başarıyla bitirdin ve toplam <b style="color: var(--accent);">{score} puan</b> kazandın.
                 </p>
                 {#if savedToLeaderboard}
-                    <p style="font-size: var(--fs-sm); color: var(--accent);">✓ Skorun ortak skor tablosuna eklendi.</p>
+                    <p style="font-size: var(--fs-sm); color: var(--accent);"><Icon name="check" size={14} /> Skorun ortak skor tablosuna eklendi.</p>
                 {:else}
                     <p style="font-size: var(--fs-sm); color: var(--text-muted);">
                         Bu skor ortak skor tablosuna eklenmedi. <a href="/giris" style="color: var(--accent);">Giriş yaparsan</a> skorların sıralamaya kaydedilir.

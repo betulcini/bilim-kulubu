@@ -1,4 +1,5 @@
 <script>
+	import Icon from '$lib/components/Icon.svelte';
     import PageHeader from '$lib/components/PageHeader.svelte';
     import { sfx } from '$lib/sound.js';
     import { activity } from '$lib/stores/activity.js';
@@ -74,16 +75,21 @@
             <span style="color: var(--danger);">Hata Hakkı: {wrongGuessCount} / {maxWrong}</span>
         </div>
 
-        <div style="font-size: 2.5rem; margin: 15px 0;">
-            {#if wrongGuessCount === 0} 🔬🧬🧪⚛️🔭🧠
-            {:else if wrongGuessCount <= 2} 🔬🧬🧪⚛️
-            {:else if wrongGuessCount <= 4} 🔬🧬
-            {:else} ⚠️ Bağlantı Koptu!
+        <div style="margin: 18px 0; display: flex; flex-direction: column; align-items: center; gap: 10px;">
+            <div style="display: flex; gap: 8px; color: var(--accent);" role="img" aria-label="Kalan hata hakkı: {Math.max(maxWrong - wrongGuessCount, 0)}">
+                {#each Array(maxWrong) as _, i}
+                    <span style="display: inline-flex; padding: 8px; border-radius: 12px; border: 1px solid var(--border-strong); transition: opacity var(--dur) var(--ease); {i < wrongGuessCount ? 'opacity: 0.22; color: var(--danger);' : 'background: var(--accent-soft);'}">
+                        <Icon name={['atom', 'dna', 'flask', 'telescope', 'microscope', 'code', 'ruler', 'bolt'][i % 8]} size={22} />
+                    </span>
+                {/each}
+            </div>
+            {#if wrongGuessCount >= maxWrong}
+                <span class="badge danger"><Icon name="warning" size={14} /> Bağlantı koptu</span>
             {/if}
         </div>
 
         <p style="text-align: center; font-style: italic; color: var(--text-muted); margin-bottom: 20px;">
-            💡 İpucu: {currentWordObj.hint}
+            <span class="ico-inline"><Icon name="bulb" size={16} /></span>İpucu: {currentWordObj.hint}
         </p>
 
         <div style="font-family: var(--font-display); font-size: clamp(1.3rem, 4vw, 2.5rem); letter-spacing: clamp(3px, 1.2vw, 8px); line-height: 1.6; margin: 25px 0; font-weight: bold; color: var(--accent); word-break: break-word;">
@@ -105,7 +111,7 @@
         {:else}
             <div style="margin-top: 20px; padding: 20px; background: var(--bg-alt); border-radius: var(--radius-sm); border: 1px solid var(--border-strong);">
                 {#if won}
-                    <h3 style="color: var(--accent-3);">Tebrikler, Bildiniz! 🎉</h3>
+                    <h3 style="color: var(--accent-3);">Tebrikler, bildin!</h3>
                     <p style="text-align: center; margin: 5px 0;">Kazanılan Puan: <b>{scoreEarned}</b></p>
                 {:else}
                     <h3 style="color: var(--danger);">Süreç Başarısız Oldu... Doğru Kelime: {currentWordObj.word}</h3>

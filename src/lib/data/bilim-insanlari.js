@@ -6,7 +6,7 @@ export const scientists = [
         "alan": "Teorik Fizik",
         "kategori": "Fizik",
         "donem": "1879",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1879'da Almanya'da doğan teorik fizikçidir.",
         "detay": "1879'da Almanya'da doğan teorik fizikçidir. Özel ve genel görelilik kuramlarını geliştirerek fizikte devrim yaratmıştır. 1921'de Nobel Fizik Ödülü'nü kazanmıştır. Modern fiziğin en önemli figürlerinden biri olarak kabul edilir.",
         "soz": "Hayal gücü bilgiden daha önemlidir."
@@ -17,7 +17,7 @@ export const scientists = [
         "alan": "Fizik, Matematik",
         "kategori": "Fizik",
         "donem": "1643",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1643'te İngiltere'de doğan matematikçi ve fizikçidir.",
         "detay": "1643'te İngiltere'de doğan matematikçi ve fizikçidir. Evrensel kütleçekim yasasını ve hareket yasalarını formüle etmiştir. Klasik mekaniğin temellerini atmıştır. Aynı zamanda optik alanda da önemli katkılar yapmıştır.",
         "soz": "Eğer daha uzağı görebildiysem, devlerin omuzlarında durduğum içindir."
@@ -28,7 +28,7 @@ export const scientists = [
         "alan": "Fizik, Kimya",
         "kategori": "Fizik",
         "donem": "1867",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1867'de Polonya'da doğan fizikçi ve kimyagerdir.",
         "detay": "1867'de Polonya'da doğan fizikçi ve kimyagerdir. Radyoaktivite üzerine öncü çalışmalar yapmış ve radyum elementini keşfetmiştir. İki farklı dalda Nobel Ödülü kazanan ilk kişidir. Radyasyonun kanser tedavisinde kullanılmasına öncülük etmiştir.",
         "soz": "Hayatta hiçbir şeyden korkmamak gerekir, sadece anlamak gerekir."
@@ -39,7 +39,7 @@ export const scientists = [
         "alan": "Biyoloji",
         "kategori": "Biyoloji & Tıp",
         "donem": "1809",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1809'da İngiltere'de doğan doğa bilimcidir.",
         "detay": "1809'da İngiltere'de doğan doğa bilimcidir. Evrim teorisini ve doğal seleksiyon mekanizmasını ortaya koymuştur. 'Türlerin Kökeni' adlı kitabı biyoloji tarihinde dönüm noktasıdır. Biyolojik çeşitliliğin anlaşılmasında temel bir figürdür.",
         "soz": "Son derece dikkatli bir gözlemci olan bir kişinin, bir konuyu uzun süre sabırla incelerse ne kadar çok şey bilebileceğini fark ettim."
@@ -50,7 +50,7 @@ export const scientists = [
         "alan": "Astronomi, Fizik",
         "kategori": "Astronomi",
         "donem": "1564",
-        "rozet": "🔭",
+        "rozet": "telescope",
         "ozet": "1564'te İtalya'da doğan astronom, fizikçi ve mühendistir.",
         "detay": "1564'te İtalya'da doğan astronom, fizikçi ve mühendistir. Teleskopu geliştirerek Jüpiter'in uydularını gözlemlemiştir. Heliyosentrik güneş sistemi modelini desteklemiştir. Modern gözlemsel astronominin babası olarak bilinir.",
         "soz": "Yine de dönüyor."
@@ -61,7 +61,7 @@ export const scientists = [
         "alan": "Elektrik Mühendisliği",
         "kategori": "Fizik",
         "donem": "1856",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1856'da Hırvatistan'da (o dönem Avusturya-Macaristan) doğan Sırp-Amerikalı mucit ve elektrik mühendisidir.",
         "detay": "1856'da Hırvatistan'da (o dönem Avusturya-Macaristan) doğan Sırp-Amerikalı mucit ve elektrik mühendisidir. Alternatif akım (AC) sistemini geliştirmiştir. Kablosuz enerji aktarımı üzerine çalışmalar yapmıştır. Modern elektrik sistemlerinin temelini atmıştır.",
         "soz": "Şimdiki zaman onlara aittir; ama gelecek, nedeni için benimdir."
@@ -72,7 +72,7 @@ export const scientists = [
         "alan": "Teorik Fizik, Kozmoloji",
         "kategori": "Fizik",
         "donem": "1942",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1942'de İngiltere'de doğan teorik fizikçidir.",
         "detay": "1942'de İngiltere'de doğan teorik fizikçidir. Kara delikler ve kuantum yerçekimi üzerine çığır açıcı çalışmalar yapmıştır. 'Zamanın Kısa Tarihi' adlı kitabı dünya çapında milyonlarca sattı. ALS hastalığına rağmen bilime katkılarına devam etmiştir.",
         "soz": "Zihnin en büyük düşmanı, bilgeliğin en büyük dostudur: yani kararsızlık."
@@ -83,7 +83,7 @@ export const scientists = [
         "alan": "Teorik Fizik",
         "kategori": "Fizik",
         "donem": "1918",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1918'de ABD'de doğan teorik fizikçidir.",
         "detay": "1918'de ABD'de doğan teorik fizikçidir. Kuantum elektrodinamiği (QED) alanındaki çalışmalarıyla 1965 Nobel Fizik Ödülü'nü kazanmıştır. Feynman diyagramlarını geliştirerek parçacık fiziğine büyük katkı yapmıştır. Eğitim ve bilim iletişimi alanında da ünlüdür.",
         "soz": "Bilinmeyen hakkında bir şeyler söylemekten asla korkmayın; her keşif, bilinmeyenin içinde doğar."
@@ -94,7 +94,7 @@ export const scientists = [
         "alan": "Teorik Fizik",
         "kategori": "Fizik",
         "donem": "1858",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1858'de Almanya'da doğan teorik fizikçidir.",
         "detay": "1858'de Almanya'da doğan teorik fizikçidir. Kuantum teorisinin temellerini atmış ve enerjinin kuantize olduğunu öne sürmüştür. 1918'de Nobel Fizik Ödülü'nü kazanmıştır. Modern kuantum mekaniğinin babası olarak kabul edilir.",
         "soz": "Bilim, gerçeğin peşinde koşar; ama gerçeğin kendisi bilime bağlı değildir."
@@ -105,7 +105,7 @@ export const scientists = [
         "alan": "Fizik, Kuantum Mekaniği",
         "kategori": "Fizik",
         "donem": "1885",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1885'te Danimarka'da doğan fizikçidir.",
         "detay": "1885'te Danimarka'da doğan fizikçidir. Atomun yapısını açıklayan Bohr modelini geliştirmiştir. Kuantum mekaniğinin temel ilkelerine katkıda bulunmuştur. 1922'de Nobel Fizik Ödülü'nü kazanmıştır.",
         "soz": "Zıtlıkların tamamlayıcılığı, doğanın derin bir gerçeğidir."
@@ -116,7 +116,7 @@ export const scientists = [
         "alan": "Teorik Fizik",
         "kategori": "Fizik",
         "donem": "1901",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1901'de Almanya'da doğan teorik fizikçidir.",
         "detay": "1901'de Almanya'da doğan teorik fizikçidir. Belirsizlik ilkesini formüle ederek kuantum mekaniğinde devrim yaratmıştır. 1932'de Nobel Fizik Ödülü'nü kazanmıştır. Kuantum mekaniğinin matris formülasyonuna katkıda bulunmuştur.",
         "soz": "Gözlem yaptığımız şey doğa değil, gözlem yöntemimizle sorgulanan doğadır."
@@ -127,7 +127,7 @@ export const scientists = [
         "alan": "Fizik, Kuantum Mekaniği",
         "kategori": "Fizik",
         "donem": "1887",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1887'de Avusturya'da doğan fizikçidir.",
         "detay": "1887'de Avusturya'da doğan fizikçidir. Kuantum mekaniğinin dalga denklemini (Schrödinger denklemi) geliştirmiştir. 1933'te Nobel Fizik Ödülü'nü kazanmıştır. 'Schrödinger'in kedisi' düşünce deneyiyle ünlüdür.",
         "soz": "Görevimiz, bilinmeyeni keşfetmek ve bununla ilgili deneyler yapmaktır."
@@ -138,7 +138,7 @@ export const scientists = [
         "alan": "Teorik Fizik",
         "kategori": "Fizik",
         "donem": "1902",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1902'de İngiltere'de doğan teorik fizikçidir.",
         "detay": "1902'de İngiltere'de doğan teorik fizikçidir. Dirac denklemiyle antimalzemenin varlığını öngörmüştür. Kuantum elektrodinamiğinin temellerini atmıştır. 1933'te Nobel Fizik Ödülü'nü kazanmıştır.",
         "soz": "Bir bilim insanı, denklemlerinin güzelliğine dayanarak haklı olduğunu hissedebilir."
@@ -149,7 +149,7 @@ export const scientists = [
         "alan": "Fizik, Kimya",
         "kategori": "Fizik",
         "donem": "1791",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1791'de İngiltere'de doğan kimyager ve fizikçidir.",
         "detay": "1791'de İngiltere'de doğan kimyager ve fizikçidir. Elektromanyetik indüksiyon ve elektroliz yasalarını keşfetmiştir. Elektrik motorunun temel prensiplerini ortaya koymuştur. Formal eğitim almamış olmasına rağmen bilime büyük katkılar yapmıştır.",
         "soz": "Hayatta hiçbir şey çok korkutucu değildir, sadece anlaşılmaz. Anlamak için cesaret gereklidir."
@@ -160,7 +160,7 @@ export const scientists = [
         "alan": "Fizik, Matematik",
         "kategori": "Fizik",
         "donem": "1831",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1831'de İskoçya'da doğan fizikçi ve matematikçidir.",
         "detay": "1831'de İskoçya'da doğan fizikçi ve matematikçidir. Elektromanyetizmanın temel denklemlerini formüle etmiştir. Işığın elektromanyetik bir dalga olduğunu göstermiştir. Modern elektrik ve optik mühendisliğinin temelini atmıştır.",
         "soz": "Dinlemek için tasarlanmış gözlerimiz vardır; ama görmek için tasarlanmış gözlerimiz de vardır."
@@ -171,7 +171,7 @@ export const scientists = [
         "alan": "Kimya",
         "kategori": "Kimya",
         "donem": "1834",
-        "rozet": "🧪",
+        "rozet": "flask",
         "ozet": "1834'te Rusya'da doğan kimyagerdir.",
         "detay": "1834'te Rusya'da doğan kimyagerdir. Periyodik tabloyu oluşturarak elementleri sistematik bir şekilde düzenlemiştir. Henüz keşfedilmemiş elementlerin özelliklerini öngörmüştür. Modern kimyanın en önemli figürlerinden biridir.",
         "soz": "Elementler, atom ağırlıklarına göre düzenlendiğinde periyodik bir tekrar gösterir."
@@ -182,7 +182,7 @@ export const scientists = [
         "alan": "Mikrobiyoloji, Kimya",
         "kategori": "Biyoloji & Tıp",
         "donem": "1822",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1822'de Fransa'da doğan mikrobiyolog ve kimyagerdir.",
         "detay": "1822'de Fransa'da doğan mikrobiyolog ve kimyagerdir. Pastörizasyon yöntemini geliştirerek gıda güvenliğinde devrim yaratmıştır. Kuduz aşısını bulan ilk kişidir. Mikrop teorisini kanıtlayarak modern mikrobiyolojiyi kurmuştur.",
         "soz": "Şans, hazırlıklı zihni sever."
@@ -193,7 +193,7 @@ export const scientists = [
         "alan": "Genetik, Botanik",
         "kategori": "Biyoloji & Tıp",
         "donem": "1822",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1822'de Avusturya'da (bugün Çekya) doğan botanikçi ve rahiptir.",
         "detay": "1822'de Avusturya'da (bugün Çekya) doğan botanikçi ve rahiptir. Bezelye bitkileri üzerinde yaptığı deneylerle genetiğin temel yasalarını keşfetmiştir. Kalıtımın temel prensiplerini formüle etmiştir. Modern genetiğin babası olarak kabul edilir.",
         "soz": "Doğa, daima kendini tekrar eden yasalarla çalışır."
@@ -204,7 +204,7 @@ export const scientists = [
         "alan": "Mühendislik, İcatlar",
         "kategori": "Bilgisayar & Mühendislik",
         "donem": "1847",
-        "rozet": "💻",
+        "rozet": "code",
         "ozet": "1847'de ABD'de doğan mucit ve iş insanıdır.",
         "detay": "1847'de ABD'de doğan mucit ve iş insanıdır. Pratik ampulü geliştirerek elektrikli aydınlatmayı mümkün kılmıştır. Fonografı ve sinematografı icat etmiştir. Binlerce patent başvurusu yapmış bir mucittir.",
         "soz": "Deha, yüzde bir ilham ve yüzde doksan dokuz terdir."
@@ -215,7 +215,7 @@ export const scientists = [
         "alan": "Bilgisayar Bilimi, Matematik",
         "kategori": "Bilgisayar & Mühendislik",
         "donem": "1912",
-        "rozet": "💻",
+        "rozet": "code",
         "ozet": "1912'de İngiltere'de doğan matematikçi ve bilgisayar bilimcidir.",
         "detay": "1912'de İngiltere'de doğan matematikçi ve bilgisayar bilimcidir. Modern bilgisayar biliminin temel kavramlarını geliştirmiştir. İkinci Dünya Savaşı'nda şifre çözme çalışmalarına öncülük etmiştir. Yapay zekanın temel sorularını sormuştur.",
         "soz": "Bazen bir fikirden o kadar etkilendim ki, onunla yatıp kalkıyordum."
@@ -226,7 +226,7 @@ export const scientists = [
         "alan": "Matematik, Bilgisayar Bilimi",
         "kategori": "Matematik",
         "donem": "1815",
-        "rozet": "📐",
+        "rozet": "ruler",
         "ozet": "1815'te İngiltere'de doğan matematikçidir.",
         "detay": "1815'te İngiltere'de doğan matematikçidir. Dünyanın ilk bilgisayar programcısı olarak kabul edilir. Charles Babbage'ın Analitik Motoru üzerine çalışmıştır. Bilgisayarların sayıların ötesinde işler yapabileceğini öngörmüştür.",
         "soz": "Hayal gücü, keşfin özüdür; keşif, deneyimlediğimiz ve anladığımız şeyleri birleştirir."
@@ -237,7 +237,7 @@ export const scientists = [
         "alan": "Kimya, Biyoloji",
         "kategori": "Kimya",
         "donem": "1920",
-        "rozet": "🧪",
+        "rozet": "flask",
         "ozet": "1920'de İngiltere'de doğan kimyager ve X-ışını kristalografidir.",
         "detay": "1920'de İngiltere'de doğan kimyager ve X-ışını kristalografidir. DNA'nın yapısını ortaya çıkarmada kritik rol oynamıştır. X-ışını difraksiyon görüntüleriyle DNA'nın sarmal yapısını göstermiştir. Kömür ve virüsler üzerine de önemli çalışmalar yapmıştır.",
         "soz": "Bilim ve günlük yaşam, birbirinden ayrılamaz."
@@ -248,7 +248,7 @@ export const scientists = [
         "alan": "Bakteriyoloji",
         "kategori": "Biyoloji & Tıp",
         "donem": "1881",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1881'de İskoçya'da doğan bakteriyologdur.",
         "detay": "1881'de İskoçya'da doğan bakteriyologdur. Penisilini tesadüfen keşfederek antibiyotik çağını başlatmıştır. 1945'te Nobel Tıp Ödülü'nü kazanmıştır. Enfeksiyon hastalıklarının tedavisinde devrim yaratmıştır.",
         "soz": "Penisilin keşfim bir tesadüf eseriydi; ama keşif, sadece hazırlıklı zihinlerin başına gelir."
@@ -259,7 +259,7 @@ export const scientists = [
         "alan": "Kimya",
         "kategori": "Kimya",
         "donem": "1743",
-        "rozet": "🧪",
+        "rozet": "flask",
         "ozet": "1743'te Fransa'da doğan kimyagerdir.",
         "detay": "1743'te Fransa'da doğan kimyagerdir. Modern kimyanın babası olarak kabul edilir. Kütle korunumu yasasını formüle etmiştir. Oksijen ve hidrojen kavramlarını kimya literatürüne kazandırmıştır.",
         "soz": "Doğada hiçbir şey yok olmaz, sadece dönüşür."
@@ -270,7 +270,7 @@ export const scientists = [
         "alan": "Astronomi, Matematik",
         "kategori": "Astronomi",
         "donem": "1571",
-        "rozet": "🔭",
+        "rozet": "telescope",
         "ozet": "1571'de Almanya'da doğan astronom ve matematikçidir.",
         "detay": "1571'de Almanya'da doğan astronom ve matematikçidir. Gezegen hareket yasalarını keşfetmiştir. Tycho Brahe'nin gözlemlerini kullanarak gezegen yörüngelerinin eliptik olduğunu göstermiştir. Modern astronominin temellerini atmıştır.",
         "soz": "Geometri, evrenin yaratılışından beri var olmuştur."
@@ -281,7 +281,7 @@ export const scientists = [
         "alan": "Kimya",
         "kategori": "Kimya",
         "donem": "1627",
-        "rozet": "🧪",
+        "rozet": "flask",
         "ozet": "1627'de İrlanda'da doğan doğa filozofudur.",
         "detay": "1627'de İrlanda'da doğan doğa filozofudur. Boyle yasası ile gazların basınç-hacm ilişkisini tanımlamıştır. Modern kimyanın temellerini atmıştır. Bilimsel yöntemin öncülerinden biridir.",
         "soz": "Doğanın kitası, Tanrı'nın yazdığı bir kitaptır."
@@ -292,7 +292,7 @@ export const scientists = [
         "alan": "Astronomi",
         "kategori": "Astronomi",
         "donem": "1701",
-        "rozet": "🔭",
+        "rozet": "telescope",
         "ozet": "1701'de İsveç'te doğan astronom ve fizikçidir.",
         "detay": "1701'de İsveç'te doğan astronom ve fizikçidir. Celsius sıcaklık ölçeğini geliştirmiştir. Uppsala Astronomik Gözlemevi'ni kurmuştur. Kuzey Işıkları üzerine de çalışmalar yapmıştır.",
         "soz": ""
@@ -303,7 +303,7 @@ export const scientists = [
         "alan": "Fizik, Kimya",
         "kategori": "Fizik",
         "donem": "1776",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1776'da İtalya'da doğan fizikçi ve kimyagerdir.",
         "detay": "1776'da İtalya'da doğan fizikçi ve kimyagerdir. Avogadro yasasını formüle ederek molekül kavramını kimyaya kazandırmıştır. Gazların eşit hacimlerinde eşit sayıda molekül bulunduğunu öne sürmüştür. Modern kimyanın temel taşlarından biridir.",
         "soz": ""
@@ -314,7 +314,7 @@ export const scientists = [
         "alan": "Matematik",
         "kategori": "Matematik",
         "donem": "1777",
-        "rozet": "📐",
+        "rozet": "ruler",
         "ozet": "1777'de Almanya'da doğan matematikçi ve fizikçidir.",
         "detay": "1777'de Almanya'da doğan matematikçi ve fizikçidir. Sayı teorisi, istatistik ve diferansiyel geometri alanlarında çığır açıcı çalışmalar yapmıştır. Normal dağılım (Gauss dağılımı) kavramını geliştirmiştir. Matematik prensleri olarak anılır.",
         "soz": "Matematik, bilimlerin kraliçesidir."
@@ -325,7 +325,7 @@ export const scientists = [
         "alan": "Matematik",
         "kategori": "Matematik",
         "donem": "1707",
-        "rozet": "📐",
+        "rozet": "ruler",
         "ozet": "1707'de İsviçre'de doğan matematikçi ve fizikçidir.",
         "detay": "1707'de İsviçre'de doğan matematikçi ve fizikçidir. Analiz, sayı teorisi ve graf teorisine devrim niteliğinde katkılar yapmıştır. Euler formülü ve Euler sayısı (e) ile tanınır. Tarihin en üretken matematikçilerinden biridir.",
         "soz": ""
@@ -336,7 +336,7 @@ export const scientists = [
         "alan": "Fizik, Kimya",
         "kategori": "Fizik",
         "donem": "1859",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1859'da Fransa'da doğan fizikçi ve kimyagerdir.",
         "detay": "1859'da Fransa'da doğan fizikçi ve kimyagerdir. Radyoaktivite üzerine öncü çalışmalar yapmış ve piezoelektriği keşfetmiştir. Marie Curie ile birlikte radyum ve polonyum elementlerini bulmuştur. 1903'te Nobel Fizik Ödülü'nü kazanmıştır.",
         "soz": ""
@@ -347,7 +347,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1901",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1901'de İtalya'da doğan fizikçidir.",
         "detay": "1901'de İtalya'da doğan fizikçidir. İlk nükleer reaktörü (Chicago Pile-1) inşa etmiştir. 1938'de Nobel Fizik Ödülü'nü kazanmıştır. Hem teorik hem deneysel fizikte üstün başarı göstermiştir.",
         "soz": "Bir kimsenin bir şeyi bilmediğini fark etmesi, o şeyi bilmeye başlamasının ilk adımıdır."
@@ -358,7 +358,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1871",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1871'de Yeni Zelanda'da doğan fizikçidir.",
         "detay": "1871'de Yeni Zelanda'da doğan fizikçidir. Atomun çekirdek yapısını keşfetmiştir. Radyoaktivite ve radyoaktif bozunma üzerine öncü çalışmalar yapmıştır. 1908'de Nobel Kimya Ödülü'nü kazanmıştır.",
         "soz": "Tüm fizik ya da bilim, bir bakıma hep düşünce ve hayal gücüdür."
@@ -369,7 +369,7 @@ export const scientists = [
         "alan": "Fizik, Kuantum Mekaniği",
         "kategori": "Fizik",
         "donem": "1900",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1900'de Avusturya'da doğan teorik fizikçidir.",
         "detay": "1900'de Avusturya'da doğan teorik fizikçidir. Pauli dışlama ilkesini formüle etmiştir. 1945'te Nobel Fizik Ödülü'nü kazanmıştır. Kuantum mekaniğinin gelişiminde kilit bir rol oynamıştır.",
         "soz": ""
@@ -380,7 +380,7 @@ export const scientists = [
         "alan": "Astronomi",
         "kategori": "Astronomi",
         "donem": "1889",
-        "rozet": "🔭",
+        "rozet": "telescope",
         "ozet": "1889'de ABD'de doğan astronomdur.",
         "detay": "1889'de ABD'de doğan astronomdur. Galaksilerin Dünya'dan uzaklaştığını ve evrenin genişlediğini keşfetmiştir. Hubble Yasası ile galaksilerin uzaklık ve hız ilişkisini formüle etmiştir. Modern gözlemsel astronominin öncülerindendir.",
         "soz": "Yıldızlar, insanlığın ortak mirasıdır."
@@ -391,7 +391,7 @@ export const scientists = [
         "alan": "Astronomi, Astrobiyoloji",
         "kategori": "Astronomi",
         "donem": "1934",
-        "rozet": "🔭",
+        "rozet": "telescope",
         "ozet": "1934'de ABD'de doğan astronom ve astrobiyologdur.",
         "detay": "1934'de ABD'de doğan astronom ve astrobiyologdur. Dünya dışı yaşam araştırmalarında öncülük etmiştir. 'Cosmos' belgeseli ile bilimi kitlelere ulaştırmıştır. Venüs'teki sera etkisini ve Satürn'ün Titian ayını araştırmıştır.",
         "soz": "Evrenin bir yerinde, birisi bir noktada, bizden daha zeki olabilir; ama bizden daha bilge olması çok daha az olasıdır."
@@ -402,7 +402,7 @@ export const scientists = [
         "alan": "Genetik",
         "kategori": "Biyoloji & Tıp",
         "donem": "1902",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1902'de ABD'de doğan genetik bilimcidir.",
         "detay": "1902'de ABD'de doğan genetik bilimcidir. Mısır bitkileri üzerindeki çalışmalarıyla genetik mobiliteyi (sıçrayan genler) keşfetmiştir. 1983'te Nobel Tıp Ödülü'nü kazanmıştır. Transpozonların keşfiyle modern genetiğe büyük katkı yapmıştır.",
         "soz": ""
@@ -413,7 +413,7 @@ export const scientists = [
         "alan": "Kimya",
         "kategori": "Kimya",
         "donem": "1901",
-        "rozet": "🧪",
+        "rozet": "flask",
         "ozet": "1901'de ABD'de doğan kimyagerdir.",
         "detay": "1901'de ABD'de doğan kimyagerdir. Kimyasal bağ teorisi ve moleküler biyolojiye öncü katkılar yapmıştır. Nobel Barış Ödülü ve Nobel Kimya Ödülü dahil iki Nobel kazanmıştır. C vitamini ve sağlığa etkileri üzerine çalışmalar yapmıştır.",
         "soz": "Bilim, tek tek bireylerin çalışmasıyla ilerlemez; binlerce insanın ortak çabasıyla ilerler."
@@ -424,7 +424,7 @@ export const scientists = [
         "alan": "Kimya",
         "kategori": "Kimya",
         "donem": "1780",
-        "rozet": "🧪",
+        "rozet": "flask",
         "ozet": "1780'de Almanya'da doğan kimyagerdir.",
         "detay": "1780'de Almanya'da doğan kimyagerdir. Elementleri üçlü gruplar halinde düzenleyerek periyodik tablonun temellerini atmıştır. Döbereiner lambası ile ateşleme teknolojisine katkıda bulunmuştur. Kimyasal kataliz kavramına öncülük etmiştir.",
         "soz": ""
@@ -435,7 +435,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1736",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1736'da Fransa'da doğan fizikçi ve mühendistir.",
         "detay": "1736'da Fransa'da doğan fizikçi ve mühendistir. Coulomb yasası ile elektrik yükleri arasındaki kuvveti tanımlamıştır. Sürtünme ve torsiyon üzerine önemli çalışmalar yapmıştır. Elektrostatığın temel taşlarından biridir.",
         "soz": ""
@@ -446,7 +446,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1745",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1745'te İtalya'da doğan fizikçidir.",
         "detay": "1745'te İtalya'da doğan fizikçidir. Voltaik pilini icat ederek ilk elektrik bataryasını yaratmıştır. Elektrik akımının sürekli üretilmesini sağlamıştır. Elektrik mühendisliğinin temellerini atmıştır.",
         "soz": "Doğa, her zaman basit ve ekonomik yolları tercih eder."
@@ -457,7 +457,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1789",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1789'da Almanya'da doğan fizikçidir.",
         "detay": "1789'da Almanya'da doğan fizikçidir. Ohm yasası ile elektrik akımı, voltaj ve direnç arasındaki ilişkiyi tanımlamıştır. Elektrik devre analizinin temelini atmıştır. Elektromanyetizmaya önemli katkılar yapmıştır.",
         "soz": ""
@@ -468,7 +468,7 @@ export const scientists = [
         "alan": "Mühendislik",
         "kategori": "Bilgisayar & Mühendislik",
         "donem": "1736",
-        "rozet": "💻",
+        "rozet": "code",
         "ozet": "1736'da İskoçya'da doğan mucit ve mühendistir.",
         "detay": "1736'da İskoçya'da doğan mucit ve mühendistir. Buhar makinesini geliştirerek Sanayi Devrimi'ne öncülük etmiştir. Beygir gücü kavramını tanıtmıştır. Modern mühendisliğin öncülerinden biridir.",
         "soz": "Doğanın güçlerini insanın hizmetine sunmak, mucidin en yüksek görevidir."
@@ -479,7 +479,7 @@ export const scientists = [
         "alan": "Mühendislik",
         "kategori": "Bilgisayar & Mühendislik",
         "donem": "1847",
-        "rozet": "💻",
+        "rozet": "code",
         "ozet": "1847'de İskoçya'da doğan mucit ve bilim insanıdır.",
         "detay": "1847'de İskoçya'da doğan mucit ve bilim insanıdır. Telefonu icat ederek iletişim teknolojisinde devrim yaratmıştır. Sağırların eğitimi üzerine önemli çalışmalar yapmıştır. İletişim teknolojilerinin öncülerinden biridir.",
         "soz": "Bilim ve teknoloji, insanlığın ortak mirasıdır."
@@ -490,7 +490,7 @@ export const scientists = [
         "alan": "Fizik, Mühendislik",
         "kategori": "Fizik",
         "donem": "1874",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1874'te İtalya'da doğan mucit ve elektrik mühendisidir.",
         "detay": "1874'te İtalya'da doğan mucit ve elektrik mühendisidir. Kablosuz telgrafı geliştirerek radyo iletişiminin temelini atmıştır. 1909'da Nobel Fizik Ödülü'nü kazanmıştır. İlk transatlantik kablosuz iletişimi gerçekleştirmiştir.",
         "soz": ""
@@ -501,7 +501,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1845",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1845'te Almanya'da doğan fizikçidir.",
         "detay": "1845'te Almanya'da doğan fizikçidir. X-ışınlarını keşfederek tıbbi görüntülemenin temellerini atmıştır. 1901'de ilk Nobel Fizik Ödülü'nü kazanmıştır. Elektromanyetik radyasyon üzerine öncü çalışmalar yapmıştır.",
         "soz": ""
@@ -512,7 +512,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1852",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1852'de Fransa'da doğan fizikçidir.",
         "detay": "1852'de Fransa'da doğan fizikçidir. Radyoaktiviteyi tesadüfen keşfetmiştir. Uranyum tuzlarının ışıma yaptığını gözlemlemiştir. 1903'te Nobel Fizik Ödülü'nü kazanmıştır.",
         "soz": ""
@@ -523,7 +523,7 @@ export const scientists = [
         "alan": "Bilgisayar Bilimi",
         "kategori": "Bilgisayar & Mühendislik",
         "donem": "1906",
-        "rozet": "💻",
+        "rozet": "code",
         "ozet": "1906'da ABD'de doğan bilgisayar bilimci ve askeri amiraldir.",
         "detay": "1906'da ABD'de doğan bilgisayar bilimci ve askeri amiraldir. İlk derleyici programını geliştirerek programlamayı devrimleştirmiştir. COBOL programlama dilinin geliştirilmesine öncülük etmiştir. Bilgisayar bilimlerinin öncü kadınlarındandır.",
         "soz": "İnsanlar doğal dilleri konuşur; ama bilgisayarlar doğal diller konuşamaz, bu yüzden onları öğretmeliyiz."
@@ -534,7 +534,7 @@ export const scientists = [
         "alan": "Matematik, Bilgisayar Bilimi",
         "kategori": "Matematik",
         "donem": "1791",
-        "rozet": "📐",
+        "rozet": "ruler",
         "ozet": "1791'de İngiltere'de doğan matematikçi ve mucittir.",
         "detay": "1791'de İngiltere'de doğan matematikçi ve mucittir. Analitik Motor tasarımıyla modern bilgisayarların öncülüğünü yapmıştır. Fark makinesi ile otomatik hesaplama kavramını ortaya koymuştur. Bilgisayar biliminin babası olarak anılır.",
         "soz": "Yanlışlar, eğer doğru kullanılırsa, bir buluşçunun en büyük yardımcılarıdır."
@@ -545,7 +545,7 @@ export const scientists = [
         "alan": "Botanik, Zooloji",
         "kategori": "Biyoloji & Tıp",
         "donem": "1707",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1707'de İsveç'te doğan botanikçi ve zoologdur.",
         "detay": "1707'de İsveç'te doğan botanikçi ve zoologdur. Taksonomi ve ikili adlandırma sistemini geliştirerek canlıların sınıflandırılmasında devrim yaratmıştır. Modern biyolojik sınıflandırmanın temellerini atmıştır. Bitki ve hayvan türlerini sistematik olarak adlandırmıştır.",
         "soz": ""
@@ -556,7 +556,7 @@ export const scientists = [
         "alan": "Kimya",
         "kategori": "Kimya",
         "donem": "1833",
-        "rozet": "🧪",
+        "rozet": "flask",
         "ozet": "1833'te İsveç'te doğan kimyager ve mucittir.",
         "detay": "1833'te İsveç'te doğan kimyager ve mucittir. Dinamiti icat ederek patlayıcı teknolojisinde devrim yaratmıştır. Vasiyetiyle Nobel Ödülleri'nin kuruluşunu sağlamıştır. Bilim ve barışa katkılarıyla anılır.",
         "soz": "İyi bir isim, en iyi mirastır."
@@ -567,7 +567,7 @@ export const scientists = [
         "alan": "Fizik, Biyoloji",
         "kategori": "Fizik",
         "donem": "1635",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1635'te İngiltere'de doğan bilim insanı ve mucittir.",
         "detay": "1635'te İngiltere'de doğan bilim insanı ve mucittir. Mikroskopla hücre kavramını ilk kez tanımlamıştır. Hooke yasası ile elastik malzemelerin davranışını formüle etmiştir. Biyoloji ve fizik alanlarına önemli katkılar yapmıştır.",
         "soz": ""
@@ -578,7 +578,7 @@ export const scientists = [
         "alan": "Mikrobiyoloji",
         "kategori": "Biyoloji & Tıp",
         "donem": "1632",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1632'de Hollanda'da doğan mikroskopist ve biyologdur.",
         "detay": "1632'de Hollanda'da doğan mikroskopist ve biyologdur. İlk mikroskobu geliştirerek mikroorganizmaları keşfetmiştir. Bakterileri ve tek hücreli canlıları ilk gözlemleyen kişidir. Mikrobiyolojinin babası olarak bilinir.",
         "soz": "Bir insanın gücü, gözlem yeteneğinde yatar."
@@ -589,7 +589,7 @@ export const scientists = [
         "alan": "Mikrobiyoloji",
         "kategori": "Biyoloji & Tıp",
         "donem": "1843",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1843'te Almanya'da doğan hekim ve mikrobiyologdur.",
         "detay": "1843'te Almanya'da doğan hekim ve mikrobiyologdur. Verem, kolera ve şarbon hastalıklarının etkenlerini keşfetmiştir. Koch postülatları ile enfeksiyon hastalıkları araştırmalarında yöntem geliştirmiştir. 1905'te Nobel Tıp Ödülü'nü kazanmıştır.",
         "soz": "Bilimde hiçbir şey tesadüf değildir; her şey bir nedene dayanır."
@@ -600,7 +600,7 @@ export const scientists = [
         "alan": "Genetik",
         "kategori": "Biyoloji & Tıp",
         "donem": "1822",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1822'de Avusturya-Macaristan'da doğan rahip ve botanikçidir.",
         "detay": "1822'de Avusturya-Macaristan'da doğan rahip ve botanikçidir. Bezelye bitkileri üzerindeki deneyleriyle kalıtım yasalarını keşfetmiştir. Modern genetiğin temel prensiplerini formüle etmiştir. Yaşadığı dönemde yeterince anlaşılmamıştır.",
         "soz": ""
@@ -611,7 +611,7 @@ export const scientists = [
         "alan": "Tıp, İmmünoloji",
         "kategori": "Biyoloji & Tıp",
         "donem": "1749",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1749'de İngiltere'de doğan hekim ve bilim insanıdır.",
         "detay": "1749'de İngiltere'de doğan hekim ve bilim insanıdır. Çiçek hastalığına karşı ilk aşıyı geliştirerek bağışıklama kavramını yaratmıştır. Modern immünolojinin temellerini atmıştır. Aşı ile hastalıkların önlenmesinde öncülük etmiştir.",
         "soz": "Aşının etkisi, doğanın kendisinden daha güçlü bir silahtır."
@@ -622,7 +622,7 @@ export const scientists = [
         "alan": "Hemşirelik, İstatistik",
         "kategori": "Biyoloji & Tıp",
         "donem": "1820",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1820'de İngiltere'de doğan hemşire ve istatistikçidir.",
         "detay": "1820'de İngiltere'de doğan hemşire ve istatistikçidir. Modern hemşireliğin kurucusu olarak kabul edilir. İstatistiksel grafik yöntemleri ile sağlık verilerini görselleştirmiştir. Hastane hijyeni ve hasta bakımında devrim yaratmıştır.",
         "soz": "Doğanın yasalarını anlamak, doğanın güçlerini yönetmenin ilk adımıdır."
@@ -633,7 +633,7 @@ export const scientists = [
         "alan": "Fizyoloji",
         "kategori": "Biyoloji & Tıp",
         "donem": "1849",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1849'de Rusya'da doğan fizyologdur.",
         "detay": "1849'de Rusya'da doğan fizyologdur. Klasik koşullanma teorisini köpekler üzerindeki deneylerle geliştirmiştir. Sindirim sistemi üzerine çalışmalarıyla 1904 Nobel Tıp Ödülü'nü kazanmıştır. Davranış psikolojisinin temellerini atmıştır.",
         "soz": "Bilim, gerçeği bulmak için sistematik bir yöntemdir; ama gerçeğin kendisi her zaman bilimden daha geniştir."
@@ -644,7 +644,7 @@ export const scientists = [
         "alan": "Psikoloji",
         "kategori": "Biyoloji & Tıp",
         "donem": "1856",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1856'da Avusturya'da doğan nörolog ve psikanalisttir.",
         "detay": "1856'da Avusturya'da doğan nörolog ve psikanalisttir. Psikanaliz teorisini geliştirerek modern psikolojiyi derinden etkilemiştir. Bilinçdışı kavramını psikoloji literatürüne kazandırmıştır. Rüya yorumu ve kişilik gelişimi üzerine öncü çalışmalar yapmıştır.",
         "soz": "Bilinçdışı, insan davranışının arkasındaki en büyük güçtür."
@@ -655,7 +655,7 @@ export const scientists = [
         "alan": "Tıp, Fizyoloji",
         "kategori": "Biyoloji & Tıp",
         "donem": "1578",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1578'de İngiltere'de doğan hekimdir.",
         "detay": "1578'de İngiltere'de doğan hekimdir. Kan dolaşımını ve kalbin pompalama işlevini keşfetmiştir. Modern fizyoloji ve anatominin temellerini atmıştır. Deneysel biyoloji yaklaşımının öncülerindendir.",
         "soz": ""
@@ -666,7 +666,7 @@ export const scientists = [
         "alan": "Anatomi",
         "kategori": "Biyoloji & Tıp",
         "donem": "1514",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1514'te Belçika'da doğan anatomisttir.",
         "detay": "1514'te Belçika'da doğan anatomisttir. Modern insan anatomisinin temellerini atmıştır. 'De Humani Corporis Fabrica' adlı eseriyle anatomide devrim yaratmıştır. Galen'in anatomik hatalarını düzelterek bilimsel anatomiyi kurmuştur.",
         "soz": ""
@@ -677,7 +677,7 @@ export const scientists = [
         "alan": "Tıp, Anatomi",
         "kategori": "Biyoloji & Tıp",
         "donem": null,
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "129'da Yunanistan'da doğan hekim ve filozoftur.",
         "detay": "129'da Yunanistan'da doğan hekim ve filozoftur. Antik dönemin en önemli tıp figürlerinden biridir. Anatomi ve fizyoloji alanında öncü çalışmalar yapmıştır. Bin yıl boyunca tıbbın temel kaynağı olmuştur.",
         "soz": ""
@@ -688,7 +688,7 @@ export const scientists = [
         "alan": "Tıp",
         "kategori": "Biyoloji & Tıp",
         "donem": null,
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "MÖ 460'ta Yunanistan'da doğan hekimdir.",
         "detay": "MÖ 460'ta Yunanistan'da doğan hekimdir. Tıbbın babası olarak bilinir. Hastalıkların doğal nedenlere dayandığını öne sürmüştür. Hipokrat Yemini ile tıp etiğinin temellerini atmıştır.",
         "soz": "Önce zarar verme."
@@ -699,7 +699,7 @@ export const scientists = [
         "alan": "Matematik, Fizik",
         "kategori": "Matematik",
         "donem": null,
-        "rozet": "📐",
+        "rozet": "ruler",
         "ozet": "MÖ 287'de Yunanistan'da (Syracuse) doğan matematikçi ve fizikçidir.",
         "detay": "MÖ 287'de Yunanistan'da (Syracuse) doğan matematikçi ve fizikçidir. Hidrostatik prensipleri ve kaldırma kuvveti yasasını keşfetmiştir. Matematikte sonsuz seriler ve alan hesaplamalarıyla öncülük etmiştir. Mekanik ve mühendislikte devrim niteliğinde çalışmalar yapmıştır.",
         "soz": "Bana bir dayanak noktası verin, dünyayı yerinden oynatayım."
@@ -710,7 +710,7 @@ export const scientists = [
         "alan": "Matematik",
         "kategori": "Matematik",
         "donem": null,
-        "rozet": "📐",
+        "rozet": "ruler",
         "ozet": "MÖ 570'te Yunanistan'da doğan matematikçi ve filozoftur.",
         "detay": "MÖ 570'te Yunanistan'da doğan matematikçi ve filozoftur. Pisagor teoremi ile geometriye büyük katkı yapmıştır. Sayıların evrenin temeli olduğunu öne sürmüştür. Matematik ve felsefenin birleşiminde öncülük etmiştir.",
         "soz": "Sayı, her şeyin özüdür."
@@ -721,7 +721,7 @@ export const scientists = [
         "alan": "Matematik",
         "kategori": "Matematik",
         "donem": null,
-        "rozet": "📐",
+        "rozet": "ruler",
         "ozet": "MÖ 325'te Yunanistan'da (İskenderiye) doğan matematikçidir.",
         "detay": "MÖ 325'te Yunanistan'da (İskenderiye) doğan matematikçidir. 'Elementler' adlı eseriyle geometrinin temellerini sistematik bir şekilde ortaya koymuştur. Aksiyomatik yöntemi geliştirerek matematiksel ispatın temelini atmıştır. Tarihin en etkili matematik kitaplarından birini yazmıştır.",
         "soz": "Geometriye giden yol düz değildir; ama her zaman doğrudur."
@@ -732,7 +732,7 @@ export const scientists = [
         "alan": "Felsefe, Biyoloji",
         "kategori": "Diğer",
         "donem": null,
-        "rozet": "🔬",
+        "rozet": "microscope",
         "ozet": "MÖ 384'te Yunanistan'da doğan filozof ve bilim insanıdır.",
         "detay": "MÖ 384'te Yunanistan'da doğan filozof ve bilim insanıdır. Mantık, biyoloji, fizik ve metafizik alanlarında çığır açıcı çalışmalar yapmıştır. Biyolojik sınıflandırmanın öncülerinden biridir. Batı bilim geleneğini binlerce yıl etkilemiştir.",
         "soz": "Bilginin başlangıcı meraktır."
@@ -743,7 +743,7 @@ export const scientists = [
         "alan": "Astronomi, Matematik",
         "kategori": "Astronomi",
         "donem": null,
-        "rozet": "🔭",
+        "rozet": "telescope",
         "ozet": "MS 100'de Yunanistan'da doğan matematikçi ve astronomdur.",
         "detay": "MS 100'de Yunanistan'da doğan matematikçi ve astronomdur. Geosentrik (Dünya merkezli) güneş sistemi modelini geliştirmiştir. 'Almagest' adlı eseriyle astronomide otorite olmuştur. Coğrafya ve haritacılık alanına da katkılar yapmıştır.",
         "soz": ""
@@ -754,7 +754,7 @@ export const scientists = [
         "alan": "Tıp, Felsefe",
         "kategori": "Biyoloji & Tıp",
         "donem": null,
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "980'de Özbekistan'da doğan hekim ve filozoftur.",
         "detay": "980'de Özbekistan'da doğan hekim ve filozoftur. 'El-Kanun fi't-Tıb' adlı eseriyle tıpta otorite olmuştur. Doğu ve Batı tıbbını binlerce yıl etkilemiştir. Tıp, felsefe ve doğa bilimlerinde öncülük etmiştir.",
         "soz": "Bilginin sınırı, insan zekasının sınırıdır."
@@ -765,7 +765,7 @@ export const scientists = [
         "alan": "Astronomi, Matematik",
         "kategori": "Astronomi",
         "donem": null,
-        "rozet": "🔭",
+        "rozet": "telescope",
         "ozet": "973'te Özbekistan'da doğan bilim insanıdır.",
         "detay": "973'te Özbekistan'da doğan bilim insanıdır. Matematik, astronomi ve coğrafya alanlarında öncü çalışmalar yapmıştır. Dünya'nın yarıçapını hassas bir şekilde hesaplamıştır. Karşılaştırmalı dinler tarihine de katkıda bulunmuştur.",
         "soz": ""
@@ -776,7 +776,7 @@ export const scientists = [
         "alan": "Matematik",
         "kategori": "Matematik",
         "donem": null,
-        "rozet": "📐",
+        "rozet": "ruler",
         "ozet": "780'de Özbekistan'da doğan matematikçidir.",
         "detay": "780'de Özbekistan'da doğan matematikçidir. Cebir biliminin kurucusu olarak kabul edilir. 'Algoritma' kelimesi onun adından türetilmiştir. Hint rakamlarını Batı'ya tanıtarak matematiği devrimleştirmiştir.",
         "soz": ""
@@ -787,7 +787,7 @@ export const scientists = [
         "alan": "Matematik, Astronomi",
         "kategori": "Matematik",
         "donem": "1048",
-        "rozet": "📐",
+        "rozet": "ruler",
         "ozet": "1048'de İran'da doğan matematikçi, astronom ve şairdir.",
         "detay": "1048'de İran'da doğan matematikçi, astronom ve şairdir. Kübik denklemlerin geometrik çözümlerini geliştirmiştir. Jelali takvimini oluşturarak takvim bilimine katkıda bulunmuştur. Hem bilim hem edebiyat alanında ün kazanmıştır.",
         "soz": ""
@@ -798,7 +798,7 @@ export const scientists = [
         "alan": "Astronomi, Matematik",
         "kategori": "Astronomi",
         "donem": "1201",
-        "rozet": "🔭",
+        "rozet": "telescope",
         "ozet": "1201'de İran'da doğan astronom ve matematikçidir.",
         "detay": "1201'de İran'da doğan astronom ve matematikçidir. Maraghe Gözlemevi'ni kurarak astronomi araştırmalarına öncülük etmiştir. Trigonometriyi bağımsız bir matematik dalı olarak geliştirmiştir. Planetary hareket modellerine katkıda bulunmuştur.",
         "soz": ""
@@ -809,7 +809,7 @@ export const scientists = [
         "alan": "Optik, Fizik",
         "kategori": "Fizik",
         "donem": null,
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "965'te Irak'ta doğan bilim insanıdır.",
         "detay": "965'te Irak'ta doğan bilim insanıdır. Optik biliminin babası olarak kabul edilir. Işığın nasıl göründüğünü ve gözün nasıl çalıştığını bilimsel olarak açıklamıştır. Bilimsel yöntemin öncülerinden biridir.",
         "soz": "Gerçeği aramak, doğruyu bulmaktan daha zordur."
@@ -820,7 +820,7 @@ export const scientists = [
         "alan": "Kimya",
         "kategori": "Kimya",
         "donem": null,
-        "rozet": "🧪",
+        "rozet": "flask",
         "ozet": "721'de İran'da doğan kimyagerdir.",
         "detay": "721'de İran'da doğan kimyagerdir. Kimyanın babası olarak kabul edilir. Damıtma, kristalleştirme ve süblimleşme gibi laboratuvar tekniklerini geliştirmiştir. Erken dönem kimya araştırmalarında öncülük etmiştir.",
         "soz": ""
@@ -831,7 +831,7 @@ export const scientists = [
         "alan": "Tıp, Kimya",
         "kategori": "Biyoloji & Tıp",
         "donem": null,
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "865'te İran'da doğan hekim ve kimyagerdir.",
         "detay": "865'te İran'da doğan hekim ve kimyagerdir. Kızamık ve çiçek hastalıklarını ilk tanımlayan hekimdir. Kimyasal maddeleri sistematik olarak sınıflandırmıştır. Erken dönem tıp ve kimya araştırmalarında öncülük etmiştir.",
         "soz": ""
@@ -842,7 +842,7 @@ export const scientists = [
         "alan": "Bilgisayar Bilimi",
         "kategori": "Bilgisayar & Mühendislik",
         "donem": "1955",
-        "rozet": "💻",
+        "rozet": "code",
         "ozet": "1955'te İngiltere'de doğan bilgisayar bilimcidir.",
         "detay": "1955'te İngiltere'de doğan bilgisayar bilimcidir. World Wide Web'i icat ederek internet çağını başlatmıştır. HTTP ve HTML protokollerini geliştirmiştir. Bilgiye erişimi demokratikleştirerek modern dijital dünyayı şekillendirmiştir.",
         "soz": "Web, herkes içindir; herkesin erişimine açıktır."
@@ -853,7 +853,7 @@ export const scientists = [
         "alan": "Matematik, Bilgisayar Bilimi",
         "kategori": "Matematik",
         "donem": "1903",
-        "rozet": "📐",
+        "rozet": "ruler",
         "ozet": "1903'te Macaristan'da doğan matematikçi ve fizikçidir.",
         "detay": "1903'te Macaristan'da doğan matematikçi ve fizikçidir. Modern bilgisayar mimarisinin (von Neumann mimarisi) temellerini atmıştır. Oyun teorisi ve kuantum mekaniğine devrim niteliğinde katkılar yapmıştır. 20. yüzyılın en parlak zihinlerinden biri olarak kabul edilir.",
         "soz": "Bilgi toplama sürecinde, en önemli şey hataları olabildiğince çabuk yapmaktır."
@@ -864,7 +864,7 @@ export const scientists = [
         "alan": "Bilgisayar Bilimi, Matematik",
         "kategori": "Bilgisayar & Mühendislik",
         "donem": "1916",
-        "rozet": "💻",
+        "rozet": "code",
         "ozet": "1916'da ABD'de doğan matematikçi ve elektrik mühendisidir.",
         "detay": "1916'da ABD'de doğan matematikçi ve elektrik mühendisidir. Bilgi teorisinin babası olarak bilinir. Dijital iletişimin ve veri sıkıştırmanın matematiksel temellerini atmıştır. Modern telekomünikasyon ve bilgisayar bilimlerinin temelini kurmuştur.",
         "soz": ""
@@ -875,7 +875,7 @@ export const scientists = [
         "alan": "Bilgisayar Bilimi",
         "kategori": "Bilgisayar & Mühendislik",
         "donem": "1941",
-        "rozet": "💻",
+        "rozet": "code",
         "ozet": "1941'de ABD'de doğan bilgisayar bilimcidir.",
         "detay": "1941'de ABD'de doğan bilgisayar bilimcidir. C programlama dilini geliştirerek modern yazılım dünyasını şekillendirmiştir. UNIX işletim sisteminin yaratılmasına öncülük etmiştir. Bilgisayar bilimlerinin en etkili figürlerinden biridir.",
         "soz": ""
@@ -886,7 +886,7 @@ export const scientists = [
         "alan": "Bilgisayar Bilimi",
         "kategori": "Bilgisayar & Mühendislik",
         "donem": "1938",
-        "rozet": "💻",
+        "rozet": "code",
         "ozet": "1938'de ABD'de doğan bilgisayar bilimcidir.",
         "detay": "1938'de ABD'de doğan bilgisayar bilimcidir. 'The Art of Computer Programming' adlı eseriyle algoritma analizi alanında otorite olmuştur. TeX dizgi sistemini geliştirerek yayıncılık teknolojisine katkıda bulunmuştur. Algoritmik analizin babası olarak anılır.",
         "soz": "Bilgisayar bilimi, bilgisayarlar hakkında değildir; bir tıpkı astronomi gibi teleskoplar hakkında olmadığı için."
@@ -897,7 +897,7 @@ export const scientists = [
         "alan": "Bilgisayar Bilimi",
         "kategori": "Bilgisayar & Mühendislik",
         "donem": "1930",
-        "rozet": "💻",
+        "rozet": "code",
         "ozet": "1930'de Hollanda'da doğan bilgisayar bilimcidir.",
         "detay": "1930'de Hollanda'da doğan bilgisayar bilimcidir. En kısa yol algoritmasını geliştirerek ağ bilimine katkıda bulunmuştur. Yapılandırılmış programlama kavramını savunarak yazılım mühendisliğini derinden etkilemiştir. Bilgisayar bilimlerinin öncülerinden biridir.",
         "soz": "Bilgisayar bilimi, bilgisayarlar kadar mühendislik kadar da sanattır."
@@ -908,7 +908,7 @@ export const scientists = [
         "alan": "Kimya, Kristalografi",
         "kategori": "Kimya",
         "donem": "1939",
-        "rozet": "🧪",
+        "rozet": "flask",
         "ozet": "1939'da İsrail'de doğan kristalografidir.",
         "detay": "1939'da İsrail'de doğan kristalografidir. Ribozom yapısını çözerek protein sentezinin mekanizmasını anlamamızı sağlamıştır. 2009'da Nobel Kimya Ödülü'nü kazanmıştır. Antibiyotik geliştirme çalışmalarına öncülük etmiştir.",
         "soz": ""
@@ -919,7 +919,7 @@ export const scientists = [
         "alan": "Tıp",
         "kategori": "Biyoloji & Tıp",
         "donem": "1930",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1930'da Çin'de doğan tıp bilim insanıdır.",
         "detay": "1930'da Çin'de doğan tıp bilim insanıdır. Artemisinin adlı antimalaryal ilacı keşfederek milyonlarca hayat kurtarmıştır. 2015'te Nobel Tıp Ödülü'nü kazanmıştır. Geleneksel Çin tıbbını modern bilimle birleştirmiştir.",
         "soz": ""
@@ -930,7 +930,7 @@ export const scientists = [
         "alan": "Fizik, Nanoteknoloji",
         "kategori": "Fizik",
         "donem": "1930",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1930'da ABD'de doğan fizikçidir.",
         "detay": "1930'da ABD'de doğan fizikçidir. Karbon bilimi ve nano malzemeler alanında öncü çalışmalar yapmıştır. Grafit ve karbon nanotüpler üzerine araştırmalarıyla nanoteknolojiye katkıda bulunmuştur. 'Karbon Biliminin Kraliçesi' olarak anılır.",
         "soz": ""
@@ -941,7 +941,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1878",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1878'de Avusturya'da doğan fizikçidir.",
         "detay": "1878'de Avusturya'da doğan fizikçidir. Nükleer fizyonu keşfetmiş ve nükleer enerjinin temelini atmıştır. Element 109'a onun adı (Meitnerium) verilmiştir. Kadın bilim insanlarına ilham kaynağı olmuştur.",
         "soz": "Bilim, önyargıya yer bırakmaz; sadece kanıta ve gerçeğe yönelir."
@@ -952,7 +952,7 @@ export const scientists = [
         "alan": "Matematik",
         "kategori": "Matematik",
         "donem": "1882",
-        "rozet": "📐",
+        "rozet": "ruler",
         "ozet": "1882'de Almanya'da doğan matematikçidir.",
         "detay": "1882'de Almanya'da doğan matematikçidir. Noether teoremi ile simetri ve korunum yasaları arasındaki ilişkiyi ortaya koymuştur. Soyut cebir alanında çığır açıcı çalışmalar yapmıştır. Einstein tarafından övülmüş bir matematikçidir.",
         "soz": ""
@@ -963,7 +963,7 @@ export const scientists = [
         "alan": "Mühendislik",
         "kategori": "Bilgisayar & Mühendislik",
         "donem": "1914",
-        "rozet": "💻",
+        "rozet": "code",
         "ozet": "1914'de Avusturya'da doğan mucit ve aktrisdir.",
         "detay": "1914'de Avusturya'da doğan mucit ve aktrisdir. Frekans atlamalı yayılma spektrumu teknolojisini geliştirerek modern kablosuz iletişimin temelini atmıştır. Wi-Fi, Bluetooth ve GPS teknolojilerine öncülük etmiştir. Hem sanat hem bilim alanında başarı göstermiştir.",
         "soz": "Bilim ve sanat, birbirini tamamlar; her ikisi de yaratıcılığı gerektirir."
@@ -974,7 +974,7 @@ export const scientists = [
         "alan": "Matematik, Uzay Bilimi",
         "kategori": "Matematik",
         "donem": "1918",
-        "rozet": "📐",
+        "rozet": "ruler",
         "ozet": "1918'de ABD'de doğan matematikçidir.",
         "detay": "1918'de ABD'de doğan matematikçidir. NASA'da uzay uçuşu yörünge hesaplamalarında kritik rol oynamıştır. İlk insanlı uzay uçuşları ve Ay'a iniş hesaplamalarına katkıda bulunmuştur. Bilimde ırk ve cinsiyet engellerini aşarak ilham kaynağı olmuştur.",
         "soz": "Kadınlar bilimde her şeyi başarabilir; sadece fırsat verilmesi yeterlidir."
@@ -985,7 +985,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1912",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1912'de Çin'de doğan deneysel fizikçidir.",
         "detay": "1912'de Çin'de doğan deneysel fizikçidir. Parite korunumu yasasının çiğnendiğini deneysel olarak kanıtlamıştır. Manhattan Projesi'ne katkıda bulunmuştur. 'Fiziklerin Birinci Hanımı' olarak anılır.",
         "soz": ""
@@ -996,7 +996,7 @@ export const scientists = [
         "alan": "Astrofizik",
         "kategori": "Fizik",
         "donem": "1943",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1943'te İrlanda'da doğan astrofizikçidir.",
         "detay": "1943'te İrlanda'da doğan astrofizikçidir. Pulsar (atarca) keşfiyle astrofizikte çığır açmıştır. Radyo teleskopları ile nötron yıldızlarını gözlemleyerek kara delik araştırmalarına katkıda bulunmuştur. Bilim kadınlara ilham kaynağı olmuştur.",
         "soz": "Bilimde ödüller değil, keşifler önemlidir."
@@ -1007,7 +1007,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1875",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1875'te Sırbistan'da doğan fizikçidir.",
         "detay": "1875'te Sırbistan'da doğan fizikçidir. Albert Einstein ile birlikte çalışarak görelilik teorisinin geliştirilmesine katkıda bulunmuştur. Matematik ve fizik alanında üstün yetenek göstermiştir. Bilim tarihinde kadınların rolünü tartışmaya açmıştır.",
         "soz": ""
@@ -1018,7 +1018,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1906",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1906'da Almanya'da doğan teorik fizikçidir.",
         "detay": "1906'da Almanya'da doğan teorik fizikçidir. Nükleer kabuk modelini geliştirerek atom çekirdeğinin yapısını anlamamızı sağlamıştır. 1963'te Nobel Fizik Ödülü'nü kazanan ikinci kadın olmuştur. Kuantum mekaniği alanında önemli katkılar yapmıştır.",
         "soz": ""
@@ -1029,7 +1029,7 @@ export const scientists = [
         "alan": "Astrofizik",
         "kategori": "Fizik",
         "donem": "1910",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1910'de Hindistan'da doğan astrofizikçidir.",
         "detay": "1910'de Hindistan'da doğan astrofizikçidir. Beyaz cüce yıldızların ve kara deliklerin fiziksel sınırlarını (Chandrasekhar limiti) tanımlamıştır. 1983'te Nobel Fizik Ödülü'nü kazanmıştır. Yıldız evrimi ve astrofizik alanında devrim niteliğinde çalışmalar yapmıştır.",
         "soz": ""
@@ -1040,7 +1040,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1929",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1929'da ABD'de doğan fizikçidir.",
         "detay": "1929'da ABD'de doğan fizikçidir. Kuark modelini önererek parçacık fiziğinde devrim yaratmıştır. 1969'da Nobel Fizik Ödülü'nü kazanmıştır. Temel parçacıkların sınıflandırılmasına büyük katkıda bulunmuştur.",
         "soz": ""
@@ -1051,7 +1051,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1929",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1929'da İngiltere'de doğan teorik fizikçidir.",
         "detay": "1929'da İngiltere'de doğan teorik fizikçidir. Higgs bozonu adı verilen parçacığın varlığını öngörmüştür. 2013'te Nobel Fizik Ödülü'nü kazanmıştır. Parçacık fiziğinde kütle kazanım mekanizmasını açıklamıştır.",
         "soz": ""
@@ -1062,7 +1062,7 @@ export const scientists = [
         "alan": "Biyoloji",
         "kategori": "Biyoloji & Tıp",
         "donem": "1941",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1941'de İngiltere'de doğan evrimsel biyologdur.",
         "detay": "1941'de İngiltere'de doğan evrimsel biyologdur. Gen merkezli evrim görüşünü 'Bencil Gen' adlı kitabıyla popülerleştirmiştir. Mem kavramını geliştirerek kültürel evrim teorisine katkıda bulunmuştur. Bilim iletişimi ve ateizm savunuculuğuyla ünlüdür.",
         "soz": "Bilim, inançla değil kanıtlarla çalışır."
@@ -1073,7 +1073,7 @@ export const scientists = [
         "alan": "Zooloji, Primatoloji",
         "kategori": "Biyoloji & Tıp",
         "donem": "1934",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1934'te İngiltere'de doğan primatologdur.",
         "detay": "1934'te İngiltere'de doğan primatologdur. Şempanzelerin davranışlarını doğal ortamlarında gözlemleyerek dönüm noktası çalışmalar yapmıştır. Hayvan davranışı ve çevre koruma alanında öncülük etmiştir. Doğa koruma hareketinin sembol isimlerindendir.",
         "soz": "Her birey, doğayı koruma konusunda bir fark yaratabilir."
@@ -1084,7 +1084,7 @@ export const scientists = [
         "alan": "Moleküler Biyoloji",
         "kategori": "Biyoloji & Tıp",
         "donem": "1928",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1928'de ABD'de doğan moleküler biyologdur.",
         "detay": "1928'de ABD'de doğan moleküler biyologdur. DNA'nın çift sarmal yapısını keşfetmiştir. 1962'de Nobel Tıp Ödülü'nü kazanmıştır. Modern genetik ve moleküler biyoloji alanında çığır açıcı katkılar yapmıştır.",
         "soz": ""
@@ -1095,7 +1095,7 @@ export const scientists = [
         "alan": "Moleküler Biyoloji",
         "kategori": "Biyoloji & Tıp",
         "donem": "1916",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1916'da İngiltere'de doğan moleküler biyolog ve nörobilimcidir.",
         "detay": "1916'da İngiltere'de doğan moleküler biyolog ve nörobilimcidir. James Watson ile birlikte DNA'nın çift sarmal yapısını keşfetmiştir. 1962'de Nobel Tıp Ödülü'nü kazanmıştır. Genetik kodun çözümüne büyük katkıda bulunmuştur.",
         "soz": "Bilimde büyük keşifler, basit sorular sorarak başlar."
@@ -1106,7 +1106,7 @@ export const scientists = [
         "alan": "Nörobilim",
         "kategori": "Biyoloji & Tıp",
         "donem": "1909",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1909'da İtalya'da doğan nörobilimcidir.",
         "detay": "1909'da İtalya'da doğan nörobilimcidir. Sinir büyüme faktörünü (NGF) keşfetmiştir. 1986'da Nobel Tıp Ödülü'nü kazanmıştır. 100 yaşını aşan en yaşlı Nobel ödüllüsü olarak bilinir.",
         "soz": "Bilimde yaş sınırı yoktur; zihin her zaman keşfetmeye hazırdır."
@@ -1117,7 +1117,7 @@ export const scientists = [
         "alan": "Biyokimya",
         "kategori": "Kimya",
         "donem": "1896",
-        "rozet": "🧪",
+        "rozet": "flask",
         "ozet": "1896'da Çekya'da doğan biyokimyacıdır.",
         "detay": "1896'da Çekya'da doğan biyokimyacıdır. Glikojen metabolizması ve karbonhidratların enerjiye dönüşümünü keşfetmiştir. 1947'de Nobel Tıp Ödülü'nü kazanarak Nobel kazanan ilk kadın bilim insanı olmuştur. Biyokimya alanında öncülük etmiştir.",
         "soz": ""
@@ -1128,7 +1128,7 @@ export const scientists = [
         "alan": "Moleküler Biyoloji",
         "kategori": "Biyoloji & Tıp",
         "donem": "1948",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1948'de Avustralya'da doğan moleküler biyologdur.",
         "detay": "1948'de Avustralya'da doğan moleküler biyologdur. Telomer ve telomeraz enzimini keşfederek yaşlanma ve kanser araştırmalarına katkıda bulunmuştur. 2009'da Nobel Tıp Ödülü'nü kazanmıştır. Hücre yaşlanması mekanizmasını aydınlatmıştır.",
         "soz": ""
@@ -1139,7 +1139,7 @@ export const scientists = [
         "alan": "Moleküler Biyoloji",
         "kategori": "Biyoloji & Tıp",
         "donem": "1961",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1961'de ABD'de doğan moleküler biyologdur.",
         "detay": "1961'de ABD'de doğan moleküler biyologdur. Telomeraz enzimini keşfederek kromozom uçlarının korunma mekanizmasını aydınlatmıştır. 2009'da Nobel Tıp Ödülü'nü kazanmıştır. Hücre yaşlanması ve kanser araştırmalarına öncülük etmiştir.",
         "soz": ""
@@ -1150,7 +1150,7 @@ export const scientists = [
         "alan": "Biyoloji, Çevre Bilimi",
         "kategori": "Biyoloji & Tıp",
         "donem": "1907",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1907'de ABD'de doğan deniz biyoloğu ve çevrecidir.",
         "detay": "1907'de ABD'de doğan deniz biyoloğu ve çevrecidir. 'Sessiz Bahar' adlı kitabıyla pestisitlerin çevresel etkilerine dikkat çekmiştir. Modern çevre hareketinin başlatıcısı olarak bilinir. Biyoloji ve ekoloji alanında öncülük etmiştir.",
         "soz": "İnsan, doğanın bir parçasıdır; doğaya zarar vermek kendine zarar vermektir."
@@ -1161,7 +1161,7 @@ export const scientists = [
         "alan": "Astrofizik",
         "kategori": "Fizik",
         "donem": "1951",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1951'de ABD'de doğan astrofizikçi ve astronotdur.",
         "detay": "1951'de ABD'de doğan astrofizikçi ve astronotdur. ABD'nin uzaya gönderdiği ilk kadın astronottur. Uzay mekiği Challenger'ın mürettebatında yer almıştır. Bilim eğitimi ve kadınların bilimde rolü için ilham kaynağı olmuştur.",
         "soz": "Genç kızlara bilimde her şeyin mümkün olduğunu göstermek istiyorum."
@@ -1172,7 +1172,7 @@ export const scientists = [
         "alan": "Tıp, Uzay Bilimi",
         "kategori": "Biyoloji & Tıp",
         "donem": "1956",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1956'de ABD'de doğan hekim ve astronotdur.",
         "detay": "1956'de ABD'de doğan hekim ve astronotdur. NASA'da uzaya çıkan ilk Afrikalı-Amerikalı kadın astronottur. Bilim, tıp ve uzay araştırmaları alanlarında öncülük etmiştir. Bilim ve sanatın birleşimini savunmuştur.",
         "soz": "Bilim ve sanat, birbirini besler; her ikisi de yaratıcılığı gerektirir."
@@ -1183,7 +1183,7 @@ export const scientists = [
         "alan": "Bilgisayar Bilimi, Yapay Zeka",
         "kategori": "Bilgisayar & Mühendislik",
         "donem": "1947",
-        "rozet": "💻",
+        "rozet": "code",
         "ozet": "1947'de İngiltere'de doğan bilgisayar bilimcidir.",
         "detay": "1947'de İngiltere'de doğan bilgisayar bilimcidir. Derin öğrenme ve yapay sinir ağları alanında öncülük etmiştir. 2024'te Nobel Fizik Ödülü'nü kazanmıştır. Yapay zekanın gelişiminde kilit rol oynamıştır.",
         "soz": "Yapay zeka, insan zekasını taklit etmek değil; onu aşmaktır."
@@ -1194,7 +1194,7 @@ export const scientists = [
         "alan": "Bilgisayar Bilimi, Yapay Zeka",
         "kategori": "Bilgisayar & Mühendislik",
         "donem": "1964",
-        "rozet": "💻",
+        "rozet": "code",
         "ozet": "1964'te Kanada'da doğan bilgisayar bilimcidir.",
         "detay": "1964'te Kanada'da doğan bilgisayar bilimcidir. Derin öğrenme alanında öncü çalışmalar yaparak yapay zekanın gelişimine katkıda bulunmuştur. 2018 Turing Ödülü'nü kazanmıştır. Yapay sinir ağları ve doğal dil işleme alanlarında uzmandır.",
         "soz": ""
@@ -1205,7 +1205,7 @@ export const scientists = [
         "alan": "Bilgisayar Bilimi, Yapay Zeka",
         "kategori": "Bilgisayar & Mühendislik",
         "donem": "1960",
-        "rozet": "💻",
+        "rozet": "code",
         "ozet": "1960'da Fransa'da doğan bilgisayar bilimcidir.",
         "detay": "1960'da Fransa'da doğan bilgisayar bilimcidir. Konvolüsyonel sinir ağlarını (CNN) geliştirerek görüntü tanıma teknolojisine öncülük etmiştir. 2018 Turing Ödülü'nü kazanmıştır. Meta (Facebook) AI Araştırma laboratuvarının başındadır.",
         "soz": ""
@@ -1216,7 +1216,7 @@ export const scientists = [
         "alan": "Bilgisayar Bilimi, Yapay Zeka",
         "kategori": "Bilgisayar & Mühendislik",
         "donem": "1976",
-        "rozet": "💻",
+        "rozet": "code",
         "ozet": "1976'da İngiltere'de doğan bilgisayar bilimcidir.",
         "detay": "1976'da İngiltere'de doğan bilgisayar bilimcidir. Derin öğrenme teknolojisini yaygınlaştırarak yapay zeka eğitimine öncülük etmiştir. Google Brain projesinin kurucularındandır. Coursera platformunu kurarak在线 eğitime katkıda bulunmuştur.",
         "soz": "Yapay zeka, yeni bir elektriktir; her sektörü dönüştürecek."
@@ -1227,7 +1227,7 @@ export const scientists = [
         "alan": "Bilgisayar Bilimi, Yapay Zeka",
         "kategori": "Bilgisayar & Mühendislik",
         "donem": "1976",
-        "rozet": "💻",
+        "rozet": "code",
         "ozet": "1976'de Çin'de doğan bilgisayar bilimcidir.",
         "detay": "1976'de Çin'de doğan bilgisayar bilimcidir. ImageNet projesini kurarak görüntü tanıma alanında devrim yaratmıştır. Yapay zekanın insani ve etik yanına odaklanmıştır. Bilgisayarlı görü ve makine öğrenmesi alanında öncülük etmiştir.",
         "soz": "Yapay zeka, insanlığı zenginleştirmeli; yok etmek değil."
@@ -1238,7 +1238,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1904",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1904'te ABD'de doğan teorik fizikçidir.",
         "detay": "1904'te ABD'de doğan teorik fizikçidir. Manhattan Projesi'nin bilimsel direktörü olarak atom bombasının geliştirilmesine öncülük etmiştir. Kuantum mekaniği ve nükleer fizik alanında önemli katkılar yapmıştır. Bilim ve etik tartışmalarının sembolü olmuştur.",
         "soz": "Fizik biliniyorsa, dünya onun için değişmiştir."
@@ -1249,7 +1249,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1929",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1929'da ABD'de doğan fizikçidir.",
         "detay": "1929'da ABD'de doğan fizikçidir. Kuark modelini önererek parçacık fiziğinde devrim yaratmıştır. 1969'da Nobel Fizik Ödülü'nü kazanmıştır. Temel parçacıkların sınıflandırılmasına büyük katkıda bulunmuştur.",
         "soz": ""
@@ -1260,7 +1260,7 @@ export const scientists = [
         "alan": "Tıp",
         "kategori": "Biyoloji & Tıp",
         "donem": "1854",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1854'te Almanya'da doğan hekim ve bakteriyologdur.",
         "detay": "1854'te Almanya'da doğan hekim ve bakteriyologdur. İlk hedefe yönelik tedavi (kemoterapi) konseptini geliştirmiştir. Salvarsan ile frengi tedavisinde devrim yaratmıştır. 1908'de Nobel Tıp Ödülü'nü kazanmıştır.",
         "soz": ""
@@ -1271,7 +1271,7 @@ export const scientists = [
         "alan": "Viroloji",
         "kategori": "Biyoloji & Tıp",
         "donem": "1914",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1914'de ABD'de doğan virologdur.",
         "detay": "1914'de ABD'de doğan virologdur. Çocuk felci (polio) aşısını geliştirerek milyonlarca hayat kurtarmıştır. Aşısının patentini almamış ve insanlığa hediye etmiştir. Halk sağlığı alanında öncülük etmiştir.",
         "soz": "Bilim, sadece laboratuvarda değil; toplumda da uygulanmalıdır."
@@ -1282,7 +1282,7 @@ export const scientists = [
         "alan": "Mikrobiyoloji",
         "kategori": "Biyoloji & Tıp",
         "donem": "1856",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1856'te Ukrayna'da doğan mikrobiyologdur.",
         "detay": "1856'te Ukrayna'da doğan mikrobiyologdur. Kemosentez kavramını keşfederek mikroorganizmaların enerji metabolizmasını aydınlatmıştır. Toprak mikrobiyolojisinin kurucusu olarak bilinir. Ekolojik mikrobiyoloji alanında öncülük etmiştir.",
         "soz": ""
@@ -1293,7 +1293,7 @@ export const scientists = [
         "alan": "Nörobilim",
         "kategori": "Biyoloji & Tıp",
         "donem": "1852",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1852'de İspanya'da doğan nöroanatomisttir.",
         "detay": "1852'de İspanya'da doğan nöroanatomisttir. Sinir sisteminin yapısını ve nöron teorisini geliştirerek modern nörobilimin temellerini atmıştır. 1906'da Nobel Tıp Ödülü'nü kazanmıştır. Nöroanatomi alanında devrim yaratmıştır.",
         "soz": ""
@@ -1304,7 +1304,7 @@ export const scientists = [
         "alan": "Fizyoloji",
         "kategori": "Biyoloji & Tıp",
         "donem": "1849",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1849'da Rusya'da doğan fizyologdur.",
         "detay": "1849'da Rusya'da doğan fizyologdur. Klasik koşullanma teorisini köpekler üzerindeki deneylerle geliştirmiştir. Sindirim sistemi üzerine çalışmalarıyla 1904 Nobel Tıp Ödülü'nü kazanmıştır. Davranış psikolojisinin temellerini atmıştır.",
         "soz": ""
@@ -1315,7 +1315,7 @@ export const scientists = [
         "alan": "Biyokimya",
         "kategori": "Kimya",
         "donem": "1918",
-        "rozet": "🧪",
+        "rozet": "flask",
         "ozet": "1918'de İngiltere'de doğan biyokimyacıdır.",
         "detay": "1918'de İngiltere'de doğan biyokimyacıdır. İnsülin molekülünün yapısını ve DNA dizilim yöntemlerini (Sanger dizilimi) geliştirmiştir. İki kez Nobel Kimya Ödülü kazanmıştır. Genomik ve moleküler biyoloji alanında öncülük etmiştir.",
         "soz": ""
@@ -1326,7 +1326,7 @@ export const scientists = [
         "alan": "Biyokimya",
         "kategori": "Kimya",
         "donem": "1944",
-        "rozet": "🧪",
+        "rozet": "flask",
         "ozet": "1944'te ABD'de doğan biyokimyacıdır.",
         "detay": "1944'te ABD'de doğan biyokimyacıdır. PCR (Polimeraz Zincir Reaksiyonu) teknolojisini icat ederek DNA çoğaltma alanında devrim yaratmıştır. 1993'te Nobel Kimya Ödülü'nü kazanmıştır. Moleküler biyoloji ve genetik alanında çığır açmıştır.",
         "soz": ""
@@ -1337,7 +1337,7 @@ export const scientists = [
         "alan": "Biyokimya",
         "kategori": "Kimya",
         "donem": "1964",
-        "rozet": "🧪",
+        "rozet": "flask",
         "ozet": "1964'te ABD'de doğan biyokimyacıdır.",
         "detay": "1964'te ABD'de doğan biyokimyacıdır. CRISPR-Cas9 gen düzenleme teknolojisini geliştirerek genetik mühendisliğinde devrim yaratmıştır. 2020'de Nobel Kimya Ödülü'nü kazanmıştır. Genetik tedavi ve biyoteknoloji alanında öncülük etmiştir.",
         "soz": "Bilim, sorumlu bir şekilde yapılmalı; çünkü keşiflerin sonuçları her zaman iyilik için kullanılmayabilir."
@@ -1348,7 +1348,7 @@ export const scientists = [
         "alan": "Mikrobiyoloji",
         "kategori": "Biyoloji & Tıp",
         "donem": "1968",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1968'de Fransa'da doğan mikrobiyologdur.",
         "detay": "1968'de Fransa'da doğan mikrobiyologdur. CRISPR-Cas9 gen düzenleme teknolojisini geliştirerek genetik mühendisliğinde devrim yaratmıştır. 2020'de Nobel Kimya Ödülü'nü kazanmıştır. Moleküler biyoloji ve genetik alanında öncülük etmiştir.",
         "soz": ""
@@ -1359,7 +1359,7 @@ export const scientists = [
         "alan": "Doğa Bilimi, Ekoloji",
         "kategori": "Biyoloji & Tıp",
         "donem": "1769",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1769'de Almanya'da doğan doğa bilimcidir.",
         "detay": "1769'de Almanya'da doğan doğa bilimcidir. Biyoçeşitlilik ve ekoloji kavramlarının öncülüğünü yapmıştır. Güney Amerika'da kapsamlı keşifler gerçekleştirmiştir. Modern çevre biliminin kurucularından biridir.",
         "soz": ""
@@ -1370,7 +1370,7 @@ export const scientists = [
         "alan": "Tıp Fiziği",
         "kategori": "Fizik",
         "donem": "1921",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1921'de ABD'de doğan tıp fizikçisidir.",
         "detay": "1921'de ABD'de doğan tıp fizikçisidir. Radyoimmün analiz yöntemini geliştirerek hormon ve protein ölçümünde devrim yaratmıştır. 1977'de Nobel Tıp Ödülü'nü kazanmıştır. Tıbbi tanı alanına büyük katkıda bulunmuştur.",
         "soz": "Bilimde kadınların yeri, her zaman olduğundan daha güçlü olmalıdır."
@@ -1381,7 +1381,7 @@ export const scientists = [
         "alan": "Biyokimya, Farmakoloji",
         "kategori": "Kimya",
         "donem": "1918",
-        "rozet": "🧪",
+        "rozet": "flask",
         "ozet": "1918'de ABD'de doğan biyokimyacıdır.",
         "detay": "1918'de ABD'de doğan biyokimyacıdır. Rasyonel ilaç tasarımı yöntemini geliştirerek lösemi ve organ nakli ilaçlarını yaratmıştır. 1988'de Nobel Tıp Ödülü'nü kazanmıştır. Modern farmakoloji alanında öncülük etmiştir.",
         "soz": "Bilimde her şey mümkündür; yeter ki doğru soruyu sorun."
@@ -1392,7 +1392,7 @@ export const scientists = [
         "alan": "Genetik",
         "kategori": "Biyoloji & Tıp",
         "donem": "1902",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1902'de ABD'de doğan genetik bilimcidir.",
         "detay": "1902'de ABD'de doğan genetik bilimcidir. Mısır bitkileri üzerindeki çalışmalarıyla genetik mobiliteyi (sıçrayan genler) keşfetmiştir. 1983'te Nobel Tıp Ödülü'nü kazanmıştır. Transpozonların keşfiyle modern genetiğe büyük katkı yapmıştır.",
         "soz": ""
@@ -1403,7 +1403,7 @@ export const scientists = [
         "alan": "Teorik Fizik",
         "kategori": "Fizik",
         "donem": "1858",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1858'de Almanya'da doğan teorik fizikçidir.",
         "detay": "1858'de Almanya'da doğan teorik fizikçidir. Kuantum teorisinin temellerini atmış ve enerjinin kuantize olduğunu öne sürmüştür. 1918'de Nobel Fizik Ödülü'nü kazanmıştır. Modern kuantum mekaniğinin babası olarak kabul edilir.",
         "soz": ""
@@ -1414,7 +1414,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1852",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1852'de Fransa'da doğan fizikçidir.",
         "detay": "1852'de Fransa'da doğan fizikçidir. Radyoaktiviteyi tesadüfen keşfetmiştir. Uranyum tuzlarının ışıma yaptığını gözlemlemiştir. 1903'te Nobel Fizik Ödülü'nü kazanmıştır.",
         "soz": ""
@@ -1425,7 +1425,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1932",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1932'de Fransa'da doğan fizikçidir.",
         "detay": "1932'de Fransa'da doğan fizikçidir. Polimerler ve sıvı kristaller üzerine öncü çalışmalar yapmıştır. 1991'de Nobel Fizik Ödülü'nü kazanmıştır. Malzeme bilimi ve soft matter alanında devrim niteliğinde katkılar yapmıştır.",
         "soz": ""
@@ -1436,7 +1436,7 @@ export const scientists = [
         "alan": "Fizik, Matematik",
         "kategori": "Fizik",
         "donem": "1931",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1931'de İngiltere'de doğan matematikçi ve fizikçidir.",
         "detay": "1931'de İngiltere'de doğan matematikçi ve fizikçidir. Kara deliklerin varlığını matematiksel olarak kanıtlamıştır. 2020'de Nobel Fizik Ödülü'nü kazanmıştır. Genel görelilik ve kuantum mekaniğinin birleştirilmesine katkıda bulunmuştur.",
         "soz": "Bilim, gerçeği aramanın bir yoludur; ama gerçeğin kendisi her zaman bilimden daha geniştir."
@@ -1447,7 +1447,7 @@ export const scientists = [
         "alan": "Astronomi",
         "kategori": "Astronomi",
         "donem": "1965",
-        "rozet": "🔭",
+        "rozet": "telescope",
         "ozet": "1965'de ABD'de doğan astronomdur.",
         "detay": "1965'de ABD'de doğan astronomdur. Samanyolu galaksisinin merkezindeki süper kütleli kara deliği keşfetmiştir. 2020'de Nobel Fizik Ödülü'nü kazanmıştır. Gözlemsel astrofizik alanında öncülük etmiştir.",
         "soz": ""
@@ -1458,7 +1458,7 @@ export const scientists = [
         "alan": "Astrofizik",
         "kategori": "Fizik",
         "donem": "1952",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1952'de Almanya'da doğan astrofizikçidir.",
         "detay": "1952'de Almanya'da doğan astrofizikçidir. Samanyolu'nun merkezindeki kara deliği yüksek çözünürlüklü gözlemlerle keşfetmiştir. 2020'de Nobel Fisik Ödülü'nü kazanmıştır. Gözlemsel astrofizik alanında öncülük etmiştir.",
         "soz": ""
@@ -1469,7 +1469,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1940",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1940'da ABD'de doğan teorik fizikçidir.",
         "detay": "1940'da ABD'de doğan teorik fizikçidir. Kütleçekim dalgalarının tespiti LIGO projesine öncülük etmiştir. 2017'de Nobel Fizik Ödülü'nü kazanmıştır. Genel görelilik ve kuantum yerçekimi alanında öncülük etmiştir.",
         "soz": ""
@@ -1480,7 +1480,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1932",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1932'de Almanya'da doğan fizikçidir.",
         "detay": "1932'de Almanya'da doğan fizikçidir. LIGO dedektörünü tasarlayarak kütleçekim dalgalarının ilk doğrudan ölçümünü gerçekleştirmiştir. 2017'de Nobel Fizik Ödülü'nü kazanmıştır. Yerçekimi dalgası araştırmalarında öncülük etmiştir.",
         "soz": ""
@@ -1491,7 +1491,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1936",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1936'da ABD'de doğan fizikçidir.",
         "detay": "1936'da ABD'de doğan fizikçidir. LIGO projesinin yönetiminde öncülük ederek kütleçekim dalgalarının tespitini mümkün kılmıştır. 2017'de Nobel Fizik Ödülü'nü kazanmıştır. Parçacık fiziği ve yerçekimi dalgası araştırmalarına katkıda bulunmuştur.",
         "soz": ""
@@ -1502,7 +1502,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1922",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1922'de ABD'de doğan fizikçidir.",
         "detay": "1922'de ABD'de doğan fizikçidir. Optik cımbız teknolojisini geliştirerek ışıkla mikro boyutlu nesnelerin manipülasyonunu mümkün kılmıştır. 2018'de Nobel Fizik Ödülü'nü kazanmıştır. Biyofizik ve optik alanında öncülük etmiştir.",
         "soz": ""
@@ -1513,7 +1513,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1959",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1959'da Kanada'da doğan fizikçidir.",
         "detay": "1959'da Kanada'da doğan fizikçidir. Chirped pulse amplification (CPA) teknolojisini geliştirerek yüksek yoğunluklu lazer sistemlerine öncülük etmiştir. 2018'de Nobel Fizik Ödülü'nü kazanmıştır. Optik ve lazer fiziği alanında öncülük etmiştir.",
         "soz": ""
@@ -1524,7 +1524,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1944",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1944'te Fransa'da doğan fizikçidir.",
         "detay": "1944'te Fransa'da doğan fizikçidir. CPA teknolojisini geliştirerek ultra kısa ve yüksek yoğunluklu lazer atışlarını mümkün kılmıştır. 2018'de Nobel Fizik Ödülü'nü kazanmıştır. Lazer fiziği ve optik alanında öncülük etmiştir.",
         "soz": ""
@@ -1535,7 +1535,7 @@ export const scientists = [
         "alan": "Meteoroloji, İklim Bilimi",
         "kategori": "Biyoloji & Tıp",
         "donem": "1931",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1931'de Japonya'da doğan meteorologdur.",
         "detay": "1931'de Japonya'da doğan meteorologdur. İklim modellerini geliştirerek küresel ısınmanın bilimsel temellerini atmıştır. 2021'de Nobel Fizik Ödülü'nü kazanmıştır. İklim bilimi ve atmosferik fizik alanında öncülük etmiştir.",
         "soz": ""
@@ -1546,7 +1546,7 @@ export const scientists = [
         "alan": "İklim Bilimi",
         "kategori": "Biyoloji & Tıp",
         "donem": "1931",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1931'de Almanya'da doğan meteorologdur.",
         "detay": "1931'de Almanya'da doğan meteorologdur. İklim değişikliği modellerini geliştirerek insan kaynaklı küresel ısınmayı bilimsel olarak kanıtlamıştır. 2021'de Nobel Fizik Ödülü'nü kazanmıştır. İklim bilimi ve okyanus fiziği alanında öncülük etmiştir.",
         "soz": ""
@@ -1557,7 +1557,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1948",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1948'de İtalya'da doğan teorik fizikçidir.",
         "detay": "1948'de İtalya'da doğan teorik fizikçidir. Karmaşık sistemler ve fraktal yapılara öncülük etmiştir. 2021'de Nobel Fizik Ödülü'nü kazanmıştır. İstatistiksel fizik ve parçacık fiziği alanında devrim niteliğinde katkılar yapmıştır.",
         "soz": ""
@@ -1568,7 +1568,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1947",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1947'de Fransa'da doğan fizikçidir.",
         "detay": "1947'de Fransa'da doğan fizikçidir. Kuantum dolanıklık fenomenini deneysel olarak kanıtlayarak Bell teoremini test etmiştir. 2022'de Nobel Fizik Ödülü'nü kazanmıştır. Kuantum bilişim ve kuantum kriptografi alanlarına öncülük etmiştir.",
         "soz": ""
@@ -1579,7 +1579,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1945",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1945'te Avusturya'da doğan fizikçidir.",
         "detay": "1945'te Avusturya'da doğan fizikçidir. Kuantum dolanıklık ve kuantum teleportasyon alanında öncülük etmiştir. 2022'de Nobel Fizik Ödülü'nü kazanmıştır. Kuantum bilişim ve kuantum iletişim alanında devrim niteliğinde çalışmalar yapmıştır.",
         "soz": ""
@@ -1590,7 +1590,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1942",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1942'de ABD'de doğan fizikçidir.",
         "detay": "1942'de ABD'de doğan fizikçidir. Kuantum dolanıklığın deneysel testlerini gerçekleştirerek Bell eşitsizliklerini doğrulamıştır. 2022'de Nobel Fizik Ödülü'nü kazanmıştır. Kuantum mekaniğinin temelleri üzerine öncülük etmiştir.",
         "soz": ""
@@ -1601,7 +1601,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1962",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1962'de Macaristan'da doğan fizikçidir.",
         "detay": "1962'de Macaristan'da doğan fizikçidir. Attosaniye lazer darbeleri geliştirerek elektronların hareketini gerçek zamanlı gözlemlemiştir. 2023'te Nobel Fizik Ödülü'nü kazanmıştır. Ultra hızlı optik ve kuantum fiziği alanında öncülük etmiştir.",
         "soz": ""
@@ -1612,7 +1612,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1958",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1958'de İsveç'te doğan fizikçidir.",
         "detay": "1958'de İsveç'te doğan fizikçidir. Yüksek harmonik üretim teknolojisini geliştirerek attosaniye lazer darbelerinin temelini atmıştır. 2023'te Nobel Fizik Ödülü'nü kazanmıştır. Attosaniye fiziği alanında öncülük etmiştir.",
         "soz": ""
@@ -1623,7 +1623,7 @@ export const scientists = [
         "alan": "Fizik",
         "kategori": "Fizik",
         "donem": "1961",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1961'de Fransa'da doğan fizikçidir.",
         "detay": "1961'de Fransa'da doğan fizikçidir. Attosaniye lazer darbeleri üretme yöntemini geliştirerek atomik düzeyde zaman ölçümüne öncülük etmiştir. 2023'te Nobel Fizik Ödülü'nü kazanmıştır. Ultra hızlı lazer fiziği alanında öncülük etmiştir.",
         "soz": ""
@@ -1634,7 +1634,7 @@ export const scientists = [
         "alan": "Fizik, Nörobilim",
         "kategori": "Fizik",
         "donem": "1933",
-        "rozet": "⚛️",
+        "rozet": "atom",
         "ozet": "1933'te ABD'de doğan fizikçidir.",
         "detay": "1933'te ABD'de doğan fizikçidir. Hopfield ağını geliştirerek yapay sinir ağlarının fiziksel temellerini atmıştır. 2024'te Nobel Fizik Ödülü'nü kazanmıştır. İstatistiksel fizik ve nörobilim arasındaki bağlantıyı kurmuştur.",
         "soz": ""
@@ -1645,7 +1645,7 @@ export const scientists = [
         "alan": "Moleküler Biyoloji",
         "kategori": "Biyoloji & Tıp",
         "donem": "1953",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1953'te ABD'de doğan moleküler biyologdur.",
         "detay": "1953'te ABD'de doğan moleküler biyologdur. MikroRNA moleküllerini keşfederek gen ifadesinin düzenlenmesi mekanizmasını aydınlatmıştır. 2024'te Nobel Tıp Ödülü'nü kazanmıştır. Moleküler genetik ve gelişim biyolojisi alanında öncülük etmiştir.",
         "soz": ""
@@ -1656,7 +1656,7 @@ export const scientists = [
         "alan": "Moleküler Biyoloji",
         "kategori": "Biyoloji & Tıp",
         "donem": "1952",
-        "rozet": "🧬",
+        "rozet": "dna",
         "ozet": "1952'de ABD'de doğan moleküler biyologdur.",
         "detay": "1952'de ABD'de doğan moleküler biyologdur. MikroRNA moleküllerini keşfederek gen regülasyon mekanizmalarını aydınlatmıştır. 2024'te Nobel Tıp Ödülü'nü kazanmıştır. Moleküler genetik ve yaşlanma biyolojisi alanında öncülük etmiştir.",
         "soz": ""
@@ -1667,7 +1667,7 @@ export const scientists = [
         "alan": "Biyokimya",
         "kategori": "Kimya",
         "donem": "1962",
-        "rozet": "🧪",
+        "rozet": "flask",
         "ozet": "1962'de ABD'de doğan biyokimyacıdır.",
         "detay": "1962'de ABD'de doğan biyokimyacıdır. Protein tasarımı ve katlanması alanında öncü çalışmalar yapmıştır. 2024'te Nobel Kimya Ödülü'nü kazanmıştır. Yapay protein tasarımı ile biyoteknoloji alanında devrim yaratmıştır.",
         "soz": ""
@@ -1678,7 +1678,7 @@ export const scientists = [
         "alan": "Bilgisayar Bilimi, Yapay Zeka",
         "kategori": "Bilgisayar & Mühendislik",
         "donem": "1976",
-        "rozet": "💻",
+        "rozet": "code",
         "ozet": "1976'da İngiltere'de doğan bilgisayar bilimcidir.",
         "detay": "1976'da İngiltere'de doğan bilgisayar bilimcidir. AlphaFold ile protein yapısı tahmininde devrim yaratmıştır. 2024'te Nobel Kimya Ödülü'nü kazanmıştır. Yapay zeka ve biyolojinin birleşiminde öncülük etmiştir.",
         "soz": ""
@@ -1689,7 +1689,7 @@ export const scientists = [
         "alan": "Bilgisayar Bilimi, Yapay Zeka",
         "kategori": "Bilgisayar & Mühendislik",
         "donem": "1985",
-        "rozet": "💻",
+        "rozet": "code",
         "ozet": "1985'te İngiltere'de doğan bilgisayar bilimcidir.",
         "detay": "1985'te İngiltere'de doğan bilgisayar bilimcidir. AlphaFold2 modelini geliştirerek protein yapısı tahmininde devrim yaratmıştır. 2024'te Nobel Kimya Ödülü'nü kazanmıştır. Yapay zeka ve moleküler biyoloji alanında öncülük etmiştir.",
         "soz": ""

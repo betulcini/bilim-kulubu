@@ -1,4 +1,5 @@
 <script>
+	import Icon from '$lib/components/Icon.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import { supabase } from '$lib/supabaseClient.js';
 	import InterestPicker from '$lib/components/InterestPicker.svelte';
@@ -72,7 +73,7 @@
 <div class="content-max" style="margin-bottom: 60px;">
 	{#if doneStep}
 		<div class="bracket-card" style="max-width: 420px; margin: 0 auto; text-align: center; padding: 36px 24px;">
-			<div style="font-size: 2.5rem; margin-bottom: 10px;">{autoLoggedIn ? '🎉' : '📬'}</div>
+			<div class="ico-tile lg" style="margin: 0 auto 14px;"><Icon name={autoLoggedIn ? 'check-circle' : 'mail'} size={28} /></div>
 			{#if autoLoggedIn}
 				<h2 style="margin-bottom: 8px;">Hesabın hazır!</h2>
 				<p style="color: var(--text-muted); margin-bottom: 20px;">Artık giriş yaptın, skor tablosuna katılabilirsin.</p>

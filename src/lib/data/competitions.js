@@ -14,9 +14,9 @@ export const competitions = [
 ];
 
 export const leaderboard = [
-	{ sira: 1, ad: 'Elif Demir', puan: 1240, rozet: '🏆' },
-	{ sira: 2, ad: 'Mert Kaya', puan: 1185, rozet: '🥈' },
-	{ sira: 3, ad: 'Zeynep Arslan', puan: 1120, rozet: '🥉' },
-	{ sira: 4, ad: 'Can Yıldız', puan: 980, rozet: '•' },
-	{ sira: 5, ad: 'Deniz Aydın', puan: 915, rozet: '•' }
+	{ sira: 1, ad: 'Elif Demir', puan: 1240 },
+	{ sira: 2, ad: 'Mert Kaya', puan: 1185 },
+	{ sira: 3, ad: 'Zeynep Arslan', puan: 1120 },
+	{ sira: 4, ad: 'Can Yıldız', puan: 980 },
+	{ sira: 5, ad: 'Deniz Aydın', puan: 915 }
 ];

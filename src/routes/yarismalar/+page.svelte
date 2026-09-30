@@ -11,8 +11,7 @@
 	function badgeClass(durum) { return durum === 'Katıl' || durum === 'Kayıt açık' ? 'live' : 'dev'; }
 
 	// --- Skor tablosu: önce gerçek/ortak Supabase verisi, yoksa bu cihazdaki tahmini veri, o da yoksa örnek veri ---
-	const rozetler = ['🏆', '🥈', '🥉'];
-	let leaderboard = demoLeaderboard;
+		let leaderboard = demoLeaderboard;
 	let leaderboardSource = 'demo'; // 'shared' | 'local' | 'demo'
 
 	function fromLocalStorage() {
@@ -33,7 +32,7 @@
 			const liste = [...enIyiSkorlar.values()]
 				.sort((a, b) => b.puan - a.puan)
 				.slice(0, 8)
-				.map((kisi, i) => ({ sira: i + 1, ad: kisi.ad, puan: kisi.puan, rozet: rozetler[i] || '•' }));
+				.map((kisi, i) => ({ sira: i + 1, ad: kisi.ad, puan: kisi.puan }));
 
 			return liste.length > 0 ? liste : null;
 		} catch (e) {
@@ -56,8 +55,7 @@
 				sira: i + 1,
 				ad: kisi.full_name || 'Bilim Meraklısı',
 				sinif: kisi.class_name,
-				puan: kisi.best_score,
-				rozet: rozetler[i] || '•'
+				puan: kisi.best_score
 			}));
 			leaderboardSource = 'shared';
 			return;
@@ -99,7 +97,7 @@
 
 	<section class="leaderboard-section" aria-labelledby="skor-tablosu">
 		<div class="leaderboard-heading"><div><p class="section-kicker">Sezon 2026–2027</p><h2 id="skor-tablosu">Skor tablosu</h2></div><span class="badge live">Güncel sıralama</span></div>
-		<div class="leaderboard-card"><table><thead><tr><th>Sıra</th><th>Yarışmacı</th><th>Puan</th></tr></thead><tbody>{#each leaderboard as player}<tr><td><span class="rank">{player.rozet} {player.sira}</span></td><td>{player.ad}</td><td><strong>{player.puan.toLocaleString('tr-TR')}</strong></td></tr>{/each}</tbody></table></div>
+		<div class="leaderboard-card"><table><thead><tr><th>Sıra</th><th>Yarışmacı</th><th>Puan</th></tr></thead><tbody>{#each leaderboard as player}<tr><td><span class="rank rank-{player.sira}">{player.sira}</span></td><td>{player.ad}</td><td><strong>{player.puan.toLocaleString('tr-TR')}</strong></td></tr>{/each}</tbody></table></div>
 		<p class="leaderboard-note">
 			{#if leaderboardSource === 'demo'}
 				Henüz kaydedilmiş quiz sonucu yok — örnek bir tablo gösteriliyor. Giriş yapıp bir quiz çözüldüğünde bu tablo gerçek skorlarla güncellenir.
@@ -134,7 +132,23 @@
 	td:last-child, th:last-child { text-align: right; }
 	tbody tr:last-child td { border-bottom: 0; }
 	tbody tr:first-child { background: var(--accent-soft); }
-	.rank { white-space: nowrap; color: var(--text-muted); }
+	.rank {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		min-width: 28px;
+		height: 28px;
+		padding: 0 6px;
+		border-radius: 999px;
+		white-space: nowrap;
+		font-family: var(--font-display);
+		font-weight: 700;
+		font-size: var(--fs-xs);
+		color: var(--text-muted);
+	}
+	.rank-1 { background: #d9a93f; color: #2a1f08; }
+	.rank-2 { background: #b9c0c4; color: #1f2a2e; }
+	.rank-3 { background: #c98a5a; color: #2e1a0c; }
 	.leaderboard-note { color: var(--text-faint); font-size: var(--fs-sm); margin-top: 12px; }
 	@media (max-width: 520px) { .section-heading, .leaderboard-heading { align-items: start; flex-direction: column; gap: 5px; } th, td { padding: 12px; } }
 </style>

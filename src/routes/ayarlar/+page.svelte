@@ -5,6 +5,7 @@
 	import { profile } from '$lib/stores/profile.js';
 	import { sfx } from '$lib/sound.js';
 	import Icon from '$lib/components/Icon.svelte';
+	import { install, promptInstall } from '$lib/stores/install.js';
 
 	const temalar = [
 		{ id: 'dark', label: 'Koyu', icon: 'moon' },
@@ -60,6 +61,22 @@
 				<Icon name="sound-off" size={17} /> Sesler kapalı
 			</button>
 		</div>
+	</section>
+
+	<section class="bracket-card">
+		<h2>Uygulama olarak ekle</h2>
+		{#if $install.installed}
+			<p class="hint"><Icon name="check-circle" size={16} /> Platformu zaten uygulama olarak kullanıyorsun.</p>
+		{:else if $install.canPrompt}
+			<p class="hint">Ana ekrana ekle; tam ekran açılır ve tek dokunuşla ulaşırsın.</p>
+			<button class="btn btn-primary" on:click={async () => { sfx.nav(); await promptInstall(); }}>
+				<Icon name="download" size={16} /> Ana ekrana ekle
+			</button>
+		{:else if $install.ios}
+			<p class="hint">Safari'de <b>Paylaş</b> simgesine dokun, ardından <b>Ana Ekrana Ekle</b>'yi seç.</p>
+		{:else}
+			<p class="hint">Tarayıcı menüsünden (<Icon name="more" size={14} />) <b>Ana ekrana ekle</b> veya <b>Uygulamayı yükle</b> seçeneğini kullan.</p>
+		{/if}
 	</section>
 
 	<section class="bracket-card profile-card">

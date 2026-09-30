@@ -1,4 +1,5 @@
 <script>
+	import Icon from '$lib/components/Icon.svelte';
     import PageHeader from '$lib/components/PageHeader.svelte';
     import { sfx } from '$lib/sound.js';
     import { activity } from '$lib/stores/activity.js';
@@ -56,9 +57,9 @@
         style="width: 100%; text-align: left; cursor: pointer; margin-bottom: 30px; display: flex; align-items: center; gap: 18px; flex-wrap: wrap; font: inherit; color: inherit;"
         on:click={() => openModal(gununKisisi)}
     >
-        <span style="font-size: 3rem; line-height: 1;">{gununKisisi.rozet}</span>
+        <span class="ico-tile xl" aria-hidden="true"><Icon name={gununKisisi.rozet} size={36} /></span>
         <div style="flex: 1; min-width: 200px;">
-            <span class="badge live" style="margin-bottom: 8px;">🌟 Günün Bilim İnsanı</span>
+            <span class="badge live" style="margin-bottom: 8px;">Günün Bilim İnsanı</span>
             <h3 style="margin: 6px 0 4px;">{gununKisisi.ad}</h3>
             <p style="margin: 0; color: var(--text-muted); font-size: var(--fs-sm);">{gununKisisi.ozet}</p>
         </div>
@@ -79,7 +80,7 @@
         </div>
 
         <div style="display: flex; align-items: center; background: var(--bg-alt); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 8px 14px;">
-            <span style="margin-right: 10px; color: var(--text-muted);">🔍</span>
+            <span style="margin-right: 10px; color: var(--text-muted); display: inline-flex;"><Icon name="search" size={18} /></span>
             <input 
                 type="text" 
                 bind:value={searchQuery} 
@@ -101,7 +102,7 @@
                 on:keydown={(e) => e.key === 'Enter' && openModal(scientist)}
             >
                 <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-                    <span style="font-size: 2.2rem;">{scientist.rozet}</span>
+                    <span class="ico-tile lg" aria-hidden="true"><Icon name={scientist.rozet} size={28} /></span>
                     {#if scientist.donem}<span class="badge dev">{scientist.donem}</span>{/if}
                 </div>
                 <h3 style="margin-bottom: 6px; font-size: var(--fs-lg);">{scientist.ad}</h3>
@@ -143,13 +144,13 @@
     >
         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
             <div style="display: flex; align-items: center; gap: 12px;">
-                <span style="font-size: 2.5rem;">{activeModalScientist.rozet}</span>
+                <span class="ico-tile lg" aria-hidden="true"><Icon name={activeModalScientist.rozet} size={28} /></span>
                 <div>
                     <h2 style="margin: 0; font-size: 1.5rem;">{activeModalScientist.ad}</h2>
                     <span style="font-size: var(--fs-xs); color: var(--text-muted);">{activeModalScientist.donem ? activeModalScientist.donem + ' · ' : ''}{activeModalScientist.alan}</span>
                 </div>
             </div>
-            <button class="btn btn-ghost" style="padding: 6px 10px;" on:click={closeModal}>✕</button>
+            <button class="btn btn-ghost" style="padding: 6px 10px;" on:click={closeModal} aria-label="Kapat"><Icon name="close" size={16} /></button>
         </div>
 
         <p style="font-size: var(--fs-base); line-height: 1.6; color: var(--text); margin-bottom: 20px;">

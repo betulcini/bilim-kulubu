@@ -1,4 +1,5 @@
 <script>
+	import Icon from '$lib/components/Icon.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import InterestPicker from '$lib/components/InterestPicker.svelte';
 	import SanaOzel from '$lib/components/SanaOzel.svelte';
@@ -136,12 +137,12 @@
 			<div class="badge-grid">
 				{#each rozetler as r}
 					<div class="bracket-card rozet" class:locked={!r.kazanildi}>
-						<span class="r-emo" aria-hidden="true">{r.emoji}</span>
+						<span class="r-emo" aria-hidden="true"><Icon name={r.emoji} size={22} /></span>
 						<div class="r-body">
 							<h3>{r.ad}</h3>
 							<p>{r.aciklama}</p>
 							{#if r.kazanildi}
-								<span class="r-state">Kazanıldı ✓</span>
+								<span class="r-state"><Icon name="check" size={14} /> Kazanıldı</span>
 							{:else}
 								<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax={r.hedef} aria-valuenow={r.deger} aria-label="{r.ad} ilerlemesi">
 									<span style="width: {(r.deger / r.hedef) * 100}%"></span>
@@ -262,12 +263,26 @@
 		opacity: 0.72;
 	}
 	.rozet.locked .r-emo {
-		filter: grayscale(1);
+		background: var(--surface-hover);
+		color: var(--text-faint);
+		border-color: var(--border);
 	}
 	.r-emo {
 		flex: none;
-		font-size: 2rem;
-		line-height: 1;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 44px;
+		height: 44px;
+		border-radius: 13px;
+		background: var(--accent-soft);
+		color: var(--accent);
+		border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+	}
+	.r-state {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
 	}
 	.r-body {
 		min-width: 0;

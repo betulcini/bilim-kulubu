@@ -1,4 +1,5 @@
 <script>
+	import Icon from '$lib/components/Icon.svelte';
 	import { user } from '$lib/stores/auth.js';
 	import { interestById } from '$lib/data/interests.js';
 	import { scientists } from '$lib/data/bilim-insanlari.js';
@@ -77,7 +78,7 @@
 			{#if secilenler.length > 0}
 				<ul class="chips" aria-label="Seçtiğin ilgi alanları">
 					{#each secilenler as i}
-						<li class="badge live"><span aria-hidden="true">{i.emoji}</span> {i.label}</li>
+						<li class="badge live"><Icon name={i.emoji} size={14} /> {i.label}</li>
 					{/each}
 				</ul>
 			{/if}
@@ -96,7 +97,7 @@
 						{#each bilimInsanlari as s}
 							<li>
 								<a href="/bilim-insanlari" on:click={() => sfx.nav()}>
-									<span class="emo" aria-hidden="true">{s.rozet}</span>
+									<span class="emo" aria-hidden="true"><Icon name={s.rozet} size={18} /></span>
 									<span class="txt"><b>{s.ad}</b><small>{s.alan}</small></span>
 								</a>
 							</li>
@@ -110,7 +111,7 @@
 						{#each quizler as q}
 							<li>
 								<a href="/yarismalar/quiz?konu={q.konu}" on:click={() => sfx.nav()}>
-									<span class="emo" aria-hidden="true">🎯</span>
+									<span class="emo" aria-hidden="true"><Icon name="target" size={18} /></span>
 									<span class="txt"><b>{q.ad}</b><small>8 soru, 20 saniye sınırı</small></span>
 								</a>
 							</li>
@@ -125,7 +126,7 @@
 							{#each olaylar as e}
 								<li>
 									<a href="/bilim-takvimi" on:click={() => sfx.nav()}>
-										<span class="emo" aria-hidden="true">📅</span>
+										<span class="emo" aria-hidden="true"><Icon name="calendar" size={18} /></span>
 										<span class="txt"><b>{e.baslik}</b><small>{tarihYaz(e.baslangic)}{e.bitis && e.bitis !== e.baslangic ? ' – ' + tarihYaz(e.bitis) : ''}</small></span>
 									</a>
 								</li>
@@ -140,7 +141,7 @@
 						{#each oyunlar as o}
 							<li>
 								<a href={o.href} on:click={() => sfx.nav()}>
-									<span class="emo" aria-hidden="true">🎮</span>
+									<span class="emo" aria-hidden="true"><Icon name="games" size={18} /></span>
 									<span class="txt"><b>{o.ad}</b><small>{o.acik}</small></span>
 								</a>
 							</li>
@@ -155,7 +156,7 @@
 							{#each duyurular as d}
 								<li>
 									<a href="/duyurular" on:click={() => sfx.nav()}>
-										<span class="emo" aria-hidden="true">📰</span>
+										<span class="emo" aria-hidden="true"><Icon name="news" size={18} /></span>
 										<span class="txt"><b>{d.baslik}</b><small>{d.etiket} · {d.tarih}</small></span>
 									</a>
 								</li>
@@ -221,10 +222,14 @@
 	}
 	.emo {
 		flex: none;
-		width: 32px;
-		text-align: center;
-		font-size: 1.4rem;
-		line-height: 1;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		width: 34px;
+		height: 34px;
+		border-radius: 10px;
+		background: var(--accent-soft);
+		color: var(--accent);
 	}
 	.txt {
 		display: flex;

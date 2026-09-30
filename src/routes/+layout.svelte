@@ -9,6 +9,8 @@
 	import { navItems } from '$lib/data/nav.js';
 	import Icon from '$lib/components/Icon.svelte';
 	import SearchDialog from '$lib/components/SearchDialog.svelte';
+	import InstallPrompt from '$lib/components/InstallPrompt.svelte';
+	import { initInstall } from '$lib/stores/install.js';
 	import AmbientScience from '$lib/components/AmbientScience.svelte';
 	import { user, authReady, initAuth, signOut } from '$lib/stores/auth.js';
 
@@ -21,6 +23,7 @@
 	onMount(() => {
 		theme.init();
 		initAuth();
+		initInstall();
 		const media = window.matchMedia('(max-width: 900px)');
 		const updateViewport = () => {
 			isMobile = media.matches;
@@ -166,6 +169,7 @@
 			</div>
 		</footer>
 	</main>
+	<InstallPrompt />
 	<SearchDialog bind:open={searchOpen} />
 </div>
 

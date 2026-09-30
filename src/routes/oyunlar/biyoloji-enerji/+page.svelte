@@ -1,4 +1,5 @@
 <script>
+	import Icon from '$lib/components/Icon.svelte';
     import PageHeader from '$lib/components/PageHeader.svelte';
     import { sfx } from '$lib/sound.js';
     import { activity } from '$lib/stores/activity.js';
@@ -28,7 +29,8 @@
     // type: choice (şık seç) | locate (şemada bölge seç) | order (sırala)
     const pathways = {
         fotosentez: {
-            name: '🌱 Kloroplast / Fotosentez (Anabolik Süreç)',
+            icon: 'sprout',
+            name: 'Kloroplast / Fotosentez (Anabolik Süreç)',
             desc: 'Işık enerjisiyle inorganik maddelerden organik besin sentezi. 8 adım, şemada bölge seçme ve sıralama görevleriyle.',
             cell: 'kloroplast',
             counters: [
@@ -124,7 +126,8 @@
             ]
         },
         solunum: {
-            name: '⚡ Mitokondri / Hücresel Solunum (Katabolik Süreç)',
+            icon: 'bolt',
+            name: 'Mitokondri / Hücresel Solunum (Katabolik Süreç)',
             desc: 'Organik moleküllerin parçalanarak ATP enerjisine dönüşmesi. 9 adım, canlı ATP / NADH sayacıyla.',
             cell: 'mitokondri',
             counters: [
@@ -296,7 +299,7 @@
         if (stageFinished) return;
         sfx.nav();
         if (opt === stage.correct) {
-            feedback = `Başarılı! ⚡ ${stage.info}`;
+            feedback = `Başarılı! ${stage.info}`;
             finishStage();
         } else {
             feedback = 'Hatalı seçim! Biyokimyasal yolak aksadı. Tekrar dene.';
@@ -307,7 +310,7 @@
         if (!stage || stage.type !== 'locate' || stageFinished) return;
         sfx.nav();
         if (id === stage.correct) {
-            feedback = `Doğru bölge! ⚡ ${stage.info}`;
+            feedback = `Doğru bölge! ${stage.info}`;
             finishStage();
         } else {
             feedback = 'Bu bölge değil. Şemadaki yapılara dikkatle bak ve tekrar dene.';
@@ -323,7 +326,7 @@
         pool = pool.filter((x) => x !== item);
         if (pool.length === 0) {
             if (picked.every((x, i) => x === stage.items[i])) {
-                feedback = `Başarılı! ⚡ ${stage.info}`;
+                feedback = `Başarılı! ${stage.info}`;
                 finishStage();
             } else {
                 initStage();
@@ -386,7 +389,7 @@
                 {#each Object.entries(pathways) as [key, p]}
                     <div class="path-card">
                         <div>
-                            <h4 style="margin-bottom: 8px; color: var(--accent);">{p.name}</h4>
+                            <h4 style="margin-bottom: 8px; color: var(--accent); display: flex; align-items: center; gap: 8px;"><Icon name={p.icon} size={20} /> {p.name}</h4>
                             <p style="font-size: var(--fs-sm); color: var(--text-muted); margin-bottom: 16px; line-height: 1.4;">{p.desc}</p>
                         </div>
                         <button class="btn btn-primary" on:click={() => selectPathway(key)}>Simülasyonu Başlat →</button>
@@ -479,12 +482,12 @@
                             style="padding: 16px;"
                             disabled={stageFinished}
                             on:click={() => selectOption(opt)}>
-                            🧪 {opt}
+                            {opt}
                         </button>
                     {/each}
                 </div>
             {:else if stage.type === 'locate'}
-                {#if !stageFinished}<p class="hint">👆 Şemada doğru bölgeye dokun.</p>{/if}
+                {#if !stageFinished}<p class="hint"><span class="ico-inline"><Icon name="pointer" size={16} /></span>Şemada doğru bölgeye dokun.</p>{/if}
             {:else}
                 <div class="order-box">
                     <ol class="picked">
@@ -497,7 +500,7 @@
                                 <button class="btn btn-ghost" on:click={() => pickOrder(item)}>{item}</button>
                             {/each}
                         </div>
-                        {#if picked.length > 0}<button class="btn btn-ghost small" on:click={resetOrder}>↺ Sıfırla</button>{/if}
+                        {#if picked.length > 0}<button class="btn btn-ghost small" on:click={resetOrder}><Icon name="reset" size={14} /> Sıfırla</button>{/if}
                     {/if}
                 </div>
             {/if}
@@ -514,7 +517,7 @@
             <div class="action-row">
                 {#if stageFinished}
                     <button class="btn btn-primary next-btn" on:click={nextStage}>
-                        {currentStageIndex < path.stages.length - 1 ? 'Sonraki Adıma Geç →' : 'Süreci Tamamla ve Rapor Al 🏁'}
+                        {currentStageIndex < path.stages.length - 1 ? 'Sonraki Adıma Geç →' : 'Süreci Tamamla ve Rapor Al'}
                     </button>
                 {/if}
                 <button class="btn btn-ghost" on:click={resetToMenu}>← Süreç Menüsüne Dön</button>
@@ -523,7 +526,7 @@
         {:else}
             <!-- Modül Tamamlama Raporu -->
             <div class="done-box">
-                <div style="font-size: 3.5rem; margin-bottom: 10px;">🏆</div>
+                <div class="ico-tile xl warm" style="margin: 0 auto 14px;"><Icon name="trophy" size={38} /></div>
                 <h2>Metabolik Süreç Başarıyla Simüle Edildi!</h2>
                 <p style="text-align: center; margin: 15px auto; color: var(--text-muted);">
                     {path.name} yolaklarını doğru moleküler basamaklarla yöneterek laboratuvar simülasyonunu tamamladın.

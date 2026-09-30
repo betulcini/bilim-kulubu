@@ -366,3 +366,22 @@ select {
         display: none !important;
     }
 }
+/* ---------- ikon karoları (emoji yerine) ---------- */
+.ico-tile {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    background: var(--accent-soft);
+    color: var(--accent);
+    border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+}
+.ico-tile.lg { width: 56px; height: 56px; border-radius: 16px; }
+.ico-tile.xl { width: 72px; height: 72px; border-radius: 20px; }
+.ico-tile.sm { width: 32px; height: 32px; border-radius: 10px; }
+.ico-tile.warm { background: var(--accent-2-soft); color: var(--accent-2); border-color: color-mix(in srgb, var(--accent-2) 30%, transparent); }
+.ico-tile.danger { background: var(--danger-soft); color: var(--danger); border-color: color-mix(in srgb, var(--danger) 30%, transparent); }
+.ico-inline { display: inline-flex; vertical-align: -0.2em; margin-right: 4px; }

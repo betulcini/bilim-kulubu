@@ -316,7 +316,7 @@
 			<div class="bracket-card ortala">
 				<span class="badge live">Oyun bitti</span>
 				<h2 class="baslik">
-					{#if kazanan === -1}Berabere!{:else}Kazanan: {takimAdlari[kazanan]} 🎉{/if}
+					{#if kazanan === -1}Berabere!{:else}Kazanan: {takimAdlari[kazanan]}{/if}
 				</h2>
 				<p class="soluk">{takimAdlari[0]} {skorlar[0]} – {skorlar[1]} {takimAdlari[1]}</p>
 				<div class="alt-satir merkez">

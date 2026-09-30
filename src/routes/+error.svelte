@@ -1,4 +1,5 @@
 <script>
+	import Icon from '$lib/components/Icon.svelte';
 	import { page } from '$app/stores';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 
@@ -16,7 +17,7 @@
 
 <div class="content-max" style="margin-bottom: 60px;">
 	<div class="bracket-card" style="max-width: 560px; margin: 0 auto; text-align: center; padding: 40px 24px;">
-		<div style="font-size: 3.5rem; margin-bottom: 14px;">🧭</div>
+		<div class="ico-tile xl" style="margin: 0 auto 16px;"><Icon name="compass" size={38} /></div>
 		<p style="color: var(--text-muted); margin-bottom: 24px;">
 			Merak etme, kulübün geri kalanı yerinde duruyor. Aşağıdaki linklerden birine göz atabilirsin.
 		</p>

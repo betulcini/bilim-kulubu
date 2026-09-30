@@ -1,4 +1,5 @@
 <script>
+	import Icon from '$lib/components/Icon.svelte';
 	import { interests } from '$lib/data/interests.js';
 
 	// Seçili ilgi alanı id'leri (bind:selected ile kullanılır)
@@ -21,7 +22,7 @@
 				aria-pressed={selected.includes(item.id)}
 				on:click={() => toggle(item.id)}
 			>
-				<span aria-hidden="true">{item.emoji}</span>
+				<span aria-hidden="true" class="ci"><Icon name={item.emoji} size={16} /></span>
 				<span>{item.label}</span>
 			</button>
 		{/each}
@@ -62,6 +63,9 @@
 		text-align: left;
 		cursor: pointer;
 		transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
+	}
+	.ci {
+		display: inline-flex;
 	}
 	.chip:hover {
 		border-color: var(--accent);

@@ -1,19 +1,19 @@
 export const trips = [
 	{
 		yer: 'TÜBİTAK Bilim Merkezi',
-		tarih: 'Ekim 2025',
-		durum: 'gerçekleşti',
+		tarih: 'Tarih belirlenecek',
+		durum: 'planlanıyor',
 		ozet: 'İnteraktif sergiler ve planetaryum gösterimiyle tam gün gezi.'
 	},
 	{
 		yer: 'Rahmi M. Koç Müzesi',
-		tarih: 'Aralık 2025',
-		durum: 'gerçekleşti',
+		tarih: 'Tarih belirlenecek',
+		durum: 'planlanıyor',
 		ozet: 'Sanayi tarihi ve ulaşım teknolojileri üzerine rehberli tur.'
 	},
 	{
 		yer: 'Üniversite Robotik Laboratuvarı Ziyareti',
-		tarih: 'Mart 2026',
+		tarih: 'Tarih belirlenecek',
 		durum: 'planlanıyor',
 		ozet: 'Lisans öğrencilerinin robotik projelerinin yerinde incelenmesi.'
 	},

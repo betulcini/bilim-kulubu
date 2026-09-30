@@ -1,4 +1,5 @@
 <script>
+	import Icon from '$lib/components/Icon.svelte';
 	import { onMount, onDestroy } from 'svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import { sfx } from '$lib/sound.js';
@@ -122,10 +123,10 @@
 					<p class="tarih-satir">{araligiFormatla(olay)}</p>
 					<p class="aciklama">{olay.aciklama}</p>
 					{#if olay.not}
-						<p class="not-satir">💡 {olay.not}</p>
+						<p class="not-satir"><span class="ico-inline"><Icon name="bulb" size={16} /></span>{olay.not}</p>
 					{/if}
 					{#if olay.kesinlik === 'tahmini'}
-						<p class="tahmini-uyari">⚠️ Bu tarih henüz kesinleşmedi, önceki yılların takvimine göre tahmin edilmiştir.</p>
+						<p class="tahmini-uyari"><span class="ico-inline"><Icon name="warning" size={16} /></span>Bu tarih henüz kesinleşmedi, önceki yılların takvimine göre tahmin edilmiştir.</p>
 					{/if}
 				</div>
 			</div>
