@@ -1,7 +1,7 @@
 export const searchItems = [
 	{ title: 'Ana Sayfa', href: '/', text: 'Kulüp çalışmaları etkinlikler duyurular' },
 	{ title: 'Bilim Serileri', href: '/bilim-serileri', text: 'fizik laboratuvar bilim insanları mikro dünya video' },
-	{ title: 'Bilim Tiyatrosu', href: '/bilim-tiyatrosu', text: 'Newton elementler DNA sahne gösterisi skeç' },
+	{ title: 'Bilim Tiyatrosu', href: '/bilim-tiyatrosu', text: 'Newton elementler DNA sahne gösterisi skeç planlanan' },
 	{ title: 'Kulüp Gezileri', href: '/kulup-gezileri', text: 'bilim merkezi müze robotik laboratuvar gözlemevi' },
 	{ title: 'Bilim Duyuruları', href: '/duyurular', text: 'yapay zekâ enerji uzay biyoteknoloji çevre' },
 	{ title: 'Fırsat Duyuruları', href: '/firsatlar', text: 'TÜBİTAK yarışma burs kamp hackathon' },

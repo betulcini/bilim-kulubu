@@ -4,6 +4,7 @@
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import Icon from '$lib/components/Icon.svelte';
 	import { sfx } from '$lib/sound.js';
+	import { supabase } from '$lib/supabaseClient.js';
 
 	const storageKey = 'btk-oneriler';
 	const kategoriler = ['Etkinlik fikri', 'Seri / tiyatro konusu', 'Gezi önerisi', 'Platform ile ilgili', 'Diğer'];
@@ -13,6 +14,9 @@
 	let mesaj = '';
 	let oneriler = [];
 	let gonderildi = false;
+	let gonderiliyor = false;
+	let hata = '';
+	let sonGonderim = 0;
 
 	onMount(() => {
 		if (!browser) return;
@@ -23,13 +27,38 @@
 		}
 	});
 
-	function gonder() {
-		if (!mesaj.trim()) return;
+	async function gonder() {
+		if (!mesaj.trim() || gonderiliyor) return;
+		hata = '';
+
+		// Art arda gönderimi engelle (yanlışlıkla çift tıklama / spam)
+		if (Date.now() - sonGonderim < 10000) {
+			hata = 'Lütfen birkaç saniye bekleyip tekrar dene.';
+			return;
+		}
+
+		const kayit = {
+			isim: isim.trim() || null,
+			kategori,
+			mesaj: mesaj.trim()
+		};
+
+		gonderiliyor = true;
+		const { error } = await supabase.from('oneriler').insert(kayit);
+		gonderiliyor = false;
+
+		if (error) {
+			hata = 'Önerin gönderilemedi. İnternet bağlantını kontrol edip tekrar dene; yazdığın metin silinmedi.';
+			return;
+		}
+
+		sonGonderim = Date.now();
+		// Yalnızca bu cihazda "gönderdiklerim" listesi olarak da tut
 		const yeni = {
 			id: Date.now(),
-			isim: isim.trim() || 'İsimsiz',
+			isim: kayit.isim || 'İsimsiz',
 			kategori,
-			mesaj: mesaj.trim(),
+			mesaj: kayit.mesaj,
 			tarih: new Date().toLocaleDateString('tr-TR')
 		};
 		oneriler = [yeni, ...oneriler];
@@ -38,7 +67,7 @@
 		isim = '';
 		gonderildi = true;
 		sfx.success();
-		setTimeout(() => (gonderildi = false), 2600);
+		setTimeout(() => (gonderildi = false), 3200);
 	}
 
 	function sil(id) {
@@ -52,14 +81,14 @@
 <PageHeader
 	eyebrow="Öneri Kutusu"
 	title="Fikrini kulüple paylaş"
-	desc="Etkinlik, seri, gezi ya da platformla ilgili öneride bulun. Not: sunucu bağlantısı geliştirme aşamasında olduğu için gönderdiğin öneriler şu an yalnızca bu cihazda saklanıyor."
+	desc="Etkinlik, seri, gezi ya da platformla ilgili öneride bulun. Önerilerin kulüp yönetimine iletilir; diğer üyeler göremez."
 />
 
 <div class="content-max layout">
 	<form class="bracket-card form-card" on:submit|preventDefault={gonder}>
 		<div class="field">
 			<label for="isim">Adın (isteğe bağlı)</label>
-			<input id="isim" type="text" bind:value={isim} placeholder="Örn. Ada Y." />
+			<input id="isim" type="text" bind:value={isim} maxlength="60" placeholder="Örn. Ada Y." />
 		</div>
 		<div class="field">
 			<label for="kategori">Kategori</label>
@@ -71,23 +100,24 @@
 		</div>
 		<div class="field">
 			<label for="mesaj">Önerin</label>
-			<textarea id="mesaj" bind:value={mesaj} placeholder="Aklındaki fikri buraya yaz..." required></textarea>
+			<textarea id="mesaj" bind:value={mesaj} maxlength="1000" placeholder="Aklındaki fikri buraya yaz..." required></textarea>
 		</div>
-		<button class="btn btn-primary" type="submit">Öneriyi gönder</button>
-		{#if gonderildi}<p class="confirm">Teşekkürler, önerin kaydedildi.</p>{/if}
+		<button class="btn btn-primary" type="submit" disabled={gonderiliyor}>{gonderiliyor ? 'Gönderiliyor...' : 'Öneriyi gönder'}</button>
+		{#if gonderildi}<p class="confirm">Teşekkürler, önerin kulübe iletildi.</p>{/if}
+		{#if hata}<p class="err" role="alert">{hata}</p>{/if}
 	</form>
 
 	<div class="list-side">
-		<h2>Gönderilen öneriler <span class="count">({oneriler.length})</span></h2>
+		<h2>Bu cihazdan gönderdiklerin <span class="count">({oneriler.length})</span></h2>
 		{#if oneriler.length === 0}
-			<p class="empty">Henüz bu cihazdan gönderilmiş bir öneri yok. İlk öneriyi sen bırak.</p>
+			<p class="empty">Henüz bu cihazdan öneri göndermedin. İlk öneriyi sen bırak.</p>
 		{:else}
 			<ul class="oneri-list">
 				{#each oneriler as o (o.id)}
 					<li class="bracket-card">
 						<div class="row">
 							<span class="badge info">{o.kategori}</span>
-							<button class="del" on:click={() => sil(o.id)} aria-label="Öneriyi sil">
+							<button class="del" on:click={() => sil(o.id)} aria-label="Bu cihazdaki kaydı sil" title="Sadece bu cihazdaki kaydı siler">
 								<Icon name="close" size={15} />
 							</button>
 						</div>
@@ -114,6 +144,11 @@
 	}
 	.confirm {
 		color: var(--accent);
+		font-size: var(--fs-sm);
+		margin: 10px 0 0;
+	}
+	.err {
+		color: var(--danger);
 		font-size: var(--fs-sm);
 		margin: 10px 0 0;
 	}

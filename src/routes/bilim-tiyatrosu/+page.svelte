@@ -8,7 +8,7 @@
 <PageHeader
 	eyebrow="Bilim Tiyatrosu"
 	title="Sahneye taşınan bilim"
-	desc="Kulübün okul etkinliklerinde sahnelediği kısa bilim gösterileri ve skeçler. Gösterilerin video kayıtları geliştirme aşamasında; sahne fotoğrafları için galeri bölümüne göz atabilirsin."
+	desc="Kulübün okul etkinliklerinde sahnelemeyi planladığı kısa bilim gösterileri ve skeçler. Gösterilerin hiçbirine henüz başlanmadı; fikirler hazırlandıkça ve çalışmalar başladıkça burada güncellenecek."
 />
 
 <div class="content-max">

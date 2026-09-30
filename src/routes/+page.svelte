@@ -12,7 +12,7 @@
 
     const descriptions = {
         '/bilim-serileri': 'Kısa video serileriyle bilimi anlatan içerikler.',
-        '/bilim-tiyatrosu': 'Sahnelenen bilim gösterileri ve skeçler.',
+        '/bilim-tiyatrosu': 'Sahnelenmesi planlanan bilim gösterileri ve skeçler.',
         '/kulup-gezileri': 'Müze, laboratuvar ve gözlemevi gezileri.',
         '/duyurular': 'Bilim ve teknoloji dünyasından gelişmeler.',
         '/firsatlar': 'Yarışma, kamp ve burs fırsatları.',
