@@ -58,3 +58,23 @@ ayrı ayrı `[data-theme='dark']` ve `[data-theme='light']` blokları altında.
 
 Tüm arayüz sesleri (`src/lib/sound.js`) Web Audio API ile anlık üretiliyor; harici ses
 dosyası gerekmiyor. Ayarlar sayfasından açılıp kapatılabilir.
+
+## Duyurular ve Fırsatlar (Supabase)
+
+Duyurular ve Fırsatlar sayfaları içeriği Supabase'deki `duyurular` ve `firsatlar` tablolarından okur.
+Yeni satır eklemek için Supabase → Table Editor'ı kullanman yeterli, siteyi yeniden yayınlamana gerek yok.
+Tablolar boşsa ya da bağlantı yoksa `src/lib/data/announcements.js` ve `opportunities.js` içindeki yedek liste gösterilir.
+
+- Tabloları kurmak için `supabase/2026-09-30-duyuru-firsat-tablolari.sql` dosyasını SQL Editor'de bir kez çalıştır.
+- Bir kaydı yayından kaldırmak için `aktif` sütununu `false` yap.
+- Fırsatlarda `son_tarih` geçince kart otomatik "Kapandı" olur ve listenin sonuna düşer.
+
+## Öneri Kutusu
+
+Öneriler `oneriler` tablosuna yazılır; sadece Supabase → Table Editor'dan okunabilir.
+Kurulum: `supabase/2026-09-30-oneri-kutusu.sql`.
+
+## Paylaşım önizlemesi (WhatsApp vb.)
+
+Önizleme görseli `static/og-image.png`. Görselin görünmesi için sitenin tam adresi gerekir:
+build ortamına `VITE_SITE_URL` değişkenini ekle (ör. `https://siteadresin.com`) ya da `src/lib/site.js` dosyasına yaz.

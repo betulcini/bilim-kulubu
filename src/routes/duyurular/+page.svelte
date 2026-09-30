@@ -1,6 +1,15 @@
 <script>
 	import PageHeader from '$lib/components/PageHeader.svelte';
-	import { announcements } from '$lib/data/announcements.js';
+	import Icon from '$lib/components/Icon.svelte';
+	import { onMount } from 'svelte';
+	import { announcements as yedek } from '$lib/data/announcements.js';
+	import { loadAnnouncements, formatTarih } from '$lib/content.js';
+
+	let announcements = yedek;
+	onMount(async () => {
+		const d = await loadAnnouncements();
+		if (d) announcements = d;
+	});
 </script>
 
 <svelte:head><title>Bilim Duyuruları · Bilim ve Teknoloji Kulübü</title></svelte:head>
@@ -8,7 +17,7 @@
 <PageHeader
 	eyebrow="Duyurular"
 	title="Bilim ve teknoloji gelişmeleri"
-	desc="Kulüp danışmanlığında derlenen güncel bilim ve teknoloji haberleri."
+	desc="Güncel bilim ve teknoloji haberlerinden seçmeler. Her kartta haberin alındığı kaynağın bağlantısı var."
 />
 
 <div class="content-max">
@@ -18,13 +27,29 @@
 				<span class="badge info">{a.etiket}</span>
 				<h3 style="margin-top:12px">{a.baslik}</h3>
 				<p>{a.ozet}</p>
-				<p class="tarih">{a.tarih}</p>
+				<p class="tarih">{formatTarih(a.tarih)}{#if a.kaynakAd} · {a.kaynakAd}{/if}</p>
+				{#if a.link}
+					<a class="haber-link" href={a.link} target="_blank" rel="noopener noreferrer">Haberin tamamı <Icon name="chevron" size={14} /></a>
+				{/if}
 			</div>
 		{/each}
 	</div>
 </div>
 
 <style>
+	.haber-link {
+		display: inline-flex;
+		align-items: center;
+		gap: 4px;
+		margin-top: 10px;
+		font-size: var(--fs-xs);
+		font-weight: 600;
+		color: var(--accent);
+		text-decoration: none;
+	}
+	.haber-link:hover {
+		text-decoration: underline;
+	}
 	.tarih {
 		color: var(--text-faint);
 		font-size: var(--fs-xs);

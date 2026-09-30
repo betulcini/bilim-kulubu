@@ -87,7 +87,7 @@ export const opportunities = [
 		kurum: 'Bilim ve Teknoloji Kulübü',
 		tur: 'Okul içi',
 		durum: 'okul-ici',
-		son: 'Kayıt: her ay son Cuma',
-		ozet: 'Takım halinde bir günde küçük bir uygulama ya da prototip geliştirme etkinliği.'
+		son: 'Planlanıyor, tarih belirlenecek',
+		ozet: 'Takım halinde bir günde küçük bir uygulama ya da prototip geliştirilmesi planlanan okul içi etkinlik.'
 	}
 ];

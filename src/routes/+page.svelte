@@ -1,8 +1,10 @@
 <script>
     import { navItems } from '$lib/data/nav.js';
-    import { announcements } from '$lib/data/announcements.js';
+    import { onMount } from 'svelte';
+    import { announcements as yedekDuyurular } from '$lib/data/announcements.js';
+    import { loadAnnouncements, loadOpportunities, sortOpportunities } from '$lib/content.js';
     import { trips } from '$lib/data/trips.js';
-    import { opportunities } from '$lib/data/opportunities.js';
+    import { opportunities as yedekFirsatlar } from '$lib/data/opportunities.js';
     import { scientists } from '$lib/data/scientists.js';
     import { sfx } from '$lib/sound.js';
     import Icon from '$lib/components/Icon.svelte';
@@ -16,9 +18,9 @@
         '/kulup-gezileri': 'Müze, laboratuvar ve gözlemevi gezileri.',
         '/duyurular': 'Bilim ve teknoloji dünyasından gelişmeler.',
         '/firsatlar': 'Yarışma, kamp ve burs fırsatları.',
-        '/galeri': 'Etkinliklerden fotoğraf ve anılar.',
+        '/galeri': 'Kulüp etkinliklerinden fotoğraflar.',
         '/oneri': 'Kulüple ilgili öneri ve fikirlerini paylaş.',
-        '/yarismalar': 'Kulübün düzenlediği Kahoot ve bilgi yarışmaları.',
+        '/yarismalar': 'Bilim quizleri, skor tablosu ve kulüp yarışmaları.',
         '/oyunlar': 'Bilim temalı mini oyunlar.',
         '/bilim-takvimi': 'Tutulmalar, uzay olayları ve TÜBİTAK yarışma tarihleri tek takvimde.',
         '/bilim-insanlari': 'Dünyayı değiştiren bilim insanlarının hayatları ve keşifleri.',
@@ -30,8 +32,15 @@
         .map((n) => ({ ...n, desc: descriptions[n.href] }));
 
     const yaklasanGezi = trips.find((t) => t.durum === 'planlanıyor');
-    const yaklasanFirsat = opportunities[0];
-    const sonDuyuru = announcements[0];
+    let duyurular = yedekDuyurular;
+    let firsatlar = yedekFirsatlar;
+    onMount(async () => {
+        const [d, f] = await Promise.all([loadAnnouncements(), loadOpportunities()]);
+        if (d) duyurular = d;
+        if (f) firsatlar = f;
+    });
+    $: sonDuyuru = duyurular[0];
+    $: yaklasanFirsat = sortOpportunities(firsatlar)[0];
 
     const steps = [
         {
@@ -44,7 +53,7 @@
         },
         {
             title: 'Projelere dahil ol',
-            desc: 'Haftalık toplantılara katılarak devam eden çalışmalara katkı sağlamaya başla.'
+            desc: 'Toplantılara katılarak devam eden çalışmalara katkı sağlamaya başla.'
         }
     ];
 </script>
@@ -83,8 +92,8 @@
         <div class="card-grid">
             <div class="bracket-card highlight-card">
                 <span class="badge live">Duyuru</span>
-                <h3>{sonDuyuru.baslik}</h3>
-                <p>{sonDuyuru.ozet}</p>
+                {#if sonDuyuru}<h3>{sonDuyuru.baslik}</h3>
+                <p>{sonDuyuru.ozet}</p>{/if}
                 <a class="text-link" href="/duyurular">Tüm duyurular</a>
             </div>
             {#if yaklasanGezi}
@@ -97,8 +106,8 @@
             {/if}
             <div class="bracket-card highlight-card">
                 <span class="badge dev">Fırsat</span>
-                <h3>{yaklasanFirsat.baslik}</h3>
-                <p>{yaklasanFirsat.son}</p>
+                {#if yaklasanFirsat}<h3>{yaklasanFirsat.baslik}</h3>
+                <p>{yaklasanFirsat.son}</p>{/if}
                 <a class="text-link" href="/firsatlar">Tüm fırsatlar</a>
             </div>
         </div>

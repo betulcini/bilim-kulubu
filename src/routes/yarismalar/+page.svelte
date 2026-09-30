@@ -1,6 +1,6 @@
 <script>
 	import PageHeader from '$lib/components/PageHeader.svelte';
-	import { competitionFilters, competitions, leaderboard as demoLeaderboard } from '$lib/data/competitions.js';
+	import { competitionFilters, competitions } from '$lib/data/competitions.js';
 	import { sfx } from '$lib/sound.js';
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
@@ -10,9 +10,9 @@
 	$: visibleCompetitions = activeFilter === 'Tümü' ? competitions : competitions.filter((competition) => competition.tur === activeFilter);
 	function badgeClass(durum) { return durum === 'Katıl' || durum === 'Kayıt açık' ? 'live' : 'dev'; }
 
-	// --- Skor tablosu: önce gerçek/ortak Supabase verisi, yoksa bu cihazdaki tahmini veri, o da yoksa örnek veri ---
-		let leaderboard = demoLeaderboard;
-	let leaderboardSource = 'demo'; // 'shared' | 'local' | 'demo'
+	// --- Skor tablosu: önce gerçek/ortak Supabase verisi, yoksa bu cihazdaki sonuçlar, o da yoksa boş durum ---
+	let leaderboard = [];
+	let leaderboardSource = 'empty'; // 'shared' | 'local' | 'empty'
 
 	function fromLocalStorage() {
 		try {
@@ -96,11 +96,11 @@
 	</section>
 
 	<section class="leaderboard-section" aria-labelledby="skor-tablosu">
-		<div class="leaderboard-heading"><div><p class="section-kicker">Sezon 2026–2027</p><h2 id="skor-tablosu">Skor tablosu</h2></div><span class="badge live">Güncel sıralama</span></div>
-		<div class="leaderboard-card"><table><thead><tr><th>Sıra</th><th>Yarışmacı</th><th>Puan</th></tr></thead><tbody>{#each leaderboard as player}<tr><td><span class="rank rank-{player.sira}">{player.sira}</span></td><td>{player.ad}</td><td><strong>{player.puan.toLocaleString('tr-TR')}</strong></td></tr>{/each}</tbody></table></div>
+		<div class="leaderboard-heading"><div><p class="section-kicker">Sezon 2026–2027</p><h2 id="skor-tablosu">Skor tablosu</h2></div>{#if leaderboard.length > 0}<span class="badge live">Güncel sıralama</span>{/if}</div>
+		{#if leaderboard.length === 0}<div class="leaderboard-card" style="padding: 28px 20px; text-align: center; color: var(--text-muted);">Henüz kaydedilmiş bir quiz skoru yok. Bir quiz çöz, ilk sırada sen ol.</div>{:else}<div class="leaderboard-card"><table><thead><tr><th>Sıra</th><th>Yarışmacı</th><th>Puan</th></tr></thead><tbody>{#each leaderboard as player}<tr><td><span class="rank rank-{player.sira}">{player.sira}</span></td><td>{player.ad}</td><td><strong>{player.puan.toLocaleString('tr-TR')}</strong></td></tr>{/each}</tbody></table></div>{/if}
 		<p class="leaderboard-note">
-			{#if leaderboardSource === 'demo'}
-				Henüz kaydedilmiş quiz sonucu yok — örnek bir tablo gösteriliyor. Giriş yapıp bir quiz çözüldüğünde bu tablo gerçek skorlarla güncellenir.
+			{#if leaderboardSource === 'empty'}
+				Giriş yapıp bir quiz çözdüğünde skorun herkese görünen ortak tabloya eklenir.
 			{:else if leaderboardSource === 'local'}
 				Henüz giriş yapmış kimse skor kaydetmedi — bu cihazdaki quiz sonuçlarına göre tahmini bir sıralama gösteriliyor. <a href="/giris" style="color: var(--accent);">Giriş yaparsan</a> skorun herkese görünen ortak tabloya eklenir.
 			{:else}

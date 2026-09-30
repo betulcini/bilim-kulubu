@@ -10,6 +10,7 @@
 	import Icon from '$lib/components/Icon.svelte';
 	import SearchDialog from '$lib/components/SearchDialog.svelte';
 	import InstallPrompt from '$lib/components/InstallPrompt.svelte';
+	import SeoHead from '$lib/components/SeoHead.svelte';
 	import { initInstall } from '$lib/stores/install.js';
 	import AmbientScience from '$lib/components/AmbientScience.svelte';
 	import { user, authReady, initAuth, signOut } from '$lib/stores/auth.js';
@@ -169,6 +170,7 @@
 			</div>
 		</footer>
 	</main>
+	<SeoHead />
 	<InstallPrompt />
 	<SearchDialog bind:open={searchOpen} />
 </div>

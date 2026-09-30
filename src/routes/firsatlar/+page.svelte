@@ -1,10 +1,15 @@
 <script>
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import Icon from '$lib/components/Icon.svelte';
-	import { opportunities } from '$lib/data/opportunities.js';
+	import { onMount } from 'svelte';
+	import { opportunities as yedek } from '$lib/data/opportunities.js';
+	import { loadOpportunities, sortOpportunities } from '$lib/content.js';
 
-	const bugun = new Date().toISOString().slice(0, 10);
-	const sira = { acik: 0, yaklasan: 1, etkinlik: 2, 'okul-ici': 3 };
+	let kaynakListe = yedek;
+	onMount(async () => {
+		const d = await loadOpportunities();
+		if (d) kaynakListe = d;
+	});
 
 	const durumlar = {
 		acik: { ad: 'Başvuru açık', sinif: 'live' },
@@ -13,13 +18,7 @@
 		'okul-ici': { ad: 'Okul içi', sinif: 'muted' }
 	};
 
-	$: liste = opportunities
-		.map((o) => ({ ...o, kapandi: Boolean(o.sonTarih) && o.sonTarih < bugun }))
-		.sort((a, b) => {
-			if (a.kapandi !== b.kapandi) return a.kapandi ? 1 : -1;
-			if (sira[a.durum] !== sira[b.durum]) return sira[a.durum] - sira[b.durum];
-			return (a.sonTarih || '9999').localeCompare(b.sonTarih || '9999');
-		});
+	$: liste = sortOpportunities(kaynakListe);
 </script>
 
 <svelte:head><title>Fırsat Duyuruları · Bilim ve Teknoloji Kulübü</title></svelte:head>
