@@ -4,11 +4,13 @@
 	import { onMount } from 'svelte';
 	import { announcements as yedek } from '$lib/data/announcements.js';
 	import { loadAnnouncements, formatTarih } from '$lib/content.js';
+	import { isNew, markSeen } from '$lib/stores/newContent.js';
 
 	let announcements = yedek;
 	onMount(async () => {
 		const d = await loadAnnouncements();
 		if (d) announcements = d;
+		markSeen('duyurular');
 	});
 </script>
 
@@ -25,6 +27,7 @@
 		{#each announcements as a}
 			<div class="bracket-card">
 				<span class="badge info">{a.etiket}</span>
+				{#if isNew('duyurular', a)}<span class="badge live">Yeni</span>{/if}
 				<h3 style="margin-top:12px">{a.baslik}</h3>
 				<p>{a.ozet}</p>
 				<p class="tarih">{formatTarih(a.tarih)}{#if a.kaynakAd} · {a.kaynakAd}{/if}</p>

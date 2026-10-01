@@ -4,11 +4,13 @@
 	import { onMount } from 'svelte';
 	import { opportunities as yedek } from '$lib/data/opportunities.js';
 	import { loadOpportunities, sortOpportunities } from '$lib/content.js';
+	import { isNew, markSeen } from '$lib/stores/newContent.js';
 
 	let kaynakListe = yedek;
 	onMount(async () => {
 		const d = await loadOpportunities();
 		if (d) kaynakListe = d;
+		markSeen('firsatlar');
 	});
 
 	const durumlar = {
@@ -40,6 +42,7 @@
 						<span class="badge {durumlar[o.durum].sinif}">{durumlar[o.durum].ad}</span>
 					{/if}
 					<span class="badge muted">{o.tur}</span>
+					{#if isNew('firsatlar', o)}<span class="badge live">Yeni</span>{/if}
 				</div>
 				<h3>{o.baslik}</h3>
 				<p>{o.ozet}</p>

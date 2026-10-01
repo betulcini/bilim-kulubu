@@ -14,6 +14,9 @@
 	import { initInstall } from '$lib/stores/install.js';
 	import AmbientScience from '$lib/components/AmbientScience.svelte';
 	import { user, authReady, initAuth, signOut } from '$lib/stores/auth.js';
+	import { newCounts, refreshNewCounts } from '$lib/stores/newContent.js';
+
+	const sectionOf = { '/duyurular': 'duyurular', '/firsatlar': 'firsatlar' };
 
 	let mobileOpen = false;
 	let isMobile = false;
@@ -25,6 +28,10 @@
 		theme.init();
 		initAuth();
 		initInstall();
+		refreshNewCounts();
+		// Uygulama arka plandan öne gelince (PWA) sayaçları tazele
+		const onVisible = () => document.visibilityState === 'visible' && refreshNewCounts();
+		document.addEventListener('visibilitychange', onVisible);
 		const media = window.matchMedia('(max-width: 900px)');
 		const updateViewport = () => {
 			isMobile = media.matches;
@@ -32,7 +39,10 @@
 		};
 		updateViewport();
 		media.addEventListener('change', updateViewport);
-		return () => media.removeEventListener('change', updateViewport);
+		return () => {
+			media.removeEventListener('change', updateViewport);
+			document.removeEventListener('visibilitychange', onVisible);
+		};
 	});
 
 	afterNavigate(() => {
@@ -68,6 +78,7 @@
 		soundEnabled.toggle();
 	}
 
+	$: totalNew = ($newCounts.duyurular || 0) + ($newCounts.firsatlar || 0);
 	$: themeIcon = $theme === 'dark' ? 'moon' : $theme === 'light' ? 'sun' : 'system';
 	$: themeLabel = $theme === 'dark' ? 'Koyu' : $theme === 'light' ? 'Aydınlık' : 'Sistem';
 </script>
@@ -82,10 +93,11 @@
 	<div class="topbar">
 		<button class="icon-btn menu-toggle" bind:this={menuButton} on:click={openMenu} aria-label="Menüyü aç" aria-expanded={mobileOpen} aria-controls="ana-menu">
 			<Icon name="menu" />
+			{#if totalNew > 0}<span class="new-dot" aria-hidden="true"></span>{/if}
 		</button>
 		<a class="topbar-brand" href="/" aria-label="Bilim ve Teknoloji Kulübü ana sayfa">
 			<span class="brand-mark" aria-hidden="true"></span>
-			<span>Bilim ve Teknoloji Kulübü</span>
+			<span class="brand-text">Bilim ve Teknoloji Kulübü</span>
 		</a>
 		<a class="home-button" href="/" aria-label="Ana sayfa" on:click={() => sfx.nav()}>
 			<Icon name="home" />
@@ -124,6 +136,9 @@
 							<a href={item.href} class:active={$page.url.pathname === item.href} on:click={() => sfx.nav()}>
 								<Icon name={item.icon} />
 								<span>{item.label}</span>
+								{#if sectionOf[item.href] && $newCounts[sectionOf[item.href]] > 0}
+									<span class="nav-count" aria-label="{$newCounts[sectionOf[item.href]]} yeni">{$newCounts[sectionOf[item.href]]}</span>
+								{/if}
 							</a>
 						{/if}
 					</li>
@@ -229,13 +244,16 @@
 		align-items: center;
 		gap: 9px;
 		min-width: 0;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		white-space: nowrap;
+		flex: 0 1 auto;
 		font-family: var(--font-display);
 		font-size: var(--fs-sm);
 		font-weight: 600;
 		text-decoration: none;
+	}
+	.brand-text {
+		min-width: 0;
+		line-height: 1.15;
+		text-wrap: balance;
 	}
 	.brand-mark {
 		position: relative;
@@ -455,8 +473,37 @@
 		margin: 0;
 	}
 
+	.menu-toggle { position: relative; }
+	.new-dot {
+		position: absolute;
+		top: 5px;
+		right: 5px;
+		width: 9px;
+		height: 9px;
+		border-radius: 50%;
+		background: var(--accent);
+		border: 2px solid var(--bg);
+	}
+	.nav-count {
+		margin-left: auto;
+		min-width: 20px;
+		padding: 1px 7px;
+		border-radius: 999px;
+		background: var(--accent-soft);
+		color: var(--accent);
+		border: 1px solid color-mix(in srgb, var(--accent) 35%, transparent);
+		font-size: var(--fs-xs);
+		font-weight: 700;
+		line-height: 1.4;
+		text-align: center;
+	}
+
 	@media (max-width: 900px) {
-		.topbar { gap: 10px; }
+		.topbar { gap: 8px; padding: 0 10px; }
+		.topbar-brand { flex: 1 1 0; }
+		.brand-text { font-size: 0.8125rem; }
+		.brand-mark { width: 24px; height: 24px; }
+		.brand-mark::before { inset: 5px; }
 		.sidebar nav ul { gap: 9px; }
 		.sidebar nav a { padding-block: 12px; }
 		.sidebar-foot { gap: 10px; }

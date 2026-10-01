@@ -1,0 +1,26 @@
+name: Build kontrolü
+
+# Her push'ta ve pull request'te siteyi derler; bozuk bir değişiklik yayına çıkmadan yakalanır.
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - name: Build
+        run: npm run build
+        env:
+          # Gerçek anahtarlar gerekmez; build sadece derlenebildiğini doğrular.
+          PUBLIC_SUPABASE_URL: https://example.supabase.co
+          PUBLIC_SUPABASE_ANON_KEY: build-check

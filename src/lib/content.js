@@ -6,7 +6,7 @@ export async function loadAnnouncements() {
 	try {
 		const { data, error } = await supabase
 			.from('duyurular')
-			.select('baslik, etiket, tarih, ozet, link, kaynak_ad')
+			.select('baslik, etiket, tarih, ozet, link, kaynak_ad, created_at')
 			.eq('aktif', true)
 			.order('tarih', { ascending: false })
 			.limit(40);
@@ -17,7 +17,8 @@ export async function loadAnnouncements() {
 			tarih: d.tarih,
 			ozet: d.ozet,
 			link: d.link,
-			kaynakAd: d.kaynak_ad
+			kaynakAd: d.kaynak_ad,
+			eklendi: d.created_at
 		}));
 	} catch {
 		return null;
@@ -28,7 +29,7 @@ export async function loadOpportunities() {
 	try {
 		const { data, error } = await supabase
 			.from('firsatlar')
-			.select('baslik, kurum, tur, durum, son, son_tarih, ozet, link, link_ad, kaynak, kaynak_ad')
+			.select('baslik, kurum, tur, durum, son, son_tarih, ozet, link, link_ad, kaynak, kaynak_ad, created_at')
 			.eq('aktif', true)
 			.limit(60);
 		if (error || !data || data.length === 0) return null;
@@ -43,7 +44,8 @@ export async function loadOpportunities() {
 			link: d.link,
 			linkAd: d.link_ad,
 			kaynak: d.kaynak,
-			kaynakAd: d.kaynak_ad
+			kaynakAd: d.kaynak_ad,
+			eklendi: d.created_at
 		}));
 	} catch {
 		return null;
