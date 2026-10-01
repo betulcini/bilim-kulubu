@@ -1,13 +1,19 @@
 <script>
 	import Icon from '$lib/components/Icon.svelte';
-	import { interests } from '$lib/data/interests.js';
+	import { interests, MAX_INTERESTS } from '$lib/data/interests.js';
 
 	// Seçili ilgi alanı id'leri (bind:selected ile kullanılır)
 	export let selected = [];
 	export let legend = 'İlgi alanların';
 
+	// Filtre olarak kullanılırken sınır gerekmez (limit={0})
+	export let limit = MAX_INTERESTS;
+
+	$: doldu = limit > 0 && selected.length >= limit;
+
 	function toggle(id) {
-		selected = selected.includes(id) ? selected.filter((x) => x !== id) : [...selected, id];
+		if (selected.includes(id)) selected = selected.filter((x) => x !== id);
+		else if (!doldu) selected = [...selected, id];
 	}
 </script>
 
@@ -20,6 +26,7 @@
 				class="chip"
 				class:on={selected.includes(item.id)}
 				aria-pressed={selected.includes(item.id)}
+				disabled={doldu && !selected.includes(item.id)}
 				on:click={() => toggle(item.id)}
 			>
 				<span aria-hidden="true" class="ci"><Icon name={item.emoji} size={16} /></span>
@@ -27,6 +34,7 @@
 			</button>
 		{/each}
 	</div>
+	{#if doldu}<p class="limit">En fazla {limit} alan seçebilirsin.</p>{/if}
 </fieldset>
 
 <style>
@@ -41,6 +49,15 @@
 		margin-bottom: 8px;
 		font-size: var(--fs-xs);
 		color: var(--text-muted);
+	}
+	.limit {
+		margin: 8px 0 0;
+		font-size: var(--fs-xs);
+		color: var(--text-muted);
+	}
+	.chip:disabled {
+		opacity: 0.45;
+		cursor: not-allowed;
 	}
 	.chips {
 		display: flex;

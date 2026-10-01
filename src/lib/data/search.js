@@ -6,6 +6,8 @@ export const searchItems = [
 	{ title: 'Bilim Duyuruları', href: '/duyurular', text: 'yapay zekâ enerji uzay biyoteknoloji çevre' },
 	{ title: 'Fırsat Duyuruları', href: '/firsatlar', text: 'TÜBİTAK yarışma burs kamp hackathon' },
 	{ title: 'Galeri', href: '/galeri', text: 'etkinlik fotoğraf anı' },
+	{ title: 'Topluluk', href: '/topluluk', text: 'öğrenci arkadaş tanış ilgi alanı bilim alanı filtre' },
+	{ title: 'Mesajlar', href: '/mesajlar', text: 'mesaj yaz sohbet arkadaş' },
 	{ title: 'Öneri Kutusu', href: '/oneri', text: 'fikir proje etkinlik önerisi mesaj' },
 	{ title: 'Yarışmalar', href: '/yarismalar', text: 'kahoot bilgi yarışması' },
 	{ title: 'Bilim Takvimi', href: '/bilim-takvimi', text: 'güneş tutulması ay tutulması TÜBİTAK 2204 olimpiyat TEKNOFEST meteor yağmuru takvim' },

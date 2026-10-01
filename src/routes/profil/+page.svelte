@@ -7,6 +7,7 @@
 	import { activity } from '$lib/stores/activity.js';
 	import { computeBadges } from '$lib/data/badges.js';
 	import { supabase } from '$lib/supabaseClient.js';
+	import { loadMyCommunity, saveMyCommunity, syncMyInterests, normalizeInstagram, normalizeLinkedin, ROLLER } from '$lib/community.js';
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import { sfx } from '$lib/sound.js';
@@ -52,6 +53,64 @@
 			return;
 		}
 		basari = true;
+		sfx.nav();
+		if (toplulukHazir) syncMyInterests($user.id, ilgiler);
+	}
+
+	// ---------- topluluk (öğrenci dizini) ----------
+	let herkeseAcik = false;
+	let biyo = '';
+	let rol = 'ogrenci';
+	let instagram = '';
+	let linkedin = '';
+	let eksikAlan = false; // rol/instagram/linkedin SQL'i henüz çalışmadı
+	let toplulukHazir = false; // kayıt başarıyla okunduysa true (okunamadıysa yazma yapılmaz)
+	let toplulukKaydediliyor = false;
+	let toplulukHata = '';
+	let toplulukBasari = '';
+	let communityFor = null;
+
+	$: if (browser && $user && communityFor !== $user.id) {
+		communityFor = $user.id;
+		yukleTopluluk($user.id);
+	}
+
+	async function yukleTopluluk(uid) {
+		const res = await loadMyCommunity(uid);
+		const { data, error } = res;
+		if (error) {
+			toplulukHata = 'Topluluk ayarları yüklenemedi. Supabase SQL Editor\'da supabase/2026-10-01-topluluk-mesajlar.sql dosyasını bir kez çalıştırman gerekiyor.';
+			return;
+		}
+		herkeseAcik = !!data.is_public;
+		biyo = data.bio || '';
+		rol = data.role || 'ogrenci';
+		instagram = data.instagram || '';
+		linkedin = data.linkedin || '';
+		eksikAlan = !!res.eksikAlan;
+		toplulukHazir = true;
+	}
+
+	async function toplulukKaydet() {
+		toplulukHata = '';
+		toplulukBasari = '';
+		toplulukKaydediliyor = true;
+		const { error } = await saveMyCommunity($user.id, {
+			is_public: herkeseAcik,
+			bio: biyo,
+			interests: $user.interests || [],
+			role: rol,
+			instagram,
+			linkedin
+		});
+		toplulukKaydediliyor = false;
+		if (error) {
+			toplulukHata = 'Kaydedilemedi: ' + error.message;
+			return;
+		}
+		instagram = normalizeInstagram(instagram) ?? instagram;
+		linkedin = (normalizeLinkedin(linkedin) ?? linkedin).replace('https://www.', '');
+		toplulukBasari = herkeseAcik ? 'Artık Topluluk sayfasında görünüyorsun.' : 'Profilin Topluluk sayfasında gizli.';
 		sfx.nav();
 	}
 
@@ -99,6 +158,13 @@
 			<button class="btn btn-ghost" on:click={handleSignOut}>Çıkış Yap</button>
 		</div>
 
+		{#if toplulukHazir && !herkeseAcik}
+			<div class="bracket-card notice">
+				<p>Profilin şu an <strong>Topluluk sayfasında gizli</strong>. Aynı alanlara ilgi duyanlarla tanışmak için herkese açık yapabilirsin.</p>
+				<a class="btn btn-primary" href="#topluluk">Herkese açık yap</a>
+			</div>
+		{/if}
+
 		<section aria-labelledby="duzenle-baslik">
 			<h2 id="duzenle-baslik">Bilgilerimi düzenle</h2>
 			<form class="bracket-card form" on:submit|preventDefault={kaydet}>
@@ -125,6 +191,62 @@
 
 				<div>
 					<button class="btn btn-primary" type="submit" disabled={kaydediliyor}>{kaydediliyor ? 'Kaydediliyor…' : 'Değişiklikleri Kaydet'}</button>
+				</div>
+			</form>
+		</section>
+
+		<section id="topluluk" aria-labelledby="topluluk-baslik">
+			<h2 id="topluluk-baslik">Topluluk profilim</h2>
+			<form class="bracket-card form" on:submit|preventDefault={toplulukKaydet}>
+				<p class="hint">
+					Aynı bilim alanlarına ilgi duyan kişilerle tanışmak için profilini Topluluk sayfasında gösterebilirsin.
+					Açarsan <strong>adın, sınıfın, rolün, ilgi alanların, tanıtım yazın ve eklediğin sosyal medya hesapları</strong>
+					giriş yapmış kulüp üyelerine görünür ve sana site içinden mesaj yazabilirler. E-posta adresin hiçbir zaman paylaşılmaz.
+					İstediğin zaman kapatabilir, rahatsız edici birini engelleyebilir ya da şikayet edebilirsin.
+				</p>
+
+				{#if toplulukHata}<p class="msg err" role="alert">{toplulukHata}</p>{/if}
+				{#if toplulukHazir && eksikAlan}
+					<p class="hint warn">Rol, Instagram ve LinkedIn alanlarının çalışması için supabase/2026-10-01-topluluk-ek-alanlar.sql dosyası bir kez çalıştırılmalı.</p>
+				{/if}
+
+				<label class="switch" class:on={herkeseAcik}>
+					<input type="checkbox" bind:checked={herkeseAcik} disabled={!toplulukHazir} />
+					<span>Profilimi herkese açık yap (Topluluk sayfasında göster)</span>
+				</label>
+				{#if herkeseAcik && ($user.interests || []).length === 0}
+					<p class="hint warn">Henüz ilgi alanı seçmedin; bilim alanına göre aramalarda çıkabilmek için yukarıdan seçip "Değişiklikleri Kaydet"e bas.</p>
+				{/if}
+
+				<div class="field">
+					<label for="p-rol">Ben bir</label>
+					<select id="p-rol" bind:value={rol} disabled={!toplulukHazir}>
+						{#each ROLLER as r}<option value={r.id}>{r.label}</option>{/each}
+					</select>
+				</div>
+
+				<div class="field">
+					<label for="p-biyo">Kısa tanıtım <span class="opt">(isteğe bağlı, en fazla 280 karakter)</span></label>
+					<textarea id="p-biyo" rows="3" maxlength="280" bind:value={biyo} disabled={!toplulukHazir} placeholder="Örn. Uzayla ilgileniyorum, birlikte teleskop projesi yapacak biri arıyorum."></textarea>
+				</div>
+
+				<div class="row">
+					<div class="field">
+						<label for="p-ig">Instagram <span class="opt">(isteğe bağlı)</span></label>
+						<input id="p-ig" type="text" bind:value={instagram} disabled={!toplulukHazir || eksikAlan} maxlength="60" placeholder="kullanici_adin" autocomplete="off" autocapitalize="none" spellcheck="false" />
+					</div>
+					<div class="field">
+						<label for="p-li">LinkedIn <span class="opt">(isteğe bağlı)</span></label>
+						<input id="p-li" type="text" bind:value={linkedin} disabled={!toplulukHazir || eksikAlan} maxlength="160" placeholder="linkedin.com/in/kullanici-adin" autocomplete="off" autocapitalize="none" spellcheck="false" />
+					</div>
+				</div>
+				<p class="hint">Sosyal medya hesapların sadece sen profilini herkese açtığında ve sadece giriş yapmış üyelere görünür. İstemiyorsan boş bırak.</p>
+
+				{#if toplulukBasari}<p class="msg ok" role="status">{toplulukBasari}</p>{/if}
+
+				<div class="actions">
+					<button class="btn btn-primary" type="submit" disabled={toplulukKaydediliyor || !toplulukHazir}>{toplulukKaydediliyor ? 'Kaydediliyor…' : 'Topluluk ayarlarını kaydet'}</button>
+					<a class="btn btn-ghost" href="/topluluk">Topluluğa git</a>
 				</div>
 			</form>
 		</section>
@@ -237,6 +359,60 @@
 	}
 	.msg.ok {
 		color: var(--accent);
+	}
+
+	.notice {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 12px 14px;
+	}
+	.notice p {
+		margin: 0;
+		flex: 1;
+		min-width: 200px;
+		font-size: var(--fs-sm);
+		color: var(--text-muted);
+	}
+	.notice a {
+		text-decoration: none;
+	}
+	.form select {
+		width: 100%;
+	}
+	.hint {
+		margin: 0;
+		font-size: var(--fs-sm);
+		color: var(--text-muted);
+		line-height: 1.55;
+	}
+	.hint.warn {
+		color: var(--text);
+	}
+	.switch {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		font-weight: 600;
+		cursor: pointer;
+	}
+	.form .switch input {
+		width: 20px;
+		height: 20px;
+		flex: none;
+		accent-color: var(--accent);
+	}
+	.form textarea {
+		width: 100%;
+		resize: vertical;
+	}
+	.actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+	.actions a {
+		text-decoration: none;
 	}
 
 	.sec-head {

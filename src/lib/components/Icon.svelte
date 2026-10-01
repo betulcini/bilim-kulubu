@@ -192,6 +192,13 @@
 	{:else if name === 'phone'}
 		<rect x="7" y="3" width="10" height="18" rx="2.2" />
 		<path d="M10.5 18h3" />
+	{:else if name === 'instagram'}
+		<rect x="3.5" y="3.5" width="17" height="17" rx="5" />
+		<circle cx="12" cy="12" r="3.8" />
+		<circle cx="17" cy="7" r="0.9" fill="currentColor" stroke="none" />
+	{:else if name === 'linkedin'}
+		<rect x="3.5" y="3.5" width="17" height="17" rx="3" />
+		<path d="M8 10.5V16M8 7.8v.01M12 16v-5.5M12 13a2.6 2.6 0 0 1 5.2 0V16" />
 	{:else if name === 'more'}
 		<circle cx="12" cy="5.5" r="1.2" fill="currentColor" stroke="none" />
 		<circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none" />
