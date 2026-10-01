@@ -136,12 +136,9 @@ export async function reportUser(otherId, sebep, aciklama) {
 	const { error } = await supabase
 		.from('sikayetler')
 		.insert({ sikayet_edilen: otherId, sebep, aciklama: (aciklama || '').trim().slice(0, 500) || null });
-	return { error };
 }
 
 // ---------- mesajlar ----------
-export async function loadMessages(userId) {
-	const { data, error } = await supabase
 		.from('mesajlar')
 		.select('id, gonderen, alici, icerik, okundu, created_at')
 		.or(`gonderen.eq.${userId},alici.eq.${userId}`)
