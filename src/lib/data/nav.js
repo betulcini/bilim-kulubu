@@ -10,6 +10,8 @@ export const navItems = [
     { href: '/bilim-serileri', label: 'Bilim Serileri', icon: 'series' },
     { href: '/bilim-tiyatrosu', label: 'Bilim Tiyatrosu', icon: 'theater' },
     { href: '/firsatlar', label: 'Fırsat Duyuruları', icon: 'opportunity' },
+    { href: '/topluluk', label: 'Topluluk', icon: 'users' },
+    { href: '/mesajlar', label: 'Mesajlar', icon: 'mail' },
     { href: '/oneri', label: 'Öneri Kutusu', icon: 'suggestion' },
     { href: '/hakkinda-iletisim', label: 'Hakkında ve İletişim', icon: 'info' },
     { href: '/ayarlar', label: 'Ayarlar', icon: 'settings' }

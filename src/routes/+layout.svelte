@@ -15,6 +15,7 @@
 	import AmbientScience from '$lib/components/AmbientScience.svelte';
 	import { user, authReady, initAuth, signOut } from '$lib/stores/auth.js';
 	import { newCounts, refreshNewCounts } from '$lib/stores/newContent.js';
+	import { unread, initUnread } from '$lib/stores/messages.js';
 
 	const sectionOf = { '/duyurular': 'duyurular', '/firsatlar': 'firsatlar' };
 
@@ -27,6 +28,7 @@
 	onMount(() => {
 		theme.init();
 		initAuth();
+		initUnread();
 		initInstall();
 		refreshNewCounts();
 		// Uygulama arka plandan öne gelince (PWA) sayaçları tazele
@@ -78,7 +80,7 @@
 		soundEnabled.toggle();
 	}
 
-	$: totalNew = ($newCounts.duyurular || 0) + ($newCounts.firsatlar || 0);
+	$: totalNew = ($newCounts.duyurular || 0) + ($newCounts.firsatlar || 0) + ($unread || 0);
 	$: themeIcon = $theme === 'dark' ? 'moon' : $theme === 'light' ? 'sun' : 'system';
 	$: themeLabel = $theme === 'dark' ? 'Koyu' : $theme === 'light' ? 'Aydınlık' : 'Sistem';
 </script>
@@ -138,6 +140,8 @@
 								<span>{item.label}</span>
 								{#if sectionOf[item.href] && $newCounts[sectionOf[item.href]] > 0}
 									<span class="nav-count" aria-label="{$newCounts[sectionOf[item.href]]} yeni">{$newCounts[sectionOf[item.href]]}</span>
+								{:else if item.href === '/mesajlar' && $unread > 0}
+									<span class="nav-count" aria-label="{$unread} okunmamış mesaj">{$unread}</span>
 								{/if}
 							</a>
 						{/if}

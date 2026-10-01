@@ -7,6 +7,7 @@
 	import { activity } from '$lib/stores/activity.js';
 	import { computeBadges } from '$lib/data/badges.js';
 	import { supabase } from '$lib/supabaseClient.js';
+	import { loadMyCommunity, saveMyCommunity, syncMyInterests } from '$lib/community.js';
 	import { browser } from '$app/environment';
 	import { goto } from '$app/navigation';
 	import { sfx } from '$lib/sound.js';
@@ -52,6 +53,50 @@
 			return;
 		}
 		basari = true;
+		sfx.nav();
+		if (toplulukHazir) syncMyInterests($user.id, ilgiler);
+	}
+
+	// ---------- topluluk (öğrenci dizini) ----------
+	let herkeseAcik = false;
+	let biyo = '';
+	let toplulukHazir = false; // kayıt başarıyla okunduysa true (okunamadıysa yazma yapılmaz)
+	let toplulukKaydediliyor = false;
+	let toplulukHata = '';
+	let toplulukBasari = '';
+	let communityFor = null;
+
+	$: if (browser && $user && communityFor !== $user.id) {
+		communityFor = $user.id;
+		yukleTopluluk($user.id);
+	}
+
+	async function yukleTopluluk(uid) {
+		const { data, error } = await loadMyCommunity(uid);
+		if (error) {
+			toplulukHata = 'Topluluk ayarları yüklenemedi. Veritabanı kurulumu (topluluk SQL dosyası) yapılmamış olabilir.';
+			return;
+		}
+		herkeseAcik = !!data.is_public;
+		biyo = data.bio || '';
+		toplulukHazir = true;
+	}
+
+	async function toplulukKaydet() {
+		toplulukHata = '';
+		toplulukBasari = '';
+		toplulukKaydediliyor = true;
+		const { error } = await saveMyCommunity($user.id, {
+			is_public: herkeseAcik,
+			bio: biyo,
+			interests: $user.interests || []
+		});
+		toplulukKaydediliyor = false;
+		if (error) {
+			toplulukHata = 'Kaydedilemedi: ' + error.message;
+			return;
+		}
+		toplulukBasari = herkeseAcik ? 'Artık Topluluk sayfasında görünüyorsun.' : 'Profilin Topluluk sayfasında gizli.';
 		sfx.nav();
 	}
 
@@ -125,6 +170,40 @@
 
 				<div>
 					<button class="btn btn-primary" type="submit" disabled={kaydediliyor}>{kaydediliyor ? 'Kaydediliyor…' : 'Değişiklikleri Kaydet'}</button>
+				</div>
+			</form>
+		</section>
+
+		<section id="topluluk" aria-labelledby="topluluk-baslik">
+			<h2 id="topluluk-baslik">Topluluk</h2>
+			<form class="bracket-card form" on:submit|preventDefault={toplulukKaydet}>
+				<p class="hint">
+					Aynı bilim alanlarına ilgi duyan arkadaşlarınla tanışmak için profilini Topluluk sayfasında gösterebilirsin.
+					Açarsan <strong>adın, sınıfın, ilgi alanların ve tanıtım yazın</strong> giriş yapmış kulüp üyelerine görünür ve
+					sana site içinden mesaj yazabilirler. E-posta adresin hiçbir zaman paylaşılmaz. İstediğin zaman kapatabilir,
+					rahatsız edici birini engelleyebilir ya da şikayet edebilirsin.
+				</p>
+
+				<label class="switch">
+					<input type="checkbox" bind:checked={herkeseAcik} disabled={!toplulukHazir} />
+					<span>Beni Topluluk sayfasında göster</span>
+				</label>
+
+				{#if herkeseAcik && ($user.interests || []).length === 0}
+					<p class="hint warn">Henüz ilgi alanı seçmedin; bilim alanına göre aramalarda çıkabilmek için yukarıdan seçip kaydet.</p>
+				{/if}
+
+				<div class="field">
+					<label for="p-biyo">Kısa tanıtım <span class="opt">(isteğe bağlı, en fazla 280 karakter)</span></label>
+					<textarea id="p-biyo" rows="3" maxlength="280" bind:value={biyo} disabled={!toplulukHazir} placeholder="Örn. Uzayla ilgileniyorum, birlikte teleskop projesi yapacak biri arıyorum."></textarea>
+				</div>
+
+				{#if toplulukHata}<p class="msg err" role="alert">{toplulukHata}</p>{/if}
+				{#if toplulukBasari}<p class="msg ok" role="status">{toplulukBasari}</p>{/if}
+
+				<div class="actions">
+					<button class="btn btn-primary" type="submit" disabled={toplulukKaydediliyor || !toplulukHazir}>{toplulukKaydediliyor ? 'Kaydediliyor…' : 'Topluluk ayarlarını kaydet'}</button>
+					<a class="btn btn-ghost" href="/topluluk">Topluluğa git</a>
 				</div>
 			</form>
 		</section>
@@ -237,6 +316,41 @@
 	}
 	.msg.ok {
 		color: var(--accent);
+	}
+
+	.hint {
+		margin: 0;
+		font-size: var(--fs-sm);
+		color: var(--text-muted);
+		line-height: 1.55;
+	}
+	.hint.warn {
+		color: var(--text);
+	}
+	.switch {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		font-weight: 600;
+		cursor: pointer;
+	}
+	.form .switch input {
+		width: 20px;
+		height: 20px;
+		flex: none;
+		accent-color: var(--accent);
+	}
+	.form textarea {
+		width: 100%;
+		resize: vertical;
+	}
+	.actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+	.actions a {
+		text-decoration: none;
 	}
 
 	.sec-head {
