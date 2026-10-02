@@ -24,6 +24,7 @@
         '/oyunlar': 'Bilim temalı mini oyunlar.',
         '/bilim-takvimi': 'Tutulmalar, uzay olayları ve TÜBİTAK yarışma tarihleri tek takvimde.',
         '/bilim-insanlari': 'Dünyayı değiştiren bilim insanlarının hayatları ve keşifleri.',
+        '/topluluk': 'Ortak ilgi alanlarına göre öğrenci bul, site içinden mesajlaş.',
         '/hakkinda-iletisim': 'Kulüp hakkında bilgi ve bize ulaşmanın yolları.'
     };
 

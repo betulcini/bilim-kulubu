@@ -140,7 +140,7 @@
 								<span>{item.label}</span>
 								{#if sectionOf[item.href] && $newCounts[sectionOf[item.href]] > 0}
 									<span class="nav-count" aria-label="{$newCounts[sectionOf[item.href]]} yeni">{$newCounts[sectionOf[item.href]]}</span>
-								{:else if item.href === '/mesajlar' && $unread > 0}
+								{:else if item.href === '/topluluk' && $unread > 0}
 									<span class="nav-count" aria-label="{$unread} okunmamış mesaj">{$unread}</span>
 								{/if}
 							</a>

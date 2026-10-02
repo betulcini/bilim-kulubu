@@ -2,11 +2,13 @@
 	import Icon from '$lib/components/Icon.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import InterestPicker from '$lib/components/InterestPicker.svelte';
+	import Sohbetler from '$lib/components/Sohbetler.svelte';
+	import { unread } from '$lib/stores/messages.js';
 	import { interestById } from '$lib/data/interests.js';
 	import { user, authReady } from '$lib/stores/auth.js';
 	import { loadDirectory, loadMyCommunity, loadBlockedIds, ROLLER, rolAdi, instagramUrl } from '$lib/community.js';
 	import { browser } from '$app/environment';
-	import { goto } from '$app/navigation';
+	import { goto, afterNavigate } from '$app/navigation';
 	import { sfx } from '$lib/sound.js';
 
 	$: if ($authReady && !$user) goto('/giris');
@@ -15,6 +17,40 @@
 	let loading = true;
 	let loadError = '';
 	let benGorunuyorum = true; // kendi profilim dizinde mi (uyarı bandı için)
+
+	// ---------- sekmeler: Öğrenciler / Mesajlar ----------
+	let sekme = 'ogrenciler';
+	let acilacakKisi = null;
+
+	function sekmeSec(ad) {
+		if (sekme === ad) return;
+		sekme = ad;
+		if (ad === 'ogrenciler') acilacakKisi = null;
+		sfx.nav();
+	}
+
+	function mesajAc(id) {
+		acilacakKisi = id;
+		sekme = 'mesajlar';
+		sfx.nav();
+		if (browser) window.scrollTo({ top: 0, behavior: 'smooth' });
+	}
+
+	function sekmeKlavye(e) {
+		if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+		e.preventDefault();
+		const yeni = sekme === 'ogrenciler' ? 'mesajlar' : 'ogrenciler';
+		sekmeSec(yeni);
+		document.getElementById('tab-' + yeni)?.focus();
+	}
+
+	// Eski bağlantılar: /topluluk?sekme=mesajlar&kisi=... (ve yönlendirilen /mesajlar)
+	afterNavigate(() => {
+		const q = new URLSearchParams(location.search);
+		const k = q.get('kisi');
+		if (k) mesajAc(k);
+		else if (q.get('sekme') === 'mesajlar') sekme = 'mesajlar';
+	});
 
 	// ---------- filtreler ----------
 	let secilen = [];
@@ -72,68 +108,106 @@
 
 <svelte:head><title>Topluluk · Bilim ve Teknoloji Kulübü</title></svelte:head>
 
-<PageHeader eyebrow="Tanış" title="Topluluk" desc="Aynı bilim alanlarına ilgi duyan kişileri bul, onlara site içinden mesaj yaz." />
+<PageHeader eyebrow="Tanış ve yaz" title="Topluluk" desc="Aynı bilim alanlarına ilgi duyan kişileri bul, onlara site içinden mesaj yaz." />
 
 <div class="content-max page">
 	{#if $user}
-		{#if !loading && !benGorunuyorum}
-			<div class="bracket-card notice">
-				<span class="ico-tile sm" aria-hidden="true"><Icon name="info" size={16} /></span>
-				<p>Profilin şu an dizinde <strong>görünmüyor</strong>: başkalarını görebilirsin ama onlar seni göremez, sana yazamaz.</p>
-				<a class="btn btn-primary" href="/profil#topluluk">Görünür ol</a>
+		<div class="tabs" role="tablist" aria-label="Topluluk bölümleri">
+			<button
+				type="button"
+				role="tab"
+				id="tab-ogrenciler"
+				class="tab"
+				class:on={sekme === 'ogrenciler'}
+				aria-selected={sekme === 'ogrenciler'}
+				aria-controls="panel-ogrenciler"
+				tabindex={sekme === 'ogrenciler' ? 0 : -1}
+				on:click={() => sekmeSec('ogrenciler')}
+				on:keydown={sekmeKlavye}
+			>
+				<Icon name="users" size={17} />
+				<span>Öğrenciler</span>
+			</button>
+			<button
+				type="button"
+				role="tab"
+				id="tab-mesajlar"
+				class="tab"
+				class:on={sekme === 'mesajlar'}
+				aria-selected={sekme === 'mesajlar'}
+				aria-controls="panel-mesajlar"
+				tabindex={sekme === 'mesajlar' ? 0 : -1}
+				on:click={() => sekmeSec('mesajlar')}
+				on:keydown={sekmeKlavye}
+			>
+				<Icon name="mail" size={17} />
+				<span>Mesajlar</span>
+				{#if $unread > 0}<span class="tab-count" aria-label="{$unread} okunmamış mesaj">{$unread}</span>{/if}
+			</button>
+		</div>
+
+		{#if sekme === 'mesajlar'}
+			<div id="panel-mesajlar" role="tabpanel" aria-labelledby="tab-mesajlar">
+				<Sohbetler kisiId={acilacakKisi} on:ogrenciler={() => sekmeSec('ogrenciler')} />
 			</div>
-		{/if}
-
-		<div class="layout">
-			<aside class="bracket-card panel" aria-label="Filtreler">
-				<h2>Filtrele</h2>
-
-				<div class="field">
-					<label for="t-ara">İsim ara</label>
-					<input id="t-ara" type="search" bind:value={arama} placeholder="Örn. Ayşe" maxlength="60" />
-				</div>
-
-				<InterestPicker bind:selected={secilen} legend="Bilim alanı" limit={0} />
-
-				{#if secilen.length > 1}
-					<label class="check">
-						<input type="checkbox" bind:checked={hepsi} />
-						<span>Seçtiğim alanların <strong>hepsine</strong> ilgi duyanlar</span>
-					</label>
-				{/if}
-
-				<div class="field">
-					<label for="t-rol">Kim arıyorsun?</label>
-					<select id="t-rol" bind:value={rolSecim}>
-						<option value="">Hepsi</option>
-						{#each ROLLER as r}<option value={r.id}>{r.label}</option>{/each}
-					</select>
-				</div>
-
-				{#if seviyeler.length > 0}
-					<div class="field">
-						<label for="t-sinif">Sınıf seviyesi</label>
-						<select id="t-sinif" bind:value={seviye}>
-							<option value="">Hepsi</option>
-							{#each seviyeler as sv}<option value={sv}>{sv}. sınıf</option>{/each}
-						</select>
+		{:else}
+			<div id="panel-ogrenciler" role="tabpanel" aria-labelledby="tab-ogrenciler" class="ogrenciler">
+				{#if !loading && !benGorunuyorum}
+					<div class="bracket-card notice">
+						<span class="ico-tile sm" aria-hidden="true"><Icon name="info" size={16} /></span>
+						<p>Profilin şu an dizinde <strong>görünmüyor</strong>: başkalarını görebilirsin ama onlar seni göremez, sana yazamaz.</p>
+						<a class="btn btn-primary" href="/profil#topluluk">Görünür ol</a>
 					</div>
 				{/if}
 
-				{#if filtreVar}
-					<button type="button" class="btn btn-ghost" on:click={temizle}>Filtreleri temizle</button>
-				{/if}
-			</aside>
+				<section class="bracket-card filtre" aria-label="Filtreler">
+					<div class="f-head">
+						<h2>Filtrele</h2>
+						<span class="count" aria-live="polite">
+							{#if !loading && !loadError}{filtreli.length} kişi{filtreVar ? ' bulundu' : ' dizinde'}{/if}
+						</span>
+						{#if filtreVar}
+							<button type="button" class="btn btn-ghost mini" on:click={temizle}>Filtreleri temizle</button>
+						{/if}
+					</div>
 
-			<section aria-live="polite" aria-label="Kişi listesi">
-				{#if loading}
-					<p class="muted">Yükleniyor…</p>
-				{:else if loadError}
-					<p class="msg err" role="alert">{loadError}</p>
-				{:else}
-					<p class="count">{filtreli.length} kişi{filtreVar ? ' bulundu' : ' dizinde'}</p>
+					<div class="f-row">
+						<div class="field">
+							<label for="t-ara">İsim ara</label>
+							<input id="t-ara" type="search" bind:value={arama} placeholder="Örn. Ayşe" maxlength="60" />
+						</div>
+						<div class="field">
+							<label for="t-rol">Kim arıyorsun?</label>
+							<select id="t-rol" bind:value={rolSecim}>
+								<option value="">Hepsi</option>
+								{#each ROLLER as r}<option value={r.id}>{r.label}</option>{/each}
+							</select>
+						</div>
+						<div class="field">
+							<label for="t-sinif">Sınıf seviyesi</label>
+							<select id="t-sinif" bind:value={seviye} disabled={seviyeler.length === 0}>
+								<option value="">Hepsi</option>
+								{#each seviyeler as sv}<option value={sv}>{sv}. sınıf</option>{/each}
+							</select>
+						</div>
+					</div>
 
-					{#if filtreli.length === 0}
+					<InterestPicker bind:selected={secilen} legend="Bilim alanı" limit={0} />
+
+					{#if secilen.length > 1}
+						<label class="check">
+							<input type="checkbox" bind:checked={hepsi} />
+							<span>Seçtiğim alanların <strong>hepsine</strong> ilgi duyanlar</span>
+						</label>
+					{/if}
+				</section>
+
+				<section aria-live="polite" aria-label="Kişi listesi">
+					{#if loading}
+						<p class="muted">Yükleniyor…</p>
+					{:else if loadError}
+						<p class="msg err" role="alert">{loadError}</p>
+					{:else if filtreli.length === 0}
 						<div class="bracket-card empty">
 							{#if students.length === 0}
 								Henüz profilini herkese açan kimse yok. İlk sen ol!
@@ -183,16 +257,16 @@
 										</div>
 									{/if}
 
-									<a class="btn btn-ghost yaz" href="/mesajlar?kisi={s.id}" on:click={() => sfx.nav()}>
+									<button type="button" class="btn btn-ghost yaz" on:click={() => mesajAc(s.id)}>
 										<Icon name="mail" size={16} /> Mesaj gönder
-									</a>
+									</button>
 								</article>
 							{/each}
 						</div>
 					{/if}
-				{/if}
-			</section>
-		</div>
+				</section>
+			</div>
+		{/if}
 	{/if}
 </div>
 
@@ -216,44 +290,108 @@
 		font-size: var(--fs-sm);
 		color: var(--text-muted);
 	}
-	.layout {
-		display: grid;
-		grid-template-columns: 300px minmax(0, 1fr);
-		gap: 22px;
-		align-items: start;
+	.tabs {
+		display: flex;
+		gap: 6px;
+		padding: 5px;
+		width: fit-content;
+		max-width: 100%;
+		border-radius: var(--radius-sm);
+		border: 1px solid var(--border-strong);
+		background: var(--bg-alt);
 	}
-	.panel {
+	.tab {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 8px;
+		min-height: 42px;
+		padding: 8px 18px;
+		border: 1px solid transparent;
+		border-radius: 9px;
+		background: transparent;
+		color: var(--text-muted);
+		font-family: var(--font-display);
+		font-size: var(--fs-sm);
+		font-weight: 600;
+		cursor: pointer;
+		transition: background var(--dur) var(--ease), color var(--dur) var(--ease);
+	}
+	.tab:hover {
+		color: var(--text);
+	}
+	.tab.on {
+		background: var(--accent-soft);
+		border-color: var(--accent);
+		color: var(--accent);
+	}
+	.tab:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 2px;
+	}
+	.tab-count {
+		min-width: 20px;
+		padding: 1px 6px;
+		border-radius: 999px;
+		background: var(--accent);
+		color: var(--bg);
+		font-size: var(--fs-xs);
+		font-weight: 700;
+		text-align: center;
+	}
+	.ogrenciler {
 		display: flex;
 		flex-direction: column;
-		gap: 16px;
-		position: sticky;
-		top: 16px;
+		gap: 22px;
 	}
-	.panel h2 {
+	.filtre {
+		display: flex;
+		flex-direction: column;
+		gap: 18px;
+	}
+	.f-head {
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		gap: 8px 14px;
+	}
+	.f-head h2 {
 		margin: 0;
 		font-size: var(--fs-lg);
 	}
-	.panel :global(.field) {
+	.f-head .count {
+		flex: 1;
+	}
+	.mini {
+		font-size: var(--fs-xs);
+		padding: 6px 12px;
+	}
+	.f-row {
+		display: grid;
+		grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr) minmax(0, 1fr);
+		gap: 14px;
+	}
+	.filtre :global(.field) {
 		margin-bottom: 0;
 	}
-	.panel input[type='search'],
-	.panel select {
+	.filtre input[type='search'],
+	.filtre select {
 		width: 100%;
 	}
 	.check {
 		display: flex;
 		gap: 8px;
 		align-items: flex-start;
-		font-size: var(--fs-xs);
+		font-size: var(--fs-sm);
 		color: var(--text-muted);
 		cursor: pointer;
 	}
 	.check input {
-		margin-top: 2px;
+		margin-top: 3px;
 		accent-color: var(--accent);
 	}
 	.count {
-		margin: 0 0 12px;
+		margin: 0;
 		font-size: var(--fs-xs);
 		color: var(--text-muted);
 		font-weight: 600;
@@ -369,12 +507,16 @@
 		gap: 8px;
 		text-decoration: none;
 	}
-	@media (max-width: 900px) {
-		.layout {
+	@media (max-width: 760px) {
+		.f-row {
 			grid-template-columns: minmax(0, 1fr);
 		}
-		.panel {
-			position: static;
+		.tabs {
+			width: 100%;
+		}
+		.tab {
+			flex: 1;
+			padding: 8px 10px;
 		}
 	}
 </style>

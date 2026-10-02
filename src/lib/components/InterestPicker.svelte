@@ -46,9 +46,10 @@
 	}
 	legend {
 		padding: 0;
-		margin-bottom: 8px;
-		font-size: var(--fs-xs);
-		color: var(--text-muted);
+		margin-bottom: 10px;
+		font-size: var(--fs-sm);
+		font-weight: 600;
+		color: var(--text);
 	}
 	.limit {
 		margin: 8px 0 0;
@@ -59,29 +60,40 @@
 		opacity: 0.45;
 		cursor: not-allowed;
 	}
+	/* Eşit genişlikli, düzenli ızgara: uzun etiketler satır kırsa bile hizalı kalır */
 	.chips {
-		display: flex;
-		flex-wrap: wrap;
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(min(100%, 172px), 1fr));
 		gap: 8px;
 	}
 	.chip {
-		display: inline-flex;
+		display: flex;
 		align-items: center;
-		gap: 7px;
-		max-width: 100%;
+		justify-content: flex-start;
+		gap: 9px;
+		width: 100%;
+		min-width: 0;
+		min-height: 46px;
 		padding: 8px 12px;
-		border-radius: 999px;
+		border-radius: var(--radius-sm);
 		border: 1px solid var(--border-strong);
 		background: var(--bg-alt);
 		color: var(--text);
 		font-family: var(--font-display);
 		font-size: var(--fs-xs);
 		font-weight: 600;
+		line-height: 1.25;
 		text-align: left;
 		cursor: pointer;
 		transition: background var(--dur) var(--ease), border-color var(--dur) var(--ease);
 	}
+	.chip > span:last-child {
+		flex: 1;
+		min-width: 0;
+		overflow-wrap: anywhere;
+	}
 	.ci {
+		flex: none;
 		display: inline-flex;
 	}
 	.chip:hover {
@@ -91,5 +103,9 @@
 		background: var(--accent-soft);
 		border-color: var(--accent);
 		color: var(--accent);
+	}
+	.chip:focus-visible {
+		outline: 2px solid var(--accent);
+		outline-offset: 2px;
 	}
 </style>
