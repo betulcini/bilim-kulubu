@@ -1,6 +1,7 @@
 export const competitionFilters = ['Tümü', 'Quizler', 'Online yarışmalar', 'Yüz yüze yarışmalar'];
 
 export const competitions = [
+	{ ad: 'Günlük Mini Quiz', tur: 'Quizler', platform: 'Kulüp platformu', tarih: 'Her gün yenilenir', durum: 'Katıl', aciklama: 'Her gün farklı konulardan 5 soru. Her gün çözdükçe serin uzar.', href: '/gunluk-quiz' },
 	{ ad: 'Fizik Quiz', tur: 'Quizler', platform: 'Kulüp platformu', tarih: 'Her zaman açık', durum: 'Katıl', aciklama: 'Kuvvet, enerji, elektrik ve optikten 30 soruluk geniş bir havuz — her turda 8 farklı soru.', href: '/yarismalar/quiz?konu=fizik' },
 	{ ad: 'Biyoloji Quiz', tur: 'Quizler', platform: 'Kulüp platformu', tarih: 'Her zaman açık', durum: 'Katıl', aciklama: 'Hücrelerden ekosistemlere, canlılar dünyasından 30 soruluk geniş bir havuz.', href: '/yarismalar/quiz?konu=biyoloji' },
 	{ ad: 'Kimya Quiz', tur: 'Quizler', platform: 'Kulüp platformu', tarih: 'Her zaman açık', durum: 'Katıl', aciklama: 'Elementler, tepkimeler ve periyodik tablodan 30 soruluk geniş bir havuz.', href: '/yarismalar/quiz?konu=kimya' },

@@ -17,8 +17,7 @@ export const badgeDefs = [
 		deger: (c) => (c.user?.full_name ? 1 : 0) + (c.user?.class_name ? 1 : 0) + (c.user?.interests?.length ? 1 : 0)
 	},
 	{ id: 'ilk-quiz', ad: 'İlk Adım', aciklama: 'İlk quizini tamamla.', emoji: 'target', hedef: 1, deger: (c) => c.scores.length },
-	{ id: 'quiz-5', ad: 'Quiz Meraklısı', aciklama: '5 quiz tamamla.', emoji: 'quiz', hedef: 5, deger: (c) => c.scores.length },
-	{ id: 'quiz-15', ad: 'Quiz Ustası', aciklama: '15 quiz tamamla.', emoji: 'medal', hedef: 15, deger: (c) => c.scores.length },
+	{ id: 'quiz-ustasi', ad: 'Quiz Ustası', aciklama: 'Quiz tamamladıkça seviye atla.', emoji: 'medal', hedef: 40, seviyeler: [5, 15, 40], deger: (c) => c.scores.length },
 	{ id: 'tam-puan', ad: 'Tam Puan', aciklama: 'Bir quizde 200 puanın hepsini topla.', emoji: 'check-circle', hedef: 1, deger: (c) => (c.scores.some((s) => s.score >= TAM_PUAN) ? 1 : 0) },
 	{
 		id: 'cok-yonlu',
@@ -45,7 +44,7 @@ export const badgeDefs = [
 		hedef: OYUN_IDLERI.length,
 		deger: (c) => c.activity.games.filter((g) => OYUN_IDLERI.includes(g)).length
 	},
-	{ id: 'tarih-meraklisi', ad: 'Tarih Meraklısı', aciklama: '10 farklı bilim insanının detayına bak.', emoji: 'book', hedef: 10, deger: (c) => c.activity.scientists.length },
+	{ id: 'tarih-meraklisi', ad: 'Tarih Meraklısı', aciklama: 'Farklı bilim insanlarının detayına bak.', emoji: 'book', hedef: 80, seviyeler: [10, 30, 80], deger: (c) => c.activity.scientists.length },
 	{
 		id: 'ilgi-alani',
 		ad: 'Yolunu Buldu',
@@ -54,12 +53,27 @@ export const badgeDefs = [
 		hedef: 3,
 		deger: (c) => Math.min(c.user?.interests?.length || 0, interests.length)
 	}
+	,{ id: 'seri-ustasi', ad: 'Seri Ustası', aciklama: 'Günlük mini quizi art arda günlerde çöz.', emoji: 'bolt', hedef: 30, seviyeler: [3, 7, 30], deger: (c) => c.streak?.best || 0 },
+	{ id: 'gunluk-duzen', ad: 'Günlük Düzen', aciklama: 'Günlük mini quizi toplam kaç gün tamamladın.', emoji: 'calendar', hedef: 40, seviyeler: [5, 15, 40], deger: (c) => c.streak?.total || 0 }
 ];
+// ctx: { user, scores: [{subject, score}], activity: {games, scientists}, streak: {best, total} }
+export const SEVIYE_ADLARI = ['', 'Bronz', 'Gümüş', 'Altın'];
 
-// ctx: { user, scores: [{subject, score}], activity: {games, scientists} }
+// Seviyeli rozet (seviyeler: [bronz, gümüş, altın] eşikleri): kazanıldı = bronz eşiği aşıldı.
+// hedef = bir sonraki seviyenin eşiği (altındaysa altın eşiği).
 export function computeBadges(ctx) {
 	return badgeDefs.map((b) => {
+		if (b.seviyeler) {
+			const ham = b.deger(ctx);
+			const seviye = b.seviyeler.filter((e) => ham >= e).length; // 0..3
+			const hedef = seviye >= b.seviyeler.length ? b.seviyeler[b.seviyeler.length - 1] : b.seviyeler[seviye];
+			return {
+				id: b.id, ad: b.ad, aciklama: b.aciklama, emoji: b.emoji,
+				hedef: hedef, deger: Math.min(ham, hedef), kazanildi: seviye >= 1,
+				seviye, seviyeAd: SEVIYE_ADLARI[seviye], maksimum: seviye >= b.seviyeler.length, seviyeli: true
+			};
+		}
 		const deger = Math.min(b.deger(ctx), b.hedef);
-		return { id: b.id, ad: b.ad, aciklama: b.aciklama, emoji: b.emoji, hedef: b.hedef, deger, kazanildi: deger >= b.hedef };
+		return { id: b.id, ad: b.ad, aciklama: b.aciklama, emoji: b.emoji, hedef: b.hedef, deger, kazanildi: deger >= b.hedef, seviye: 0, seviyeAd: '', maksimum: false, seviyeli: false };
 	});
 }

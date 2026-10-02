@@ -5,6 +5,7 @@
 	import SanaOzel from '$lib/components/SanaOzel.svelte';
 	import { user, authReady, signOut, updateProfile } from '$lib/stores/auth.js';
 	import { activity } from '$lib/stores/activity.js';
+	import { streak } from '$lib/stores/streak.js';
 	import { computeBadges } from '$lib/data/badges.js';
 	import { supabase } from '$lib/supabaseClient.js';
 	import { loadMyCommunity, saveMyCommunity, syncMyInterests, normalizeInstagram, normalizeLinkedin, ROLLER } from '$lib/community.js';
@@ -139,7 +140,7 @@
 		loadScores($user.id);
 	}
 
-	$: rozetler = computeBadges({ user: $user, scores, activity: $activity });
+	$: rozetler = computeBadges({ user: $user, scores, activity: $activity, streak: $streak });
 	$: kazanilan = rozetler.filter((r) => r.kazanildi).length;
 </script>
 
@@ -259,17 +260,19 @@
 			<div class="badge-grid">
 				{#each rozetler as r}
 					<div class="bracket-card rozet" class:locked={!r.kazanildi}>
-						<span class="r-emo" aria-hidden="true"><Icon name={r.emoji} size={22} /></span>
+						<span class="r-emo tier-{r.seviye}" aria-hidden="true"><Icon name={r.emoji} size={22} /></span>
 						<div class="r-body">
-							<h3>{r.ad}</h3>
+							<h3>{r.ad}{#if r.seviyeli && r.seviye > 0} <span class="tier-tag tier-{r.seviye}">{r.seviyeAd}</span>{/if}</h3>
 							<p>{r.aciklama}</p>
-							{#if r.kazanildi}
+							{#if r.maksimum}
+								<span class="r-state"><Icon name="check" size={14} /> En yüksek seviye</span>
+							{:else if r.kazanildi && !r.seviyeli}
 								<span class="r-state"><Icon name="check" size={14} /> Kazanıldı</span>
 							{:else}
 								<div class="bar" role="progressbar" aria-valuemin="0" aria-valuemax={r.hedef} aria-valuenow={r.deger} aria-label="{r.ad} ilerlemesi">
 									<span style="width: {(r.deger / r.hedef) * 100}%"></span>
 								</div>
-								<span class="r-count">{r.deger} / {r.hedef}</span>
+								<span class="r-count">{r.deger} / {r.hedef}{#if r.seviyeli} · sonraki: {r.seviye >= 1 ? ['', 'Gümüş', 'Altın'][r.seviye] : 'Bronz'}{/if}</span>
 							{/if}
 						</div>
 					</div>
@@ -455,6 +458,10 @@
 		color: var(--accent);
 		border: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
 	}
+	.r-emo.tier-1, .tier-tag.tier-1 { background: color-mix(in srgb, #c98a5a 26%, transparent); color: #c98a5a; border-color: color-mix(in srgb, #c98a5a 45%, transparent); }
+	.r-emo.tier-2, .tier-tag.tier-2 { background: color-mix(in srgb, #b9c0c4 26%, transparent); color: #aab3b8; border-color: color-mix(in srgb, #b9c0c4 50%, transparent); }
+	.r-emo.tier-3, .tier-tag.tier-3 { background: color-mix(in srgb, #d9a93f 28%, transparent); color: #d9a93f; border-color: color-mix(in srgb, #d9a93f 50%, transparent); }
+	.tier-tag { display: inline-block; vertical-align: middle; margin-left: 4px; padding: 1px 8px; border-radius: 999px; border: 1px solid; font-family: var(--font-display); font-size: var(--fs-xs); font-weight: 700; }
 	.r-state {
 		display: inline-flex;
 		align-items: center;

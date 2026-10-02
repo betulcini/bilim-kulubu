@@ -3,7 +3,7 @@
     import PageHeader from '$lib/components/PageHeader.svelte';
     import { sfx } from '$lib/sound.js';
     import { activity } from '$lib/stores/activity.js';
-    import { onMount } from 'svelte';
+    import { onMount, onDestroy } from 'svelte';
 
     activity.mark('games', 'biyoloji-enerji');
 
@@ -242,6 +242,72 @@
     let counts = {};
     let wrongId = null;
 
+    // --- Süre / can / ipucu ---
+    const CAN = 3;
+    const IPUCU = 3;
+    const SURE = { choice: 30, locate: 25, order: 45 }; // saniye
+    let lives = CAN;
+    let hints = IPUCU;
+    let timeLeft = 0;
+    let timerId = null;
+    let gameOver = false;
+    let stageWrong = 0;
+    let stageHints = 0;
+    let removed = []; // ipucuyla veya yanlış seçimle elenen şık / bölgeler
+
+    function clearTimer() {
+        if (timerId) { clearInterval(timerId); timerId = null; }
+    }
+    function startTimer() {
+        clearTimer();
+        timeLeft = SURE[stage?.type] ?? 30;
+        timerId = setInterval(() => {
+            timeLeft -= 1;
+            if (timeLeft <= 0) {
+                clearTimer();
+                if (!stageFinished && !gameOver) {
+                    loseLife('Süre doldu! Bir can kaybettin.');
+                    if (!gameOver) startTimer();
+                }
+            }
+        }, 1000);
+    }
+    function loseLife(msg) {
+        sfx.error();
+        lives -= 1;
+        stageWrong += 1;
+        feedback = msg;
+        if (lives <= 0) {
+            gameOver = true;
+            clearTimer();
+        }
+    }
+    function useHint() {
+        if (hints <= 0 || stageFinished || gameOver) return;
+        if (stage.type === 'choice') {
+            const aday = stage.options.filter((o) => o !== stage.correct && !removed.includes(o));
+            if (aday.length === 0) return;
+            removed = [...removed, aday[Math.floor(Math.random() * aday.length)]];
+            feedback = 'İpucu: yanlış şıklardan biri elendi.';
+        } else if (stage.type === 'locate') {
+            const aday = regions.map((r) => r.id).filter((id) => id !== stage.correct && !removed.includes(id));
+            if (aday.length === 0) return;
+            removed = [...removed, aday[Math.floor(Math.random() * aday.length)]];
+            feedback = 'İpucu: yanlış bölgelerden biri elendi (kırmızı gösterilir).';
+        } else {
+            if (pool.length === 0) return;
+            hints -= 1;
+            stageHints += 1;
+            pickOrder(stage.items[picked.length]);
+            feedback = 'İpucu: sıradaki doğru adım yerleştirildi.';
+            return;
+        }
+        hints -= 1;
+        stageHints += 1;
+        sfx.click();
+    }
+    onDestroy(clearTimer);
+
     $: path = selectedPathwayKey ? pathways[selectedPathwayKey] : null;
     $: stage = path ? path.stages[currentStageIndex] : null;
     $: regions = path ? cellRegions[path.cell] : [];
@@ -263,12 +329,18 @@
         return r;
     }
 
-    function initStage() {
+    function initStage(fresh = true) {
         const st = pathways[selectedPathwayKey].stages[currentStageIndex];
         stageFinished = false;
         feedback = '';
         picked = [];
         wrongId = null;
+        if (fresh) {
+            removed = [];
+            stageWrong = 0;
+            stageHints = 0;
+            startTimer();
+        }
         if (st.type === 'choice') shuffledOpts = shuffle(st.options);
         if (st.type === 'order') {
             let p = shuffle(st.items);
@@ -282,12 +354,17 @@
         currentStageIndex = 0;
         isCompleted = false;
         totalEnergyScore = 0;
+        lives = CAN;
+        hints = IPUCU;
+        gameOver = false;
         counts = Object.fromEntries(pathways[key].counters.map((c) => [c.key, 0]));
         initStage();
     }
 
     function finishStage() {
-        totalEnergyScore += 25;
+        clearTimer();
+        // Tam puan 25; her yanlış deneme ve ipucu 5 puan götürür (en az 5)
+        totalEnergyScore += Math.max(5, 25 - stageWrong * 5 - stageHints * 5);
         stageFinished = true;
         if (stage.gain) {
             for (const k in stage.gain) counts[k] = Math.max(0, (counts[k] || 0) + stage.gain[k]);
@@ -297,23 +374,25 @@
 
     function selectOption(opt) {
         if (stageFinished) return;
+        if (removed.includes(opt) || gameOver) return;
         sfx.nav();
         if (opt === stage.correct) {
             feedback = `Başarılı! ${stage.info}`;
             finishStage();
         } else {
-            feedback = 'Hatalı seçim! Biyokimyasal yolak aksadı. Tekrar dene.';
+            removed = [...removed, opt];
+            loseLife('Hatalı seçim! Biyokimyasal yolak aksadı, bir can kaybettin.');
         }
     }
 
     function pickRegion(id) {
-        if (!stage || stage.type !== 'locate' || stageFinished) return;
+        if (!stage || stage.type !== 'locate' || stageFinished || gameOver || removed.includes(id)) return;
         sfx.nav();
         if (id === stage.correct) {
             feedback = `Doğru bölge! ${stage.info}`;
             finishStage();
         } else {
-            feedback = 'Bu bölge değil. Şemadaki yapılara dikkatle bak ve tekrar dene.';
+            loseLife('Bu bölge değil, bir can kaybettin. Şemadaki yapılara dikkatle bak.');
             wrongId = id;
             setTimeout(() => (wrongId = null), 700);
         }
@@ -329,14 +408,14 @@
                 feedback = `Başarılı! ${stage.info}`;
                 finishStage();
             } else {
-                initStage();
-                feedback = 'Sıralama yanlış. Akışı baştan kurmayı dene.';
+                initStage(false);
+                loseLife('Sıralama yanlış, bir can kaybettin. Akışı baştan kur.');
             }
         }
     }
 
     function resetOrder() {
-        initStage();
+        initStage(false);
     }
 
     function nextStage() {
@@ -345,6 +424,7 @@
             initStage();
         } else {
             isCompleted = true;
+            clearTimer();
             const savedScores = JSON.parse(localStorage.getItem('biyoloji_scores') || '[]');
             savedScores.push({ name: `${playerName || 'Uzman'} (${selectedPathwayKey.toUpperCase()})`, score: totalEnergyScore, date: new Date().toLocaleDateString('tr-TR') });
             savedScores.sort((a, b) => b.score - a.score);
@@ -353,6 +433,8 @@
     }
 
     function resetToMenu() {
+        clearTimer();
+        gameOver = false;
         selectedPathwayKey = null;
         isCompleted = false;
         stageFinished = false;
@@ -396,6 +478,18 @@
                     </div>
                 {/each}
             </div>
+        {:else if gameOver}
+            <div class="done-box">
+                <div class="ico-tile xl danger" style="margin: 0 auto 14px;"><Icon name="warning" size={38} /></div>
+                <h2>Canların bitti</h2>
+                <p style="text-align: center; margin: 15px auto; color: var(--text-muted);">
+                    {currentStageIndex + 1}. adıma kadar geldin ve {totalEnergyScore} puan topladın. Yanlış yaptığın adımlar için şemaya ve açıklamalara tekrar göz at, sonra yeniden dene.
+                </p>
+                <div class="action-row center">
+                    <button class="btn btn-primary" on:click={() => selectPathway(selectedPathwayKey)}>Baştan Dene</button>
+                    <button class="btn btn-ghost" on:click={resetToMenu}>Süreç Menüsüne Dön</button>
+                </div>
+            </div>
         {:else if !isCompleted}
             <!-- Aktif Süreç Ekranı -->
             <div class="stage-head">
@@ -403,6 +497,17 @@
                 <span style="font-size: var(--fs-xs); color: var(--text-muted);">Adım {currentStageIndex + 1} / {path.stages.length}</span>
             </div>
             <div class="progress" aria-hidden="true"><span style="width: {((currentStageIndex + (stageFinished ? 1 : 0)) / path.stages.length) * 100}%"></span></div>
+
+            <!-- Süre / can / ipucu -->
+            <div class="status-row">
+                <span class="lives" aria-label="{lives} can kaldı">
+                    {#each Array(CAN) as _, i}
+                        <svg class="heart" class:lost={i >= lives} width="20" height="20" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7.5-4.6-9.6-9.2C.9 8.4 2.9 4.5 6.5 4.5c2 0 3.5 1 5.5 3 2-2 3.5-3 5.5-3 3.6 0 5.6 3.9 4.1 7.3C19.5 16.4 12 21 12 21Z" /></svg>
+                    {/each}
+                </span>
+                <span class="badge {timeLeft <= 8 && !stageFinished ? 'danger' : 'info'} timer" style="font-variant-numeric: tabular-nums;"><Icon name="clock" size={14} /> {stageFinished ? '—' : timeLeft} sn</span>
+                <button class="btn btn-ghost small hint-btn" disabled={stageFinished || hints <= 0} on:click={useHint}><Icon name="bulb" size={14} /> İpucu ({hints})</button>
+            </div>
 
             <!-- Canlı sayaçlar -->
             <div class="counters">
@@ -415,15 +520,15 @@
             <div class="cell-wrap">
                 <svg viewBox="0 0 400 240" role="img" aria-label={path.cell === 'kloroplast' ? 'Kloroplast şeması' : 'Mitokondri şeması'}>
                     {#if path.cell === 'kloroplast'}
-                        <g class="region" class:hl={hlId === 'stroma'} class:dim={hlId && hlId !== 'stroma'} class:wrong={wrongId === 'stroma'} class:clickable={stage.type === 'locate' && !stageFinished}
+                        <g class="region" class:hl={hlId === 'stroma'} class:dim={hlId && hlId !== 'stroma'} class:wrong={wrongId === 'stroma' || removed.includes('stroma')} class:clickable={stage.type === 'locate' && !stageFinished}
                            style="--c:{colorOf('kloroplast', 'stroma')}" role="button" tabindex="0" aria-label="Stroma" on:click={() => pickRegion('stroma')} on:keydown={(e) => onKey(e, 'stroma')}>
                             <ellipse class="fill" cx="200" cy="120" rx="182" ry="98" />
                         </g>
-                        <g class="region" class:hl={hlId === 'dis-zar'} class:dim={hlId && hlId !== 'dis-zar'} class:wrong={wrongId === 'dis-zar'} class:clickable={stage.type === 'locate' && !stageFinished}
+                        <g class="region" class:hl={hlId === 'dis-zar'} class:dim={hlId && hlId !== 'dis-zar'} class:wrong={wrongId === 'dis-zar' || removed.includes('dis-zar')} class:clickable={stage.type === 'locate' && !stageFinished}
                            style="--c:{colorOf('kloroplast', 'dis-zar')}" role="button" tabindex="0" aria-label="Dış zar" on:click={() => pickRegion('dis-zar')} on:keydown={(e) => onKey(e, 'dis-zar')}>
                             <ellipse class="ring" cx="200" cy="120" rx="188" ry="104" stroke-width="11" />
                         </g>
-                        <g class="region" class:hl={hlId === 'tilakoit'} class:dim={hlId && hlId !== 'tilakoit'} class:wrong={wrongId === 'tilakoit'} class:clickable={stage.type === 'locate' && !stageFinished}
+                        <g class="region" class:hl={hlId === 'tilakoit'} class:dim={hlId && hlId !== 'tilakoit'} class:wrong={wrongId === 'tilakoit' || removed.includes('tilakoit')} class:clickable={stage.type === 'locate' && !stageFinished}
                            style="--c:{colorOf('kloroplast', 'tilakoit')}" role="button" tabindex="0" aria-label="Tilakoit zar" on:click={() => pickRegion('tilakoit')} on:keydown={(e) => onKey(e, 'tilakoit')}>
                             <path class="lamella" d="M127,90 L168,120 M127,150 L168,120 M232,120 L273,90 M232,120 L273,150" />
                             {#each grana as [cx, cy]}
@@ -434,23 +539,23 @@
                             {/each}
                         </g>
                     {:else}
-                        <g class="region" class:hl={hlId === 'sitozol'} class:dim={hlId && hlId !== 'sitozol'} class:wrong={wrongId === 'sitozol'} class:clickable={stage.type === 'locate' && !stageFinished}
+                        <g class="region" class:hl={hlId === 'sitozol'} class:dim={hlId && hlId !== 'sitozol'} class:wrong={wrongId === 'sitozol' || removed.includes('sitozol')} class:clickable={stage.type === 'locate' && !stageFinished}
                            style="--c:{colorOf('mitokondri', 'sitozol')}" role="button" tabindex="0" aria-label="Sitozol" on:click={() => pickRegion('sitozol')} on:keydown={(e) => onKey(e, 'sitozol')}>
                             <rect class="fill bg" x="0" y="0" width="400" height="240" />
                         </g>
-                        <g class="region" class:hl={hlId === 'zarlar-arasi'} class:dim={hlId && hlId !== 'zarlar-arasi'} class:wrong={wrongId === 'zarlar-arasi'} class:clickable={stage.type === 'locate' && !stageFinished}
+                        <g class="region" class:hl={hlId === 'zarlar-arasi'} class:dim={hlId && hlId !== 'zarlar-arasi'} class:wrong={wrongId === 'zarlar-arasi' || removed.includes('zarlar-arasi')} class:clickable={stage.type === 'locate' && !stageFinished}
                            style="--c:{colorOf('mitokondri', 'zarlar-arasi')}" role="button" tabindex="0" aria-label="Zarlar arası boşluk" on:click={() => pickRegion('zarlar-arasi')} on:keydown={(e) => onKey(e, 'zarlar-arasi')}>
                             <ellipse class="fill" cx="200" cy="120" rx="178" ry="98" />
                         </g>
-                        <g class="region" class:hl={hlId === 'dis-zar'} class:dim={hlId && hlId !== 'dis-zar'} class:wrong={wrongId === 'dis-zar'} class:clickable={stage.type === 'locate' && !stageFinished}
+                        <g class="region" class:hl={hlId === 'dis-zar'} class:dim={hlId && hlId !== 'dis-zar'} class:wrong={wrongId === 'dis-zar' || removed.includes('dis-zar')} class:clickable={stage.type === 'locate' && !stageFinished}
                            style="--c:{colorOf('mitokondri', 'dis-zar')}" role="button" tabindex="0" aria-label="Dış zar" on:click={() => pickRegion('dis-zar')} on:keydown={(e) => onKey(e, 'dis-zar')}>
                             <ellipse class="ring" cx="200" cy="120" rx="178" ry="98" stroke-width="10" />
                         </g>
-                        <g class="region" class:hl={hlId === 'matriks'} class:dim={hlId && hlId !== 'matriks'} class:wrong={wrongId === 'matriks'} class:clickable={stage.type === 'locate' && !stageFinished}
+                        <g class="region" class:hl={hlId === 'matriks'} class:dim={hlId && hlId !== 'matriks'} class:wrong={wrongId === 'matriks' || removed.includes('matriks')} class:clickable={stage.type === 'locate' && !stageFinished}
                            style="--c:{colorOf('mitokondri', 'matriks')}" role="button" tabindex="0" aria-label="Matriks" on:click={() => pickRegion('matriks')} on:keydown={(e) => onKey(e, 'matriks')}>
                             <ellipse class="fill" cx="200" cy="120" rx="152" ry="72" />
                         </g>
-                        <g class="region" class:hl={hlId === 'ic-zar'} class:dim={hlId && hlId !== 'ic-zar'} class:wrong={wrongId === 'ic-zar'} class:clickable={stage.type === 'locate' && !stageFinished}
+                        <g class="region" class:hl={hlId === 'ic-zar'} class:dim={hlId && hlId !== 'ic-zar'} class:wrong={wrongId === 'ic-zar' || removed.includes('ic-zar')} class:clickable={stage.type === 'locate' && !stageFinished}
                            style="--c:{colorOf('mitokondri', 'ic-zar')}" role="button" tabindex="0" aria-label="İç zar" on:click={() => pickRegion('ic-zar')} on:keydown={(e) => onKey(e, 'ic-zar')}>
                             <ellipse class="ring" cx="200" cy="120" rx="152" ry="72" stroke-width="7" />
                             {#each [115, 195, 275] as x}
@@ -480,7 +585,7 @@
                         <button
                             class="btn {stageFinished && opt === stage.correct ? 'btn-primary' : 'btn-ghost'}"
                             style="padding: 16px;"
-                            disabled={stageFinished}
+                            disabled={stageFinished || removed.includes(opt)}
                             on:click={() => selectOption(opt)}>
                             {opt}
                         </button>
@@ -655,6 +760,11 @@
     .legend span { display: inline-flex; align-items: center; gap: 6px; }
     .legend span.on { color: var(--text); font-weight: 600; }
     .legend i { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
+    .status-row { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; margin-bottom: 12px; }
+    .lives { display: inline-flex; gap: 4px; }
+    .heart { fill: var(--danger); transition: opacity 0.2s; }
+    .heart.lost { fill: none; stroke: var(--text-faint); stroke-width: 1.5; opacity: 0.6; }
+    .hint-btn { margin-left: auto; }
     .hint { color: var(--accent); font-size: var(--fs-sm); margin: -8px 0 16px; }
 
     /* Sıralama görevi */

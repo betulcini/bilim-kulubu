@@ -5,6 +5,7 @@
 	import { browser } from '$app/environment';
 	import { onMount } from 'svelte';
 	import { supabase } from '$lib/supabaseClient.js';
+	import SiralamaPanelleri from '$lib/components/SiralamaPanelleri.svelte';
 
 	let activeFilter = 'Tümü';
 	$: visibleCompetitions = activeFilter === 'Tümü' ? competitions : competitions.filter((competition) => competition.tur === activeFilter);
@@ -94,6 +95,8 @@
 			{/each}
 		</div>
 	</section>
+
+	<SiralamaPanelleri />
 
 	<section class="leaderboard-section" aria-labelledby="skor-tablosu">
 		<div class="leaderboard-heading"><div><p class="section-kicker">Sezon 2026–2027</p><h2 id="skor-tablosu">Skor tablosu</h2></div>{#if leaderboard.length > 0}<span class="badge live">Güncel sıralama</span>{/if}</div>

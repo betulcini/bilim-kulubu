@@ -8,6 +8,7 @@ export const searchItems = [
 	{ title: 'Galeri', href: '/galeri', text: 'etkinlik fotoğraf anı' },
 	{ title: 'Topluluk ve Mesajlar', href: '/topluluk', text: 'öğrenci arkadaş tanış ilgi alanı bilim alanı filtre mesaj yaz sohbet' },
 	{ title: 'Öneri Kutusu', href: '/oneri', text: 'fikir proje etkinlik önerisi mesaj' },
+	{ title: 'Günlük Mini Quiz', href: '/gunluk-quiz', text: 'günlük quiz seri streak her gün 5 soru' },
 	{ title: 'Yarışmalar', href: '/yarismalar', text: 'kahoot bilgi yarışması' },
 	{ title: 'Bilim Takvimi', href: '/bilim-takvimi', text: 'güneş tutulması ay tutulması TÜBİTAK 2204 olimpiyat TEKNOFEST meteor yağmuru takvim' },
 	{ title: 'Oyunlar', href: '/oyunlar', text: 'bilim bilgi yarışması kart eşleştirme adam asmaca bilim tabu yasaklı kelime' },
