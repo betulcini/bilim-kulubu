@@ -43,7 +43,6 @@
 
 <svelte:head>
     <title>Bilim İnsanları Galerisi · Bilim Kulübü</title>
-    <meta name="description" content="Tesla, Einstein, Curie, Darwin ve daha fazlası — tarihin en etkili bilim insanlarının hayatını ve mirasını keşfedin." />
 </svelte:head>
 
 <PageHeader eyebrow="İlham Veren Yaşamlar" title="Bilim İnsanları Galerisi" desc="Tarihin seyrini değiştiren dâhileri, buluşlarını ve insanlığa bıraktıkları mirası keşfedin." />

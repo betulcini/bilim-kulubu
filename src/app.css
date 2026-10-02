@@ -63,7 +63,7 @@
     --border-strong: rgba(35, 61, 43, 0.3);
     --text: #20372a;
     --text-muted: #526454;
-    --text-faint: #758173;
+    --text-faint: #5a685a;
 
     --accent: #31543a;
     --accent-contrast: #ffffff;
@@ -73,7 +73,7 @@
     --accent-2-soft: rgba(154, 107, 32, 0.13);
     --accent-3: #47765a;
     --accent-3-soft: rgba(71, 118, 90, 0.12);
-    --danger: #b64d42;
+    --danger: #a43a30;
     --danger-soft: rgba(182, 77, 66, 0.11);
     --shadow: 0 18px 45px -30px rgba(45, 56, 39, 0.34);
     --scrollbar: rgba(49, 84, 58, 0.24);

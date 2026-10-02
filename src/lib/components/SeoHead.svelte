@@ -7,10 +7,17 @@
 	$: bilgi = seoByPath[yol] || (yol.startsWith('/oyunlar/') ? seoByPath['/oyunlar'] : yol.startsWith('/yarismalar/') ? seoByPath['/yarismalar'] : null);
 	$: baslik = bilgi ? `${bilgi.title} · ${defaultSeo.title}` : defaultSeo.title;
 	$: aciklama = bilgi ? bilgi.desc : defaultSeo.desc;
+	// Giriş gerektiren / kişisel sayfalar arama sonuçlarında çıkmasın
+	const GIZLI = ['/profil', '/ayarlar', '/topluluk', '/mesajlar'];
+	$: gizli = GIZLI.includes(yol);
+	// Quiz sayfası kendi açıklamasını verir (konuya göre değişir)
+	$: kendiAciklamasi = yol.startsWith('/yarismalar/');
 	$: resim = `${SITE_URL}/og-image.png`;
 </script>
 
 <svelte:head>
+	{#if !kendiAciklamasi}<meta name="description" content={aciklama} />{/if}
+	{#if gizli}<meta name="robots" content="noindex, nofollow" />{/if}
 	<meta property="og:type" content="website" />
 	<meta property="og:site_name" content={defaultSeo.title} />
 	<meta property="og:locale" content="tr_TR" />

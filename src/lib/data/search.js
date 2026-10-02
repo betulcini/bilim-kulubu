@@ -6,7 +6,7 @@ export const searchItems = [
 	{ title: 'Bilim Duyuruları', href: '/duyurular', text: 'yapay zekâ enerji uzay biyoteknoloji çevre' },
 	{ title: 'Fırsat Duyuruları', href: '/firsatlar', text: 'TÜBİTAK yarışma burs kamp hackathon' },
 	{ title: 'Galeri', href: '/galeri', text: 'etkinlik fotoğraf anı' },
-	{ title: 'Topluluk ve Mesajlar', href: '/topluluk', text: 'öğrenci arkadaş tanış ilgi alanı bilim alanı filtre mesaj yaz sohbet' },
+	{ title: 'Topluluk ve Mesajlar', href: '/topluluk', text: 'öğrenci arkadaş tanış ilgi alanı bilim alanı filtre mesaj yaz sohbet proje arkadaşı ilan ekip arıyorum' },
 	{ title: 'Öneri Kutusu', href: '/oneri', text: 'fikir proje etkinlik önerisi mesaj' },
 	{ title: 'Günlük Mini Quiz', href: '/gunluk-quiz', text: 'günlük quiz seri streak her gün 5 soru' },
 	{ title: 'Yarışmalar', href: '/yarismalar', text: 'kahoot bilgi yarışması' },

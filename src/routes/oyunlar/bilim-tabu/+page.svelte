@@ -158,7 +158,6 @@
 
 <svelte:head>
 	<title>Bilim Tabu · Oyunlar</title>
-	<meta name="description" content="Yasaklı kelimeleri kullanmadan bilimsel terimi anlat, takımın tahmin etsin. Fizik, kimya, biyoloji ve daha fazlası." />
 </svelte:head>
 
 <PageHeader

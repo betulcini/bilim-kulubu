@@ -73,7 +73,6 @@
 
 <svelte:head>
 	<title>Yarışmalar · Bilim ve Teknoloji Kulübü</title>
-	<meta name="description" content="Fizik, biyoloji, kimya ve astronomi quizlerini çöz, kulüp skor tablosunda yerini al ve yarışmalara katıl." />
 </svelte:head>
 <PageHeader eyebrow="Yarışmalar" title="Bilgini yarıştır" desc="Quizleri çöz, çevrimiçi turnuvalara katıl veya kulüp içindeki yüz yüze yarışmalarda takımınla yer al." />
 

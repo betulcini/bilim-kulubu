@@ -1,2 +1,3 @@
 User-agent: *
 Allow: /
+Sitemap: https://bilim-kulubu.betulcini.workers.dev/sitemap.xml

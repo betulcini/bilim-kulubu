@@ -3,6 +3,7 @@
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import InterestPicker from '$lib/components/InterestPicker.svelte';
 	import Sohbetler from '$lib/components/Sohbetler.svelte';
+	import ProjeIlanlari from '$lib/components/ProjeIlanlari.svelte';
 	import { unread } from '$lib/stores/messages.js';
 	import { interestById } from '$lib/data/interests.js';
 	import { user, authReady } from '$lib/stores/auth.js';
@@ -18,7 +19,7 @@
 	let loadError = '';
 	let benGorunuyorum = true; // kendi profilim dizinde mi (uyarı bandı için)
 
-	// ---------- sekmeler: Öğrenciler / Mesajlar ----------
+	// ---------- sekmeler: Öğrenciler / Proje ilanları / Mesajlar ----------
 	let sekme = 'ogrenciler';
 	let acilacakKisi = null;
 
@@ -39,7 +40,9 @@
 	function sekmeKlavye(e) {
 		if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
 		e.preventDefault();
-		const yeni = sekme === 'ogrenciler' ? 'mesajlar' : 'ogrenciler';
+		const sira = ['ogrenciler', 'ilanlar', 'mesajlar'];
+		const su = sira.indexOf(sekme);
+		const yeni = sira[(su + (e.key === 'ArrowRight' ? 1 : sira.length - 1)) % sira.length];
 		sekmeSec(yeni);
 		document.getElementById('tab-' + yeni)?.focus();
 	}
@@ -50,6 +53,7 @@
 		const k = q.get('kisi');
 		if (k) mesajAc(k);
 		else if (q.get('sekme') === 'mesajlar') sekme = 'mesajlar';
+		else if (q.get('sekme') === 'ilanlar') sekme = 'ilanlar';
 	});
 
 	// ---------- filtreler ----------
@@ -108,7 +112,7 @@
 
 <svelte:head><title>Topluluk · Bilim ve Teknoloji Kulübü</title></svelte:head>
 
-<PageHeader eyebrow="Tanış ve yaz" title="Topluluk" desc="Aynı bilim alanlarına ilgi duyan kişileri bul, onlara site içinden mesaj yaz." />
+<PageHeader eyebrow="Tanış ve yaz" title="Topluluk" desc="Aynı bilim alanlarına ilgi duyan kişileri bul, proje ekibi kur, site içinden mesaj yaz." />
 
 <div class="content-max page">
 	{#if $user}
@@ -131,6 +135,21 @@
 			<button
 				type="button"
 				role="tab"
+				id="tab-ilanlar"
+				class="tab"
+				class:on={sekme === 'ilanlar'}
+				aria-selected={sekme === 'ilanlar'}
+				aria-controls="panel-ilanlar"
+				tabindex={sekme === 'ilanlar' ? 0 : -1}
+				on:click={() => sekmeSec('ilanlar')}
+				on:keydown={sekmeKlavye}
+			>
+				<Icon name="bulb" size={17} />
+				<span>Proje İlanları</span>
+			</button>
+			<button
+				type="button"
+				role="tab"
 				id="tab-mesajlar"
 				class="tab"
 				class:on={sekme === 'mesajlar'}
@@ -149,6 +168,10 @@
 		{#if sekme === 'mesajlar'}
 			<div id="panel-mesajlar" role="tabpanel" aria-labelledby="tab-mesajlar">
 				<Sohbetler kisiId={acilacakKisi} on:ogrenciler={() => sekmeSec('ogrenciler')} />
+			</div>
+		{:else if sekme === 'ilanlar'}
+			<div id="panel-ilanlar" role="tabpanel" aria-labelledby="tab-ilanlar">
+				<ProjeIlanlari on:mesaj={(e) => mesajAc(e.detail)} />
 			</div>
 		{:else}
 			<div id="panel-ogrenciler" role="tabpanel" aria-labelledby="tab-ogrenciler" class="ogrenciler">

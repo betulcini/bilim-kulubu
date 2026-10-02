@@ -1,0 +1,8 @@
+# Cloudflare statik varlık başlıkları (wrangler assets). Yeni dosya: mevcut ayarlara dokunmaz.
+# Hash'li derleme dosyaları değişmez; tarayıcı bir yıl önbellekte tutabilir (tekrar ziyarette hızlanır).
+/_app/immutable/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin

@@ -14,6 +14,7 @@ export const seoByPath = {
 	'/oneri': { title: 'Öneri Kutusu', desc: 'Kulüple ilgili fikir ve önerilerini bize ilet.' },
 	'/yarismalar': { title: 'Yarışmalar ve Quizler', desc: 'Fizik, biyoloji, kimya ve astronomi quizlerini çöz, skor tablosunda yerini al.' },
 	'/gunluk-quiz': { title: 'Günlük Mini Quiz', desc: 'Her gün 5 soruluk karışık bilim quizi çöz, serini büyüt.' },
+	'/topluluk': { title: 'Topluluk ve Proje İlanları', desc: 'Aynı bilim alanlarına ilgi duyanları bul, proje ekibi kur.' },
 	'/oyunlar': { title: 'Bilim Oyunları', desc: 'Bilgi yarışması, hafıza kartları, adam asmaca ve bilim tabu.' },
 	'/bilim-takvimi': { title: 'Bilim Takvimi', desc: 'Tutulmalar, uzay olayları ve TÜBİTAK yarışma tarihleri tek takvimde.' },
 	'/bilim-insanlari': { title: 'Bilim İnsanları', desc: 'Dünyayı değiştiren bilim insanlarının hayatları ve keşifleri.' },

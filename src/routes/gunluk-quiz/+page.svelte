@@ -113,7 +113,6 @@
 
 <svelte:head>
 	<title>Günlük Mini Quiz · Bilim ve Teknoloji Kulübü</title>
-	<meta name="description" content="Her gün 5 soruluk karışık bilim quizi çöz, seri sayacını büyüt." />
 </svelte:head>
 
 <PageHeader eyebrow="Günlük Quiz" title="5 soru, 1 dakika" desc="Her gün farklı konulardan 5 soru. Her gün çözdükçe serin uzar; bir gün atlarsan sıfırlanır." />

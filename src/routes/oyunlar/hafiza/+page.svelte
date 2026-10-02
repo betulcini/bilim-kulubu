@@ -96,7 +96,6 @@
 
 <svelte:head>
 	<title>Kart Eşleştirme · Bilim ve Teknoloji Kulübü</title>
-	<meta name="description" content="Fizik, kimya, biyoloji ve daha fazlasından soru-cevap kartlarını eşleştir, öğrenirken puan topla." />
 </svelte:head>
 
 <PageHeader
