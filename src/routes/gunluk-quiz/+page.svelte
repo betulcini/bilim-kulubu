@@ -4,6 +4,7 @@
 	import Icon from '$lib/components/Icon.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import { quizData } from '$lib/data/bilim-quizleri.js';
+	import { loadDbQuiz, birlestir } from '$lib/quizDb.js';
 	import { streak, dayKey, visibleStreak } from '$lib/stores/streak.js';
 	import { sfx } from '$lib/sound.js';
 
@@ -34,12 +35,16 @@
 	// Her gün farklı konulardan birer soru: önce konular karıştırılır, sonra her konudan bir soru seçilir
 	function buildDaily(key) {
 		const rnd = mulberry32(seedOf(key));
-		const konular = seededShuffle(Object.keys(quizData), rnd).slice(0, SORU_SAYISI);
+		const konular = seededShuffle(Object.keys(havuz), rnd).slice(0, SORU_SAYISI);
 		return konular.map((k) => {
-			const q = seededShuffle(quizData[k].questions, rnd)[0];
-			return { ...q, konu: quizData[k].title.replace(' Quiz', ''), secenekler: seededShuffle(q.secenekler, rnd) };
+			const q = seededShuffle(havuz[k].questions, rnd)[0];
+			return { ...q, konu: havuz[k].title.replace(' Quiz', ''), secenekler: seededShuffle(q.secenekler, rnd) };
 		});
 	}
+
+	// Soru havuzu: yerleşik sorular + yönetici panelinden eklenen konular (Supabase)
+	/** @type {Record<string, any>} */
+	let havuz = quizData;
 
 	let today = dayKey(); // SSR/prerender sırasında sabit kalır, onMount'ta yenilenir
 	let sorular = buildDaily(today);
@@ -58,6 +63,12 @@
 		if (onceki) bitti = true;
 		kalan = geceyeKalan();
 		hazir = true;
+		loadDbQuiz().then((db) => {
+			if (!db) return;
+			havuz = birlestir(quizData, db);
+			// Oyuncu henüz başlamadıysa güncel havuzdan bugünün sorularını yeniden kur
+			if (!onceki && !bitti && index === 0 && secilen === null && puan === 0) sorular = buildDaily(today);
+		});
 	});
 
 	function geceyeKalan() {

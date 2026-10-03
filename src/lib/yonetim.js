@@ -69,13 +69,13 @@ export function dogrula(tablo, form) {
 	return { satir };
 }
 
-function hataMetni(error) {
+export function hataMetni(error, kurulum = '2026-10-03-yonetici-formu.sql') {
 	if (!error) return null;
 	if (error.code === '42501' || /row-level security/i.test(error.message || '')) {
 		return 'Bu işlem için yönetici yetkin yok.';
 	}
-	if (error.code === '42P01' || /does not exist|schema cache/i.test(error.message || '')) {
-		return 'Veritabanı kurulumu eksik: supabase/2026-10-03-yonetici-formu.sql dosyasını çalıştır.';
+	if (error.code === '42P01' || /does not exist|schema cache|Bucket not found/i.test(error.message || '')) {
+		return `Veritabanı kurulumu eksik: supabase/${kurulum} dosyasını çalıştır.`;
 	}
 	if (error.code === '23514') return 'Girilen bir alan kuralları karşılamıyor (bağlantılar https:// ile başlamalı).';
 	return 'İşlem yapılamadı: ' + (error.message || 'bilinmeyen hata');

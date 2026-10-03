@@ -3,6 +3,8 @@
 	import { browser } from '$app/environment';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import Icon from '$lib/components/Icon.svelte';
+	import QuizYonetimi from '$lib/components/QuizYonetimi.svelte';
+	import GaleriYonetimi from '$lib/components/GaleriYonetimi.svelte';
 	import { user, authReady } from '$lib/stores/auth.js';
 	import { ALANLAR, bosForm, dogrula, isAdmin, listRows, saveRow, setAktif, removeRow } from '$lib/yonetim.js';
 	import { formatTarih } from '$lib/content.js';
@@ -48,20 +50,39 @@
 		yukleniyor = false;
 	}
 
+	const TABLAR = [
+		{ id: 'duyurular', ad: 'Duyurular' },
+		{ id: 'firsatlar', ad: 'Fırsatlar' },
+		{ id: 'quizler', ad: 'Quizler' },
+		{ id: 'galeri', ad: 'Galeri' }
+	];
+	const FORMLU = ['duyurular', 'firsatlar']; // ortak form + liste kullanan sekmeler
+
 	async function sekmeSec(ad) {
 		if (sekme === ad) return;
 		sekme = ad;
-		temizle();
 		sfx.nav();
-		await yukle();
+		if (FORMLU.includes(ad)) {
+			temizle();
+			await yukle();
+		} else {
+			hata = '';
+			bilgi = '';
+		}
 	}
 
 	function sekmeKlavye(e) {
-		if (e.key !== 'ArrowLeft' && e.key !== 'ArrowRight') return;
+		const i = TABLAR.findIndex((t) => t.id === sekme);
+		let yeni = -1;
+		if (e.key === 'ArrowRight') yeni = (i + 1) % TABLAR.length;
+		else if (e.key === 'ArrowLeft') yeni = (i - 1 + TABLAR.length) % TABLAR.length;
+		else if (e.key === 'Home') yeni = 0;
+		else if (e.key === 'End') yeni = TABLAR.length - 1;
+		if (yeni < 0) return;
 		e.preventDefault();
-		const yeni = sekme === 'duyurular' ? 'firsatlar' : 'duyurular';
-		sekmeSec(yeni);
-		document.getElementById('yt-' + yeni)?.focus();
+		const id = TABLAR[yeni].id;
+		sekmeSec(id);
+		document.getElementById('yt-' + id)?.focus();
 	}
 
 	function temizle() {
@@ -136,7 +157,7 @@
 
 <svelte:head><title>Yönetim · Bilim ve Teknoloji Kulübü</title></svelte:head>
 
-<PageHeader eyebrow="Yönetici" title="Duyuru ve fırsat yönetimi" desc="Duyuru ve fırsatları buradan ekle, düzenle, yayından kaldır ya da sil. Değişiklikler sitede hemen görünür." />
+<PageHeader eyebrow="Yönetici" title="Yönetim paneli" desc="Duyuru, fırsat, quiz ve galeri içeriklerini buradan ekle, düzenle, yayından kaldır ya da sil. Değişiklikler sitede hemen görünür." />
 
 <div class="content-max sayfa">
 	{#if kontrol === 'bekliyor'}
@@ -151,11 +172,17 @@
 		</div>
 	{:else}
 		<div class="tabs" role="tablist" aria-label="Yönetilecek içerik">
-			<button type="button" role="tab" id="yt-duyurular" class="tab" class:on={sekme === 'duyurular'} aria-selected={sekme === 'duyurular'} aria-controls="yp" tabindex={sekme === 'duyurular' ? 0 : -1} on:click={() => sekmeSec('duyurular')} on:keydown={sekmeKlavye}>Duyurular</button>
-			<button type="button" role="tab" id="yt-firsatlar" class="tab" class:on={sekme === 'firsatlar'} aria-selected={sekme === 'firsatlar'} aria-controls="yp" tabindex={sekme === 'firsatlar' ? 0 : -1} on:click={() => sekmeSec('firsatlar')} on:keydown={sekmeKlavye}>Fırsatlar</button>
+			{#each TABLAR as t (t.id)}
+				<button type="button" role="tab" id="yt-{t.id}" class="tab" class:on={sekme === t.id} aria-selected={sekme === t.id} aria-controls="yp" tabindex={sekme === t.id ? 0 : -1} on:click={() => sekmeSec(t.id)} on:keydown={sekmeKlavye}>{t.ad}</button>
+			{/each}
 		</div>
 
 		<div id="yp" role="tabpanel" aria-labelledby="yt-{sekme}" class="panel">
+			{#if sekme === 'quizler'}
+				<QuizYonetimi />
+			{:else if sekme === 'galeri'}
+				<GaleriYonetimi />
+			{:else}
 			<form id="yform" class="bracket-card form" on:submit={kaydet} novalidate>
 				<h2>{duzenlenen ? 'Kaydı düzenle' : sekme === 'duyurular' ? 'Yeni duyuru ekle' : 'Yeni fırsat ekle'}</h2>
 				{#each ALANLAR[sekme] as a (a.k)}
@@ -210,14 +237,15 @@
 					</ul>
 				{/if}
 			</section>
+			{/if}
 		</div>
 	{/if}
 </div>
 
 <style>
 	.sayfa { margin-bottom: 60px; display: flex; flex-direction: column; gap: 20px; }
-	.tabs { display: flex; gap: 6px; padding: 5px; width: fit-content; max-width: 100%; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); background: var(--bg-alt); }
-	.tab { min-height: 42px; padding: 8px 18px; border: 1px solid transparent; border-radius: 9px; background: transparent; color: var(--text-muted); font-family: var(--font-display); font-size: var(--fs-sm); font-weight: 600; cursor: pointer; }
+	.tabs { display: flex; gap: 6px; padding: 5px; width: fit-content; max-width: 100%; overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); background: var(--bg-alt); }
+	.tab { white-space: nowrap; min-height: 42px; padding: 8px 18px; border: 1px solid transparent; border-radius: 9px; background: transparent; color: var(--text-muted); font-family: var(--font-display); font-size: var(--fs-sm); font-weight: 600; cursor: pointer; }
 	.tab:hover { color: var(--text); }
 	.tab.on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
 	.tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }

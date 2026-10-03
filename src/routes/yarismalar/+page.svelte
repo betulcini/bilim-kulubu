@@ -6,9 +6,15 @@
 	import { onMount } from 'svelte';
 	import { supabase } from '$lib/supabaseClient.js';
 	import SiralamaPanelleri from '$lib/components/SiralamaPanelleri.svelte';
+	import { loadDbQuiz } from '$lib/quizDb.js';
+	import { quizData } from '$lib/data/bilim-quizleri.js';
 
 	let activeFilter = 'Tümü';
-	$: visibleCompetitions = activeFilter === 'Tümü' ? competitions : competitions.filter((competition) => competition.tur === activeFilter);
+	// Yönetici panelinden eklenen yeni quiz konuları (koddaki hazır konulardan olmayanlar) kart olarak eklenir
+	let dbKartlar = [];
+	const sonQuiz = competitions.map((c) => c.tur).lastIndexOf('Quizler');
+	$: tumYarismalar = [...competitions.slice(0, sonQuiz + 1), ...dbKartlar, ...competitions.slice(sonQuiz + 1)];
+	$: visibleCompetitions = activeFilter === 'Tümü' ? tumYarismalar : tumYarismalar.filter((competition) => competition.tur === activeFilter);
 	function badgeClass(durum) { return durum === 'Katıl' || durum === 'Kayıt açık' ? 'live' : 'dev'; }
 
 	// --- Skor tablosu: önce gerçek/ortak Supabase verisi, yoksa bu cihazdaki sonuçlar, o da yoksa boş durum ---
@@ -43,6 +49,21 @@
 
 	onMount(async () => {
 		if (!browser) return;
+
+		loadDbQuiz().then((db) => {
+			if (!db) return;
+			dbKartlar = Object.entries(db)
+				.filter(([slug, t]) => !quizData[slug] && t.questions.length > 0)
+				.map(([slug, t]) => ({
+					ad: t.title,
+					tur: 'Quizler',
+					platform: 'Kulüp platformu',
+					tarih: 'Her zaman açık',
+					durum: 'Katıl',
+					aciklama: `${t.desc} ${t.questions.length} soruluk havuz — her turda farklı sorular.`,
+					href: `/yarismalar/quiz?konu=${slug}`
+				}));
+		});
 
 		// 1) Önce gerçek/ortak skor tablosunu dene (tüm kullanıcılar arasında, giriş yapmış olanlardan)
 		const { data, error } = await supabase

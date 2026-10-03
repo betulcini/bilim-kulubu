@@ -78,3 +78,16 @@ Kurulum: `supabase/2026-09-30-oneri-kutusu.sql`.
 
 Önizleme görseli `static/og-image.png`. Görselin görünmesi için sitenin tam adresi gerekir:
 build ortamına `VITE_SITE_URL` değişkenini ekle (ör. `https://siteadresin.com`) ya da `src/lib/site.js` dosyasına yaz.
+
+## Yönetici paneli: Quiz ve Galeri (Supabase)
+
+`/yonetim` sayfasında Duyurular ve Fırsatların yanında **Quizler** ve **Galeri** sekmeleri vardır.
+Kurulum (bir kez): `supabase/2026-10-04-quiz-galeri-yonetimi.sql` dosyasını SQL Editor'de çalıştır
+(önce `2026-10-03-yonetici-formu.sql` çalışmış olmalı). Bu dosya `quiz_konulari`, `quiz_sorulari`, `galeri`
+tablolarını ve herkese açık `galeri` fotoğraf deposunu kurar; ekleme/silme sadece yöneticilere açıktır.
+
+- **Quizler:** konu oluştur, tek soru ekle/düzenle/gizle/sil ya da **CSV dosyasından toplu soru ekle**.
+  Örnek dosya: `supabase/ornek-quiz.csv` (sütunlar: konu, soru, secenek_a…secenek_d, dogru, aciklama, zorluk).
+  Koddaki hazır konulara (fizik, kimya…) eklenen sorular aynı konunun havuzuna katılır; yeni konular
+  Yarışmalar sayfasında kart olarak, Günlük Mini Quiz'de ise soru havuzunda görünür.
+- **Galeri:** fotoğraf(lar) seç, başlık yaz, yükle. Fotoğraflar tarayıcıda küçültülüp yüklenir.

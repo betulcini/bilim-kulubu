@@ -6,6 +6,7 @@
     import { onMount } from 'svelte';
     import { browser } from '$app/environment';
     import { quizData } from '$lib/data/bilim-quizleri.js';
+    import { loadDbQuiz, birlestir } from '$lib/quizDb.js';
     import { supabase } from '$lib/supabaseClient.js';
     import { user } from '$lib/stores/auth.js';
 
@@ -16,7 +17,14 @@
     $: if (browser) {
         konu = $page.url.searchParams.get('konu') || 'fizik';
     }
-    $: categoryMeta = quizData[konu] || quizData.fizik;
+    // Soru havuzu: koddaki yerleşik sorular + yönetici panelinden eklenenler (Supabase).
+    // Yönetici panelinden oluşturulan konular tarayıcıda yüklenir; o ana kadar yerleşik havuz kullanılır.
+    /** @type {Record<string, any>} */
+    let havuz = quizData;
+    let dbHazir = false;
+    $: bekliyor = !havuz[konu] && !dbHazir;
+    $: bulunamadi = !havuz[konu] && dbHazir;
+    $: categoryMeta = havuz[konu] || { title: bekliyor ? 'Quiz yükleniyor…' : 'Quiz bulunamadı', desc: '' };
 
     // Her turda soru havuzundan rastgele bir alt küme seçilir (tekrar oynamada çeşitlilik)
     const ROUND_SIZE = 8;
@@ -29,7 +37,8 @@
         return a;
     }
     function pickRound(catKey) {
-        const cat = quizData[catKey] || quizData.fizik;
+        const cat = havuz[catKey];
+        if (!cat) return [];
         return shuffle(cat.questions).slice(0, Math.min(ROUND_SIZE, cat.questions.length));
     }
 
@@ -83,6 +92,12 @@
     onMount(() => {
         const saved = localStorage.getItem('bilim_kulubu_player_name');
         if (saved) playerName = saved;
+        loadDbQuiz().then((db) => {
+            if (db) havuz = birlestir(quizData, db);
+            dbHazir = true;
+            // Konu veritabanından geldiyse (ilk tur boş kaldıysa) şimdi turu başlat
+            if (roundQuestions.length === 0) roundQuestions = pickRound(konu);
+        });
         return () => clearTimer();
     });
 
@@ -176,7 +191,17 @@
             <span class="badge live player-score">Puan: {score}</span>
         </div>
 
-        {#if !isFinished}
+        {#if bekliyor}
+            <p role="status" style="text-align: center; color: var(--text-muted); margin: 24px 0;">Quiz yükleniyor…</p>
+        {:else if bulunamadi || roundQuestions.length === 0}
+            <div class="finish-box">
+                <h2>Bu quiz bulunamadı</h2>
+                <p style="text-align: center; margin: 15px auto; color: var(--text-muted);">Aradığın konu kaldırılmış ya da henüz soru eklenmemiş olabilir.</p>
+                <div class="finish-actions">
+                    <a href="/yarismalar" class="btn btn-primary" style="text-decoration: none; text-align: center;">Yarışmalar Menüsüne Dön</a>
+                </div>
+            </div>
+        {:else if !isFinished}
             {@const q = roundQuestions[currentQuestionIndex]}
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; flex-wrap: wrap; gap: 8px;">
                 <div style="display: flex; align-items: center; gap: 8px;">

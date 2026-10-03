@@ -10,11 +10,12 @@ import { build, files, prerendered, version } from '$service-worker';
 const CACHE = `btk-${version}`;
 const VERI = 'btk-veri'; // duyuru / fırsat verisi (sürümler arası kalır)
 const FONT = 'btk-font';
+const GORSEL = 'btk-galeri'; // galeri fotoğrafları (dosya adları değişmez, bir kez indirilince saklanır)
 const ASSETS = [...build, ...files.filter((f) => !f.endsWith('.map'))];
 const SAYFALAR = [...prerendered];
 
 // Önbelleğe alınacak herkese açık Supabase tabloları
-const HERKESE_ACIK = ['/rest/v1/duyurular', '/rest/v1/firsatlar'];
+const HERKESE_ACIK = ['/rest/v1/duyurular', '/rest/v1/firsatlar', '/rest/v1/galeri', '/rest/v1/quiz_konulari', '/rest/v1/quiz_sorulari'];
 
 self.addEventListener('install', (event) => {
 	event.waitUntil(
@@ -33,7 +34,7 @@ self.addEventListener('activate', (event) => {
 	event.waitUntil(
 		caches
 			.keys()
-			.then((keys) => Promise.all(keys.filter((k) => k !== CACHE && k !== VERI && k !== FONT).map((k) => caches.delete(k))))
+			.then((keys) => Promise.all(keys.filter((k) => k !== CACHE && k !== VERI && k !== FONT && k !== GORSEL).map((k) => caches.delete(k))))
 			.then(() => self.clients.claim())
 	);
 });
@@ -61,6 +62,20 @@ self.addEventListener('fetch', (event) => {
 	// Supabase: sadece herkese açık içerik tabloları
 	if (url.hostname.endsWith('.supabase.co') && HERKESE_ACIK.some((p) => url.pathname.startsWith(p))) {
 		event.respondWith(agOnce(req, VERI));
+		return;
+	}
+
+	// Galeri fotoğrafları (Supabase Storage, herkese açık kova): önce önbellek, yoksa ağ
+	if (url.hostname.endsWith('.supabase.co') && url.pathname.startsWith('/storage/v1/object/public/galeri/')) {
+		event.respondWith(
+			caches.open(GORSEL).then(async (c) => {
+				const hit = await c.match(req);
+				if (hit) return hit;
+				const res = await fetch(req);
+				if (res.ok) c.put(req, res.clone());
+				return res;
+			})
+		);
 		return;
 	}
 
