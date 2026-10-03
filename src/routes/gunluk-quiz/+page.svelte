@@ -6,6 +6,8 @@
 	import { quizData } from '$lib/data/bilim-quizleri.js';
 	import { loadDbQuiz, birlestir } from '$lib/quizDb.js';
 	import { streak, dayKey, visibleStreak } from '$lib/stores/streak.js';
+	import { user, authReady } from '$lib/stores/auth.js';
+	import { ilerleme, gunlukQuizKaydet } from '$lib/stores/ilerleme.js';
 	import { sfx } from '$lib/sound.js';
 
 	const SORU_SAYISI = 5;
@@ -55,6 +57,8 @@
 	let onceki = null; // bugün zaten çözüldüyse sonucu
 	let hazir = false;
 	let kalan = '';
+	let kazanilan = null; // bu quizden kazanılan Bilim Puanı (giriş yapılmışsa)
+	let sunucuHata = '';
 
 	onMount(() => {
 		today = dayKey();
@@ -104,7 +108,22 @@
 			streak.complete(puan, SORU_SAYISI);
 			onceki = { score: puan, total: SORU_SAYISI };
 			bitti = true;
+			if ($user) hesabaKaydet(puan);
 		}
+	}
+
+	// Giriş yapmış kullanıcının seri ve puanı hesabına işlenir (telefon/bilgisayar arasında senkron kalır)
+	async function hesabaKaydet(dogru) {
+		sunucuHata = '';
+		const r = await gunlukQuizKaydet($user.id, today, dogru);
+		if (r.hata) sunucuHata = r.hata === 'giris' ? '' : r.hata;
+		else kazanilan = r.kazanilan;
+	}
+
+	// Başka cihazda bugünkü quiz çözüldüyse (hesaptan gelen veri) tekrar çözdürme
+	$: if (hazir && !onceki && !bitti && $streak.results[today]) {
+		onceki = $streak.results[today];
+		bitti = true;
 	}
 
 	// Son 7 günün çözüldü/çözülmedi görünümü
@@ -126,7 +145,7 @@
 	<title>Günlük Mini Quiz · Bilim ve Teknoloji Kulübü</title>
 </svelte:head>
 
-<PageHeader eyebrow="Günlük Quiz" title="5 soru, 1 dakika" desc="Her gün farklı konulardan 5 soru. Her gün çözdükçe serin uzar; bir gün atlarsan sıfırlanır." />
+<PageHeader eyebrow="Günlük Quiz" title="5 soru, 1 dakika" desc="Her gün farklı konulardan 5 soru. Her gün çözdükçe serin uzar; bir gün atlarsan sıfırlanır. Giriş yaptıysan serin ve puanın hesabına kaydedilir." />
 
 <div class="content-max wrap">
 	<div class="bracket-card box">
@@ -167,9 +186,19 @@
 					{/if}
 					Yeni sorular {kalan} sonra.
 				</p>
+				{#if $user}
+					{#if kazanilan}
+						<p class="kazanc" role="status">+{kazanilan} Bilim Puanı kazandın{#if $ilerleme.veri} · Toplam: {$ilerleme.veri.xp}{/if}</p>
+					{:else if $ilerleme.veri}
+						<p class="muted">Toplam Bilim Puanın: <strong>{$ilerleme.veri.xp}</strong></p>
+					{/if}
+					{#if sunucuHata}<p class="muted" role="alert">{sunucuHata}</p>{/if}
+				{:else if $authReady}
+					<p class="muted"><a href="/giris" style="color: var(--accent);">Giriş yaparsan</a> serin ve puanın hesabında kalır, telefon ile bilgisayar arasında senkron olur.</p>
+				{/if}
 				<div class="actions">
 					<a class="btn btn-primary" href="/yarismalar" on:click={() => sfx.nav()}>Konu quizlerine geç</a>
-					<a class="btn btn-ghost" href="/profil" on:click={() => sfx.nav()}>Rozetlerimi gör</a>
+					<a class="btn btn-ghost" href={$user ? '/profil/ilerleme' : '/profil'} on:click={() => sfx.nav()}>{$user ? 'İlerlememi gör' : 'Rozetlerimi gör'}</a>
 				</div>
 			</div>
 		{:else}
@@ -215,6 +244,7 @@
 	.nokta { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 999px; border: 1.5px solid var(--border-strong); color: var(--accent-contrast); }
 	.gun.done .nokta { background: var(--accent); border-color: var(--accent); }
 	.gun.today:not(.done) .nokta { border-color: var(--accent); border-style: dashed; }
+	.kazanc { margin: 8px 0 0; color: var(--accent); font-weight: 600; }
 	.ust { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 12px; }
 	.progress { height: 4px; border-radius: 999px; background: var(--bg-alt); overflow: hidden; margin-bottom: 18px; }
 	.progress span { display: block; height: 100%; background: var(--accent); border-radius: 999px; transition: width 0.3s; }

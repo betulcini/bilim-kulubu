@@ -4,14 +4,16 @@
 	import { supabase } from '$lib/supabaseClient.js';
 	import { user } from '$lib/stores/auth.js';
 	import { sfx } from '$lib/sound.js';
+	import { seviyeHesapla } from '$lib/data/seviyeler.js';
 
-	// 'sinif' = sınıflar arası yarış, 'haftalik' = bu haftanın bireysel liderleri
+	// 'sinif' = sınıflar arası yarış, 'haftalik' = bu haftanın bireysel liderleri, 'genel' = toplam Bilim Puanı
 	let sekme = 'sinif';
 	// Sınıf yarışında dönem: 'hafta' | 'sezon'
 	let donem = 'sezon';
 
 	let siniflar = [];
 	let haftalik = [];
+	let genel = [];
 	let yuklendi = false;
 	let hata = false;
 
@@ -34,13 +36,16 @@
 	onMount(async () => {
 		if (!browser) return;
 		sifirlanma = haftaSifirlanma();
-		const [sinifRes, haftaRes] = await Promise.all([
+		const [sinifRes, haftaRes, genelRes] = await Promise.all([
 			supabase.from('class_leaderboard_view').select('class_name, member_count, season_total, week_total, season_avg').limit(30),
-			supabase.from('weekly_leaderboard_view').select('full_name, class_name, week_score, quiz_count').order('week_score', { ascending: false }).limit(10)
+			supabase.from('weekly_leaderboard_view').select('full_name, class_name, week_score, quiz_count').order('week_score', { ascending: false }).limit(10),
+			// toplam_puan_view kurulu değilse (2026-10-05 SQL'i çalışmadıysa) bu sekme boş görünür, diğerleri etkilenmez
+			supabase.from('toplam_puan_view').select('full_name, class_name, xp').order('xp', { ascending: false }).limit(10)
 		]);
 		if (sinifRes.error && haftaRes.error) hata = true;
 		siniflar = sinifRes.data || [];
 		haftalik = haftaRes.data || [];
+		genel = genelRes.error ? [] : genelRes.data || [];
 		yuklendi = true;
 	});
 
@@ -66,6 +71,7 @@
 		<div class="tabs" role="tablist" aria-label="Sıralama türü">
 			<button role="tab" aria-selected={sekme === 'sinif'} class:active={sekme === 'sinif'} on:click={() => sec('sinif')}>Sınıflar</button>
 			<button role="tab" aria-selected={sekme === 'haftalik'} class:active={sekme === 'haftalik'} on:click={() => sec('haftalik')}>Bu hafta</button>
+			<button role="tab" aria-selected={sekme === 'genel'} class:active={sekme === 'genel'} on:click={() => sec('genel')}>Toplam puan</button>
 		</div>
 	</div>
 
@@ -97,6 +103,23 @@
 			</ul>
 		{/if}
 		<p class="note">Sınıf puanı, üyelerin her konudaki en yüksek quiz skorlarının toplamıdır. Sınıfını Profilim sayfasından ayarlayabilirsin{#if benimSinif} (senin sınıfın: {benimSinif}){/if}.</p>
+	{:else if sekme === 'genel'}
+		{#if genel.length === 0}
+			<div class="card empty">Henüz toplam puan yok. Giriş yapıp quiz çözerek ve siteyi ziyaret ederek puan kazan.</div>
+		{:else}
+			<ul class="card list">
+				{#each genel as k, i}
+					<li class:mine={k.full_name && k.full_name === $user?.full_name}>
+						<span class="rank rank-{i + 1}">{i + 1}</span>
+						<div class="who">
+							<div class="row"><strong>{k.full_name || 'Bilim Meraklısı'}</strong><span class="pts">{k.xp.toLocaleString('tr-TR')} puan</span></div>
+							<small>{k.class_name ? `${k.class_name} · ` : ''}{seviyeHesapla(k.xp).ad} (Seviye {seviyeHesapla(k.xp).seviye})</small>
+						</div>
+					</li>
+				{/each}
+			</ul>
+		{/if}
+		<p class="note">Toplam Bilim Puanı; konu quizleri, günlük mini quiz, seri bonusu ve günlük girişlerden oluşur. Detaylı döküm için Profilim → İlerlemem sayfasına bak.</p>
 	{:else}
 		{#if haftalik.length === 0}
 			<div class="card empty">Bu hafta henüz skor yok. İlk puanı sen kazan.</div>

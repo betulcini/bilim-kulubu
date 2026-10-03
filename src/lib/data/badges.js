@@ -54,9 +54,11 @@ export const badgeDefs = [
 		deger: (c) => Math.min(c.user?.interests?.length || 0, interests.length)
 	}
 	,{ id: 'seri-ustasi', ad: 'Seri Ustası', aciklama: 'Günlük mini quizi art arda günlerde çöz.', emoji: 'bolt', hedef: 30, seviyeler: [3, 7, 30], deger: (c) => c.streak?.best || 0 },
+	{ id: 'puan-avcisi', ad: 'Puan Avcısı', aciklama: 'Bilim Puanı topla ve seviye atla.', emoji: 'trophy', hedef: 6000, seviyeler: [500, 2000, 6000], deger: (c) => c.ilerleme?.xp || 0 },
+	{ id: 'duzenli-ziyaretci', ad: 'Düzenli Ziyaretçi', aciklama: 'Giriş yaparak siteyi farklı günlerde ziyaret et.', emoji: 'sun', hedef: 30, seviyeler: [3, 10, 30], deger: (c) => c.ilerleme?.ziyaret_gun || 0 },
 	{ id: 'gunluk-duzen', ad: 'Günlük Düzen', aciklama: 'Günlük mini quizi toplam kaç gün tamamladın.', emoji: 'calendar', hedef: 40, seviyeler: [5, 15, 40], deger: (c) => c.streak?.total || 0 }
 ];
-// ctx: { user, scores: [{subject, score}], activity: {games, scientists}, streak: {best, total} }
+// ctx: { user, scores: [{subject, score}], activity: {games, scientists}, streak: {best, total}, ilerleme: {xp, ziyaret_gun} | null }
 export const SEVIYE_ADLARI = ['', 'Bronz', 'Gümüş', 'Altın'];
 
 // Seviyeli rozet (seviyeler: [bronz, gümüş, altın] eşikleri): kazanıldı = bronz eşiği aşıldı.

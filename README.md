@@ -91,3 +91,13 @@ tablolarını ve herkese açık `galeri` fotoğraf deposunu kurar; ekleme/silme 
   Koddaki hazır konulara (fizik, kimya…) eklenen sorular aynı konunun havuzuna katılır; yeni konular
   Yarışmalar sayfasında kart olarak, Günlük Mini Quiz'de ise soru havuzunda görünür.
 - **Galeri:** fotoğraf(lar) seç, başlık yaz, yükle. Fotoğraflar tarayıcıda küçültülüp yüklenir.
+
+## Bilim Puanı, hesaba bağlı seri ve İlerlemem sayfası
+
+Kurulum (bir kez): `supabase/2026-10-05-puan-ve-ilerleme.sql` dosyasını SQL Editor'de çalıştır.
+Bu dosya `gunluk_aktivite` tablosunu, puan/seri fonksiyonlarını ve `toplam_puan_view` sıralamasını kurar.
+
+- **Puan:** konu quizi (0-200, günde en yüksek 3 quiz sayılır) + günlük quiz (doğru başına 20) + seri bonusu (gün x 10, en çok 70) + günlük giriş (20).
+- **Seri:** giriş yapmış kullanıcıda Supabase'de tutulur (telefon/bilgisayar senkron). Giriş yapmadan çözülmüş günler ilk girişte hesaba aktarılır.
+- **Profilim → İlerlemem** (`/profil/ilerleme`): seviye, puan dökümü, seri, son 5 hafta takvimi, konu bazlı en iyi skorlar.
+- Yarışmalar sayfasındaki sıralama panelinde yeni **Toplam puan** sekmesi var.

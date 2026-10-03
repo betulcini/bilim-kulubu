@@ -7,6 +7,7 @@
     import { browser } from '$app/environment';
     import { quizData } from '$lib/data/bilim-quizleri.js';
     import { loadDbQuiz, birlestir } from '$lib/quizDb.js';
+    import { ilerleme, ilerlemeYenile } from '$lib/stores/ilerleme.js';
     import { supabase } from '$lib/supabaseClient.js';
     import { user } from '$lib/stores/auth.js';
 
@@ -50,6 +51,7 @@
     let isFinished = false;
     let playerName = '';
     let savedToLeaderboard = false;
+    let kazanilanPuan = null; // bu turdan hesabına eklenen Bilim Puanı (günlük sınır dolduysa 0)
 
     // Konu değiştiğinde (URL parametresi ile) yeni bir tur başlat
     $: if (konu !== lastKonu) {
@@ -145,7 +147,13 @@
                     subject_title: categoryMeta.title,
                     score
                 });
-                if (!error) savedToLeaderboard = true;
+                if (!error) {
+                    savedToLeaderboard = true;
+                    // Toplam Bilim Puanı güncellensin
+                    const once = $ilerleme.veri?.xp ?? null;
+                    const v = await ilerlemeYenile($user.id);
+                    if (v && once !== null) kazanilanPuan = Math.max(0, v.xp - once);
+                }
             }
         }
     }
@@ -157,6 +165,7 @@
         score = 0;
         isFinished = false;
         savedToLeaderboard = false;
+        kazanilanPuan = null;
         startTimer();
     }
 
@@ -257,6 +266,12 @@
                 </p>
                 {#if savedToLeaderboard}
                     <p style="font-size: var(--fs-sm); color: var(--accent);"><Icon name="check" size={14} /> Skorun ortak skor tablosuna eklendi.</p>
+                    {#if $ilerleme.veri}
+                        <p style="font-size: var(--fs-sm); color: var(--text-muted);" role="status">
+                            {#if kazanilanPuan > 0}<b style="color: var(--accent);">+{kazanilanPuan} Bilim Puanı</b> kazandın · {/if}{#if kazanilanPuan === 0}Bu quiz toplam puanını artırmadı (günde puanı en yüksek 3 quiz sayılır) · {/if}Toplam: <b>{$ilerleme.veri.xp}</b>
+                            · <a href="/profil/ilerleme" style="color: var(--accent);">İlerlememi gör</a>
+                        </p>
+                    {/if}
                 {:else}
                     <p style="font-size: var(--fs-sm); color: var(--text-muted);">
                         Bu skor ortak skor tablosuna eklenmedi. <a href="/giris" style="color: var(--accent);">Giriş yaparsan</a> skorların sıralamaya kaydedilir.

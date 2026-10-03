@@ -5,7 +5,9 @@
 	import SanaOzel from '$lib/components/SanaOzel.svelte';
 	import { user, authReady, signOut, updateProfile } from '$lib/stores/auth.js';
 	import { activity } from '$lib/stores/activity.js';
-	import { streak } from '$lib/stores/streak.js';
+	import { streak, visibleStreak } from '$lib/stores/streak.js';
+	import { ilerleme } from '$lib/stores/ilerleme.js';
+	import { seviyeHesapla } from '$lib/data/seviyeler.js';
 	import { computeBadges } from '$lib/data/badges.js';
 	import { supabase } from '$lib/supabaseClient.js';
 	import { loadMyCommunity, saveMyCommunity, syncMyInterests, normalizeInstagram, normalizeLinkedin, ROLLER } from '$lib/community.js';
@@ -140,13 +142,14 @@
 		loadScores($user.id);
 	}
 
-	$: rozetler = computeBadges({ user: $user, scores, activity: $activity, streak: $streak });
+	$: rozetler = computeBadges({ user: $user, scores, activity: $activity, streak: $streak, ilerleme: $ilerleme.veri });
+	$: sev = seviyeHesapla($ilerleme.veri?.xp || 0);
 	$: kazanilan = rozetler.filter((r) => r.kazanildi).length;
 </script>
 
 <svelte:head><title>Profilim · Bilim ve Teknoloji Kulübü</title></svelte:head>
 
-<PageHeader eyebrow="Hesap" title="Profilim" desc="Bilgilerini düzenle, rozetlerini gör, sana özel önerilere göz at." />
+<PageHeader eyebrow="Hesap" title="Profilim" desc="Bilgilerini düzenle, ilerlemeni ve rozetlerini gör, sana özel önerilere göz at." />
 
 <div class="content-max page">
 	{#if $user}
@@ -158,6 +161,26 @@
 			</div>
 			<button class="btn btn-ghost" on:click={handleSignOut}>Çıkış Yap</button>
 		</div>
+
+		<section class="bracket-card ilerleme-kart" aria-labelledby="ik-baslik">
+			<div class="ik-ust">
+				<h2 id="ik-baslik">İlerleme özeti</h2>
+				<a class="btn btn-primary" href="/profil/ilerleme" on:click={() => sfx.nav()}>İlerlememi gör</a>
+			</div>
+			{#if $ilerleme.veri}
+				<div class="ik-govde">
+					<div><span class="ik-etiket">Bilim Puanı</span><strong class="ik-sayi">{$ilerleme.veri.xp.toLocaleString('tr-TR')}</strong></div>
+					<div><span class="ik-etiket">Seviye</span><strong>{sev.seviye} · {sev.ad}</strong></div>
+					<div><span class="ik-etiket">Günlük seri</span><strong>{visibleStreak($streak)} gün</strong></div>
+				</div>
+				<div class="ik-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow={Math.round(sev.oran * 100)} aria-label="Sonraki seviyeye ilerleme"><span style="width: {Math.round(sev.oran * 100)}%"></span></div>
+				<p class="ik-not">{sev.maksimum ? 'En yüksek seviyedesin.' : `${sev.sonrakiAd} seviyesine ${sev.kalan.toLocaleString('tr-TR')} puan kaldı.`}</p>
+			{:else if $ilerleme.hata}
+				<p class="hint warn">{$ilerleme.hata}</p>
+			{:else}
+				<p class="hint">Puanın yükleniyor…</p>
+			{/if}
+		</section>
 
 		{#if toplulukHazir && !herkeseAcik}
 			<div class="bracket-card notice">
@@ -278,7 +301,7 @@
 					</div>
 				{/each}
 			</div>
-			<p class="note">Quiz rozetleri hesabına kayıtlı skorlardan, oyun ve bilim insanı rozetleri bu cihazdaki etkinliğinden hesaplanır.</p>
+			<p class="note">Quiz, puan ve seri rozetleri hesabına kayıtlı verilerden (her cihazda aynı), oyun ve bilim insanı rozetleri bu cihazdaki etkinliğinden hesaplanır.</p>
 		</section>
 
 		<SanaOzel />
@@ -301,6 +324,16 @@
 		flex-wrap: wrap;
 		gap: 14px;
 	}
+	.ilerleme-kart { display: flex; flex-direction: column; gap: 12px; }
+	.ik-ust { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+	.ik-ust h2 { margin: 0; font-size: var(--fs-lg); }
+	.ik-govde { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 14px; }
+	.ik-govde > div { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+	.ik-etiket { color: var(--text-muted); font-size: var(--fs-xs); }
+	.ik-sayi { color: var(--accent); font-family: var(--font-display); font-size: var(--fs-xl); line-height: 1.1; }
+	.ik-bar { height: 8px; border-radius: 999px; background: var(--bg-alt); overflow: hidden; }
+	.ik-bar span { display: block; height: 100%; border-radius: 999px; background: var(--accent); transition: width 0.4s; }
+	.ik-not { margin: 0; color: var(--text-muted); font-size: var(--fs-sm); }
 	.avatar {
 		flex: none;
 		width: 48px;

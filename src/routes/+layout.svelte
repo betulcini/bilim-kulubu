@@ -17,6 +17,8 @@
 	import { user, authReady, initAuth, signOut } from '$lib/stores/auth.js';
 	import { newCounts, refreshNewCounts } from '$lib/stores/newContent.js';
 	import { unread, initUnread } from '$lib/stores/messages.js';
+	import { ilerlemeBaslat, ilerlemeSifirla } from '$lib/stores/ilerleme.js';
+	import { browser } from '$app/environment';
 
 	const sectionOf = { '/duyurular': 'duyurular', '/firsatlar': 'firsatlar' };
 
@@ -25,6 +27,12 @@
 	let menuButton;
 	let drawer;
 	let searchOpen = false;
+
+	// Giriş yapılmışsa: günlük giriş puanı + hesaba bağlı seri/puan senkronu
+	$: if (browser && $authReady) {
+		if ($user) ilerlemeBaslat($user.id);
+		else ilerlemeSifirla();
+	}
 
 	onMount(() => {
 		theme.init();

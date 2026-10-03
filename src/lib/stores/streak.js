@@ -54,8 +54,57 @@ export function visibleStreak(s) {
 	return 0;
 }
 
+// Seri verisinin hangi hesaba ait olduğu (aynı cihazda başka biri girerse onun serisi karışmasın)
+const OWNER_KEY = 'btk_streak_owner';
+export function streakOwner() {
+	if (!browser) return '';
+	try {
+		return localStorage.getItem(OWNER_KEY) || '';
+	} catch (e) {
+		return '';
+	}
+}
+
 export const streak = {
 	subscribe: store.subscribe,
+	// Giriş yapmış kullanıcının Supabase'deki serisini bu cihazın önbelleğine yazar.
+	// sunucu: { seri: { current, best, total, last_day }, aktivite: [{ gun, quiz_dogru }] }
+	// birlestir: bu cihazdaki veri aynı hesaba (ya da hiç kimseye) aitse en iyi/toplam değerlerin büyüğü korunur.
+	hydrate(sunucu, uid, birlestir = true) {
+		if (!browser || !sunucu?.seri) return get(store);
+		const yerel = birlestir ? get(store) : defaults;
+		const results = {};
+		for (const a of sunucu.aktivite || []) {
+			if (a.quiz_dogru !== null && a.quiz_dogru !== undefined) results[a.gun] = { score: a.quiz_dogru, total: 5 };
+		}
+		// Bu cihazdaki sonuçlardan sunucuda olmayanlar (henüz aktarılmamış) görünür kalsın
+		for (const [k, v] of Object.entries(yerel.results || {})) if (!results[k]) results[k] = v;
+		const keys = Object.keys(results).sort();
+		for (const k of keys.slice(0, Math.max(0, keys.length - 60))) delete results[k];
+
+		const next = {
+			current: Number(sunucu.seri.current) || 0,
+			best: Math.max(Number(sunucu.seri.best) || 0, yerel.best || 0),
+			total: Math.max(Number(sunucu.seri.total) || 0, yerel.total || 0),
+			lastDay: sunucu.seri.last_day || '',
+			results
+		};
+		store.set(next);
+		persist(next);
+		try {
+			if (uid) localStorage.setItem(OWNER_KEY, uid);
+		} catch (e) {
+			/* önemsiz */
+		}
+		return next;
+	},
+	// Bu cihazda olup henüz hesapta bulunmayan gün sonuçları (son 60 gün)
+	eksikGunler(sunucuAktivite) {
+		const var_ = new Set((sunucuAktivite || []).filter((a) => a.quiz_dogru !== null && a.quiz_dogru !== undefined).map((a) => a.gun));
+		const out = {};
+		for (const [k, v] of Object.entries(get(store).results || {})) if (!var_.has(k)) out[k] = v;
+		return out;
+	},
 	// Bugünkü quiz tamamlandı mı?
 	todayResult() {
 		return get(store).results[dayKey()] || null;
