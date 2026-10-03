@@ -16,7 +16,7 @@
 		{#each series as s}
 			<div class="bracket-card">
 				{#if s.devBadge}<span class="badge dev">Geliştirme aşamasında</span>{/if}
-				<h3 style="margin-top:12px">{s.title}</h3>
+				<h3 aria-level="2" style="margin-top:12px">{s.title}</h3>
 				<p>{s.desc}</p>
 				<div class="meta">
 					<span>{s.bolum}</span>

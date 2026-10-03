@@ -8,7 +8,7 @@
 	$: baslik = bilgi ? `${bilgi.title} · ${defaultSeo.title}` : defaultSeo.title;
 	$: aciklama = bilgi ? bilgi.desc : defaultSeo.desc;
 	// Giriş gerektiren / kişisel sayfalar arama sonuçlarında çıkmasın
-	const GIZLI = ['/profil', '/ayarlar', '/topluluk', '/mesajlar'];
+	const GIZLI = ['/profil', '/ayarlar', '/topluluk', '/mesajlar', '/yonetim'];
 	$: gizli = GIZLI.includes(yol);
 	// Quiz sayfası kendi açıklamasını verir (konuya göre değişir)
 	$: kendiAciklamasi = yol.startsWith('/yarismalar/');

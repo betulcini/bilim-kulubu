@@ -13,6 +13,7 @@
 	import SeoHead from '$lib/components/SeoHead.svelte';
 	import { initInstall } from '$lib/stores/install.js';
 	import AmbientScience from '$lib/components/AmbientScience.svelte';
+	import CevrimdisiBanner from '$lib/components/CevrimdisiBanner.svelte';
 	import { user, authReady, initAuth, signOut } from '$lib/stores/auth.js';
 	import { newCounts, refreshNewCounts } from '$lib/stores/newContent.js';
 	import { unread, initUnread } from '$lib/stores/messages.js';
@@ -92,7 +93,7 @@
 	<a class="skip-link" href="#icerik">İçeriğe geç</a>
 
 	<!-- Mobil üst çubuk: başlık metni burada değil, çekmece içinde -->
-	<div class="topbar">
+	<header class="topbar">
 		<button class="icon-btn menu-toggle" bind:this={menuButton} on:click={openMenu} aria-label="Menüyü aç" aria-expanded={mobileOpen} aria-controls="ana-menu">
 			<Icon name="menu" />
 			{#if totalNew > 0}<span class="new-dot" aria-hidden="true"></span>{/if}
@@ -111,7 +112,7 @@
 		<button class="icon-btn" on:click={toggleSound} aria-label="Sesi aç/kapat">
 			<Icon name={$soundEnabled ? 'sound-on' : 'sound-off'} />
 		</button>
-	</div>
+	</header>
 
 	<!-- Kenar çubuğu (masaüstü) / çekmece (mobil) -->
 	<aside id="ana-menu" class="sidebar" class:open={mobileOpen} bind:this={drawer} aria-label="Ana menü" aria-hidden={isMobile && !mobileOpen} inert={isMobile && !mobileOpen}>
@@ -182,6 +183,7 @@
 	{/if}
 
 	<main id="icerik">
+		<CevrimdisiBanner />
 		<slot />
 		<footer class="site-footer">
 			<div class="content-max">

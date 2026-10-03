@@ -80,7 +80,7 @@
         {#each quickLinks as item}
             <a href={item.href} class="bracket-card quick-card" on:click={() => sfx.nav()}>
                 <div class="quick-icon"><Icon name={item.icon} size={22} /></div>
-                <h3>{item.label}</h3>
+                <h3 aria-level="2">{item.label}</h3>
                 <p>{item.desc}</p>
             </a>
         {/each}

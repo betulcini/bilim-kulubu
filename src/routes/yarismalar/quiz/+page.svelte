@@ -285,7 +285,6 @@
         padding: 0;
         background: transparent;
         border: none;
-        outline: none;
         color: var(--text);
         font: inherit;
         font-weight: bold;

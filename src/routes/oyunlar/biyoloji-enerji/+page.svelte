@@ -671,7 +671,6 @@
         font-weight: bold;
         flex: 1 1 140px;
         min-width: 0;
-        outline: none;
     }
     .score-badge { white-space: nowrap; }
 

@@ -6,7 +6,7 @@ import { seoByPath } from '$lib/data/seo.js';
 export const prerender = true;
 
 // Giriş gerektiren / kişisel sayfalar sitemap'e girmez
-const HARIC = ['/profil', '/ayarlar', '/topluluk', '/mesajlar'];
+const HARIC = ['/profil', '/ayarlar', '/topluluk', '/mesajlar', '/yonetim'];
 const EK = ['/oyunlar/hafiza', '/oyunlar/biyoloji-enerji', '/oyunlar/adam-asmaca', '/oyunlar/bilim-tabu', '/gunluk-quiz'];
 
 export function GET() {

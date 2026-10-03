@@ -16,7 +16,7 @@
 	{#if galleryItems.length === 0}
 		<div class="bracket-card empty">
 			<span class="ico-tile lg"><Icon name="gallery" size={28} /></span>
-			<h3>Henüz fotoğraf yok</h3>
+			<h3 aria-level="2">Henüz fotoğraf yok</h3>
 			<p>Kulüp etkinlikleri yapıldıkça fotoğraflar buraya eklenecek.</p>
 		</div>
 	{/if}

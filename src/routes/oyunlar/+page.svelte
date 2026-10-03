@@ -51,7 +51,7 @@
             {#if o.aktif}
                 <a href={o.href} class="bracket-card game-card" on:click={() => sfx.nav()}>
                     <span class="badge live">Oynanabilir</span>
-                    <h3 style="margin-top:12px">{o.baslik}</h3>
+                    <h3 aria-level="2" style="margin-top:12px">{o.baslik}</h3>
                     <p>{o.aciklama}</p>
                 </a>
             {:else}

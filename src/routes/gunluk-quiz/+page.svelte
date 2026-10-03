@@ -168,7 +168,7 @@
 			</div>
 			<div class="progress" aria-hidden="true"><span style="width: {((index + (secilen !== null ? 1 : 0)) / sorular.length) * 100}%"></span></div>
 
-			<h3 class="soru">{soru.soru}</h3>
+			<h3 aria-level="2" class="soru">{soru.soru}</h3>
 			<div class="opts">
 				{#each soru.secenekler as opt}
 					<button

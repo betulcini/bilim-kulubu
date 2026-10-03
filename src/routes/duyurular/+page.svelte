@@ -28,7 +28,7 @@
 			<div class="bracket-card">
 				<span class="badge info">{a.etiket}</span>
 				{#if isNew('duyurular', a)}<span class="badge live">Yeni</span>{/if}
-				<h3 style="margin-top:12px">{a.baslik}</h3>
+				<h3 aria-level="2" style="margin-top:12px">{a.baslik}</h3>
 				<p>{a.ozet}</p>
 				<p class="tarih">{formatTarih(a.tarih)}{#if a.kaynakAd} · {a.kaynakAd}{/if}</p>
 				{#if a.link}

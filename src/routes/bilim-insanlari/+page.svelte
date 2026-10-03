@@ -59,7 +59,7 @@
         <span class="ico-tile xl" aria-hidden="true"><Icon name={gununKisisi.rozet} size={36} /></span>
         <div style="flex: 1; min-width: 200px;">
             <span class="badge live" style="margin-bottom: 8px;">Günün Bilim İnsanı</span>
-            <h3 style="margin: 6px 0 4px;">{gununKisisi.ad}</h3>
+            <h3 aria-level="2" style="margin: 6px 0 4px;">{gununKisisi.ad}</h3>
             <p style="margin: 0; color: var(--text-muted); font-size: var(--fs-sm);">{gununKisisi.ozet}</p>
         </div>
         <span style="color: var(--accent); font-weight: 600; white-space: nowrap;">Detayları gör →</span>
@@ -84,7 +84,7 @@
                 type="text" 
                 bind:value={searchQuery} 
                 placeholder="İsim, alan veya anahtar kelime ara (örn: Tesla, Kuantum, Penisilin)..." 
-                style="background: transparent; border: none; color: var(--text); width: 100%; outline: none; font-size: var(--fs-sm);"
+                style="background: transparent; border: none; color: var(--text); width: 100%; font-size: var(--fs-sm);"
             />
         </div>
     </div>

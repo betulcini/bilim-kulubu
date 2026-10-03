@@ -6,16 +6,40 @@
 	export let open = false;
 	let query = '';
 	let input;
+	let dialogEl;
+	let oncekiOdak = null; // pencere açılmadan önce odaktaki öğe (kapanınca geri döner)
 
 	$: normalized = query.trim().toLocaleLowerCase('tr');
 	$: results = normalized
 		? searchItems.filter((item) => `${item.title} ${item.text}`.toLocaleLowerCase('tr').includes(normalized))
 		: searchItems;
-	$: if (open) tick().then(() => input?.focus());
+	$: if (open) {
+		if (!oncekiOdak && typeof document !== 'undefined') oncekiOdak = document.activeElement;
+		tick().then(() => input?.focus());
+	}
 
 	function close() {
 		open = false;
 		query = '';
+		const geri = oncekiOdak;
+		oncekiOdak = null;
+		tick().then(() => geri?.focus?.());
+	}
+
+	// Tab / Shift+Tab pencerenin dışına çıkmasın
+	function odakTuzagi(event) {
+		if (event.key !== 'Tab' || !dialogEl) return;
+		const liste = [...dialogEl.querySelectorAll('a[href], button:not([disabled]), input:not([disabled])')];
+		if (liste.length === 0) return;
+		const ilk = liste[0];
+		const son = liste[liste.length - 1];
+		if (event.shiftKey && document.activeElement === ilk) {
+			event.preventDefault();
+			son.focus();
+		} else if (!event.shiftKey && document.activeElement === son) {
+			event.preventDefault();
+			ilk.focus();
+		}
 	}
 
 	function handleKeydown(event) {
@@ -28,7 +52,8 @@
 {#if open}
 	<div class="search-layer" role="presentation">
 		<button class="search-backdrop" aria-label="Aramayı kapat" on:click={close}></button>
-		<dialog open class="search-dialog" aria-labelledby="search-title">
+		<!-- svelte-ignore a11y-no-noninteractive-element-interactions -->
+		<dialog open class="search-dialog" aria-labelledby="search-title" aria-modal="true" bind:this={dialogEl} on:keydown={odakTuzagi}>
 			<div class="search-heading">
 				<h2 id="search-title">Sitede ara</h2>
 				<button class="close-button" aria-label="Aramayı kapat" on:click={close}><Icon name="close" /></button>
@@ -51,6 +76,7 @@
 {/if}
 
 <style>
+	.search-field:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; border-radius: var(--radius-sm); }
 	.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border: 0; }
 	.search-layer { position: fixed; inset: 0; z-index: 100; display: grid; place-items: start center; padding: min(12vh, 96px) 16px 24px; }
 	.search-backdrop { position: absolute; inset: 0; border: 0; background: rgba(30, 43, 32, 0.42); backdrop-filter: blur(3px); }

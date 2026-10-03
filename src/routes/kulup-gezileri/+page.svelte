@@ -16,7 +16,7 @@
 		{#each trips as t}
 			<li class="bracket-card">
 				<div class="row">
-					<h3>{t.yer}</h3>
+					<h3 aria-level="2">{t.yer}</h3>
 					<span class="badge {t.durum === 'gerçekleşti' ? 'live' : 'dev'}">
 						{t.durum === 'gerçekleşti' ? 'Gerçekleşti' : 'Planlanıyor'}
 					</span>

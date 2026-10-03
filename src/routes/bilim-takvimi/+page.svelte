@@ -96,7 +96,7 @@
 	{#if yaklasanOlay}
 		<div class="bracket-card one-cikan">
 			<span class="badge live">Sıradaki</span>
-			<h3>{yaklasanOlay.baslik}</h3>
+			<h3 aria-level="2">{yaklasanOlay.baslik}</h3>
 			<p class="tarih-satir">{araligiFormatla(yaklasanOlay)} · {durum(yaklasanOlay).etiket}</p>
 		</div>
 	{/if}

@@ -16,7 +16,7 @@
 		{#each shows as s}
 			<div class="bracket-card">
 				{#if s.devBadge}<span class="badge dev theater-status">{s.durum}</span>{/if}
-				<h3 style="margin-top:12px">{s.title}</h3>
+				<h3 aria-level="2" style="margin-top:12px">{s.title}</h3>
 				<p>{s.desc}</p>
 				<div class="meta">{s.sahne}</div>
 			</div>

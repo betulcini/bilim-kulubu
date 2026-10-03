@@ -44,7 +44,7 @@
 					<span class="badge muted">{o.tur}</span>
 					{#if isNew('firsatlar', o)}<span class="badge live">Yeni</span>{/if}
 				</div>
-				<h3>{o.baslik}</h3>
+				<h3 aria-level="2">{o.baslik}</h3>
 				<p>{o.ozet}</p>
 				<div class="foot">
 					<span class="kurum">{o.kurum}</span>
