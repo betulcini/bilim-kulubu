@@ -86,7 +86,15 @@
 	}
 
 	function toggleSound() {
+		const wasEnabled = $soundEnabled;
 		soundEnabled.toggle();
+		if (!wasEnabled) sfx.toggle();
+	}
+
+	function handleUiClick(event) {
+		if (!(event.target instanceof Element)) return;
+		const control = event.target.closest('button, a[href], [role="button"], summary');
+		if (control && !control.matches(':disabled, [aria-disabled="true"]')) sfx.click();
 	}
 
 	$: totalNew = ($newCounts.duyurular || 0) + ($newCounts.firsatlar || 0) + ($unread || 0);
@@ -94,7 +102,7 @@
 	$: themeLabel = $theme === 'dark' ? 'Koyu' : $theme === 'light' ? 'Aydınlık' : 'Sistem';
 </script>
 
-<svelte:window on:keydown={handleKeydown} />
+<svelte:window on:keydown={handleKeydown} on:click={handleUiClick} />
 
 <div class="shell">
 	<AmbientScience />

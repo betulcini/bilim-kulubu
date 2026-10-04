@@ -5,6 +5,7 @@ import { get } from 'svelte/store';
 import { soundEnabled } from '$lib/stores/sound.js';
 
 let ctx;
+let lastToneAt = 0;
 
 function getCtx() {
 	if (!browser) return null;
@@ -21,6 +22,7 @@ function tone({ freq = 440, duration = 0.09, type = 'sine', gain = 0.05, glideTo
 	if (!browser || !get(soundEnabled)) return;
 	const audio = getCtx();
 	if (!audio) return;
+	lastToneAt = performance.now();
 	const osc = audio.createOscillator();
 	const amp = audio.createGain();
 	osc.type = type;
@@ -36,7 +38,10 @@ function tone({ freq = 440, duration = 0.09, type = 'sine', gain = 0.05, glideTo
 }
 
 export const sfx = {
-	click: () => tone({ freq: 720, duration: 0.06, type: 'triangle', gain: 0.04 }),
+	click: () => {
+		if (performance.now() - lastToneAt < 90) return;
+		tone({ freq: 720, duration: 0.06, type: 'triangle', gain: 0.04 });
+	},
 	nav: () => tone({ freq: 520, duration: 0.07, type: 'sine', gain: 0.035, glideTo: 640 }),
 	toggle: () => tone({ freq: 600, duration: 0.08, type: 'square', gain: 0.025 }),
 	success: () => {

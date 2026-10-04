@@ -385,8 +385,7 @@
 	.admin-layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); align-items: start; gap: 28px; }
 	.admin-layout[hidden] { display: none; }
 	.menu { position: sticky; top: 18px; display: flex; flex-direction: column; gap: 18px; padding: 16px 12px; max-height: calc(100vh - 36px); overflow-y: auto; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--bg-alt); }
-	.menu-yardim { display: flex; flex-direction: column; gap: 4px; margin: 0 8px; padding-bottom: 12px; color: var(--text); font-size: var(--fs-xs); font-weight: 800; letter-spacing: .08em; border-bottom: 1px solid var(--border-strong); }
-	.menu-yardim span { color: var(--text-muted); font-weight: 400; letter-spacing: normal; }
+	.menu-yardim { margin: 0 8px; padding-bottom: 12px; color: var(--text); font-size: var(--fs-xs); font-weight: 800; letter-spacing: .08em; border-bottom: 1px solid var(--border-strong); }
 	.menu-grup { display: flex; flex-direction: column; gap: 6px; }
 	.menu-grup h2 { margin: 0 8px 3px; padding-bottom: 5px; color: var(--text-muted); font-size: var(--fs-xs); font-weight: 800; text-transform: uppercase; letter-spacing: .08em; border-bottom: 1px solid var(--border); }
 	.menu-ogeleri { display: flex; flex-direction: column; gap: 3px; }
