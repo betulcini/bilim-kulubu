@@ -49,7 +49,8 @@
 		kaydedilenId = oneri.id;
 		const sonuc = await updateSuggestion(oneri.id, {
 			status: oneri.status,
-			response: oneri.response?.trim() || null
+			response: oneri.response?.trim() || null,
+			public_response: oneri.public_response?.trim() || null
 		});
 		kaydedilenId = null;
 		if (sonuc.hata) {
@@ -72,7 +73,7 @@
 <section class="yonetim">
 	{#if hata}<p class="msg err" role="alert">{hata}</p>{/if}
 	{#if bilgi}<p class="msg ok" role="status">{bilgi}</p>{/if}
-	<p class="ipucu">Öneriler ve yönetici notları yalnızca yöneticilere açıktır; notlar öneri sahibine otomatik olarak iletilmez.</p>
+	<p class="ipucu">Yönetici iç notu yalnızca yöneticilere görünür. Herkese açık yanıt, öneri sahibinin profilinde gösterilir.</p>
 	{#if yukleniyor && oneriler.length === 0}
 		<p class="muted" role="status">Öneriler yükleniyor…</p>
 	{:else if oneriler.length === 0}
@@ -98,6 +99,10 @@
 					<div class="field">
 						<label for="oneri-yanit-{oneri.id}">Yönetici iç notu</label>
 						<textarea id="oneri-yanit-{oneri.id}" rows="3" maxlength="1000" bind:value={oneri.response} placeholder="İsteğe bağlı"></textarea>
+					</div>
+					<div class="field">
+						<label for="oneri-acik-yanit-{oneri.id}">Öneri sahibine gösterilecek yanıt</label>
+						<textarea id="oneri-acik-yanit-{oneri.id}" rows="3" maxlength="1000" bind:value={oneri.public_response} placeholder="İsteğe bağlı"></textarea>
 					</div>
 					<button type="button" class="btn btn-primary" disabled={kaydedilenId !== null} on:click={() => kaydet(oneri)}>
 						{kaydedilenId === oneri.id ? 'Kaydediliyor…' : 'Durumu ve yanıtı kaydet'}

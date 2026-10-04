@@ -193,12 +193,12 @@ export const ONERI_DURUMLARI = [
 export async function listSuggestions(sayfa = 0) {
 	const { data, error } = await supabase
 		.from('oneriler')
-		.select('id, isim, kategori, mesaj, user_id, created_at, status, response')
+		.select('id, isim, kategori, mesaj, user_id, created_at, status, response, public_response')
 		.order('created_at', { ascending: false })
 		.range(sayfa * LISTE_SAYFA_BOYUTU, (sayfa + 1) * LISTE_SAYFA_BOYUTU - 1);
 	return {
 		data: data || [],
-		hata: hataMetni(error, '2026-10-08-oneri-yonetimi.sql')
+		hata: hataMetni(error, '2026-10-10-yonetim-istatistik-oneri-takip.sql')
 	};
 }
 
@@ -207,7 +207,15 @@ export async function updateSuggestion(id, alanlar) {
 		.from('oneriler')
 		.update(alanlar)
 		.eq('id', id);
-	return { hata: hataMetni(error, '2026-10-08-oneri-yonetimi.sql') };
+	return { hata: hataMetni(error, '2026-10-10-yonetim-istatistik-oneri-takip.sql') };
+}
+
+export async function loadAdminStats() {
+	const { data, error } = await supabase.rpc('yonetici_istatistikleri');
+	return {
+		data: data || null,
+		hata: hataMetni(error, '2026-10-10-yonetim-istatistik-oneri-takip.sql')
+	};
 }
 
 export async function saveRow(tablo, satir, id = null, yayinda = true) {

@@ -3,6 +3,7 @@
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import InterestPicker from '$lib/components/InterestPicker.svelte';
 	import SanaOzel from '$lib/components/SanaOzel.svelte';
+	import Onerilerim from '$lib/components/Onerilerim.svelte';
 	import { user, authReady, signOut, updateProfile } from '$lib/stores/auth.js';
 	import { activity } from '$lib/stores/activity.js';
 	import { streak, visibleStreak } from '$lib/stores/streak.js';
@@ -181,6 +182,8 @@
 				<p class="hint">Puanın yükleniyor…</p>
 			{/if}
 		</section>
+
+		<Onerilerim />
 
 		{#if toplulukHazir && !herkeseAcik}
 			<div class="bracket-card notice">

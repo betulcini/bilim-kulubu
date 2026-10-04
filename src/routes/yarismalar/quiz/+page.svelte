@@ -40,7 +40,8 @@
     function pickRound(catKey) {
         const cat = havuz[catKey];
         if (!cat) return [];
-        return shuffle(cat.questions).slice(0, Math.min(ROUND_SIZE, cat.questions.length));
+        const unique = [...new Map(cat.questions.map((question) => [question.soru.trim().toLocaleLowerCase('tr-TR'), question])).values()];
+        return shuffle(unique).slice(0, Math.min(ROUND_SIZE, unique.length));
     }
 
     let roundQuestions = pickRound(konu); // SSR-güvenli ilk tur (varsayılan: fizik)
@@ -51,7 +52,9 @@
     let isFinished = false;
     let playerName = '';
     let savedToLeaderboard = false;
+    let scoreSaveError = '';
     let kazanilanPuan = null; // bu turdan hesabına eklenen Bilim Puanı (günlük sınır dolduysa 0)
+    let answerHistory = [];
 
     // Konu değiştiğinde (URL parametresi ile) yeni bir tur başlat
     $: if (konu !== lastKonu) {
@@ -61,6 +64,7 @@
         selectedOption = null;
         score = 0;
         isFinished = false;
+        answerHistory = [];
     }
 
     // --- Soru başına süre sınırı ---
@@ -86,6 +90,10 @@
                     // Süre doldu, otomatik olarak yanlış sayılır
                     sfx.error();
                     selectedOption = '__sure_doldu__';
+                    answerHistory = [...answerHistory, {
+                        question: roundQuestions[currentQuestionIndex].soru,
+                        answer: ''
+                    }];
                 }
             }
         }, 1000);
@@ -114,6 +122,10 @@
         clearTimer();
         sfx.nav();
         selectedOption = opt;
+        answerHistory = [...answerHistory, {
+            question: roundQuestions[currentQuestionIndex].soru,
+            answer: opt === '__sure_doldu__' ? '' : opt
+        }];
 
         if (opt === roundQuestions[currentQuestionIndex].dogru) {
             score += 25;
@@ -127,6 +139,7 @@
         } else {
             isFinished = true;
             clearTimer();
+            scoreSaveError = '';
             // Skoru localStorage'a kaydet (cihazda kişisel geçmiş için, herkes)
             const savedScores = JSON.parse(localStorage.getItem('btk_quiz_scores') || '[]');
             savedScores.push({
@@ -141,18 +154,18 @@
 
             // Giriş yapmış kullanıcıysa gerçek/ortak skor tablosuna da kaydet
             if ($user) {
-                const { error } = await supabase.from('quiz_scores').insert({
-                    user_id: $user.id,
-                    subject: konu,
-                    subject_title: categoryMeta.title,
-                    score
+                const { data, error } = await supabase.rpc('quiz_skoru_kaydet', {
+                    p_konu: konu,
+                    p_cevaplar: answerHistory
                 });
-                if (!error) {
+                if (!error && data) {
                     savedToLeaderboard = true;
                     // Toplam Bilim Puanı güncellensin
                     const once = $ilerleme.veri?.xp ?? null;
                     const v = await ilerlemeYenile($user.id);
                     if (v && once !== null) kazanilanPuan = Math.max(0, v.xp - once);
+                } else {
+                    scoreSaveError = error?.message || 'Skorun doğrulanıp kaydedilemedi.';
                 }
             }
         }
@@ -165,6 +178,8 @@
         score = 0;
         isFinished = false;
         savedToLeaderboard = false;
+        scoreSaveError = '';
+        answerHistory = [];
         kazanilanPuan = null;
         startTimer();
     }
@@ -273,9 +288,13 @@
                         </p>
                     {/if}
                 {:else}
-                    <p style="font-size: var(--fs-sm); color: var(--text-muted);">
-                        Bu skor ortak skor tablosuna eklenmedi. <a href="/giris" style="color: var(--accent);">Giriş yaparsan</a> skorların sıralamaya kaydedilir.
-                    </p>
+                    {#if $user}
+                        <p class="score-error" role="alert">Skor ortak tabloya eklenemedi: {scoreSaveError || 'Sonuç doğrulanamadı.'}</p>
+                    {:else}
+                        <p style="font-size: var(--fs-sm); color: var(--text-muted);">
+                            Bu skor ortak tabloya eklenmedi. <a href="/giris" style="color: var(--accent);">Giriş yaparsan</a> skorların sıralamaya kaydedilir.
+                        </p>
+                    {/if}
                 {/if}
                 <div class="finish-actions">
                     <button class="btn btn-primary" on:click={restartQuiz}>Tekrar Çöz</button>
@@ -288,6 +307,7 @@
 </div>
 
 <style>
+    .score-error { color: var(--danger); font-size: var(--fs-sm); overflow-wrap: anywhere; }
     .player-bar {
         display: flex;
         align-items: center;

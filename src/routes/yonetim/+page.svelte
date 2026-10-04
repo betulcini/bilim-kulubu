@@ -7,6 +7,8 @@
 	import GaleriYonetimi from '$lib/components/GaleriYonetimi.svelte';
 	import YoneticiYonetimi from '$lib/components/YoneticiYonetimi.svelte';
 	import OneriYonetimi from '$lib/components/OneriYonetimi.svelte';
+	import IstatistikYonetimi from '$lib/components/IstatistikYonetimi.svelte';
+	import IcerikYedekleme from '$lib/components/IcerikYedekleme.svelte';
 	import VideoTanitimKarti from '$lib/components/VideoTanitimKarti.svelte';
 	import YoutubeOynatici from '$lib/components/YoutubeOynatici.svelte';
 	import { user, authReady } from '$lib/stores/auth.js';
@@ -75,7 +77,14 @@
 		{ id: 'quizler', ad: 'Quizler' },
 		{ id: 'galeri', ad: 'Galeri' },
 		{ id: 'yoneticiler', ad: 'Yöneticiler' },
-		{ id: 'oneriler', ad: 'Öneriler' }
+		{ id: 'oneriler', ad: 'Öneriler' },
+		{ id: 'istatistik', ad: 'İstatistikler' },
+		{ id: 'yedek', ad: 'İçerik yedeği' }
+	];
+	const GRUPLAR = [
+		{ ad: 'İçerik', sekmeler: ['duyurular', 'firsatlar', 'geziler', 'videolar', 'kartlar'] },
+		{ ad: 'Öğrenme', sekmeler: ['quizler', 'galeri'] },
+		{ ad: 'Yönetim', sekmeler: ['oneriler', 'yoneticiler', 'istatistik', 'yedek'] }
 	];
 	const FORMLU = ['duyurular', 'firsatlar', 'geziler', 'videolar', 'kartlar']; // ortak form + liste kullanan sekmeler
 
@@ -91,20 +100,6 @@
 			hata = '';
 			bilgi = '';
 		}
-	}
-
-	function sekmeKlavye(e) {
-		const i = TABLAR.findIndex((t) => t.id === sekme);
-		let yeni = -1;
-		if (e.key === 'ArrowRight') yeni = (i + 1) % TABLAR.length;
-		else if (e.key === 'ArrowLeft') yeni = (i - 1 + TABLAR.length) % TABLAR.length;
-		else if (e.key === 'Home') yeni = 0;
-		else if (e.key === 'End') yeni = TABLAR.length - 1;
-		if (yeni < 0) return;
-		e.preventDefault();
-		const id = TABLAR[yeni].id;
-		sekmeSec(id);
-		document.getElementById('yt-' + id)?.focus();
 	}
 
 	function temizle() {
@@ -224,28 +219,42 @@
 
 <svelte:head><title>Yönetim · Bilim ve Teknoloji Kulübü</title></svelte:head>
 
-<PageHeader eyebrow="Yönetici" title="Yönetim paneli" desc="Duyuru, fırsat, gezi, video, seri / tiyatro kartları, quiz, galeri ve yönetici erişimlerini buradan yönet." />
+<PageHeader eyebrow="Yönetici" title="Yönetim paneli" desc="İçerikleri, topluluk önerilerini ve yönetici araçlarını tek yerden yönet." />
 
 <div class="content-max sayfa">
 	{#if kontrol === 'bekliyor'}
 		<p class="muted" role="status">Yetki kontrol ediliyor…</p>
-	{:else if kontrol === 'hata'}
+	{/if}
+	{#if kontrol === 'hata'}
 		<p class="msg err" role="alert">{kontrolHata}</p>
-	{:else if kontrol === 'yetkisiz'}
+	{/if}
+	{#if kontrol === 'yetkisiz'}
 		<div class="bracket-card bos" role="alert">
 			<h2>Bu sayfa sadece yöneticiler içindir</h2>
 			<p>Hesabın yönetici listesinde değil. Mevcut yöneticilerden biri hesabını yönetici olarak ekleyebilir.</p>
 			<a class="btn btn-ghost" href="/">Ana sayfaya dön</a>
 		</div>
-	{:else}
-		<div class="tabs" role="tablist" aria-label="Yönetilecek içerik">
-			{#each TABLAR as t (t.id)}
-				<button type="button" role="tab" id="yt-{t.id}" class="tab" class:on={sekme === t.id} aria-selected={sekme === t.id} aria-controls="yp" tabindex={sekme === t.id ? 0 : -1} on:click={() => sekmeSec(t.id)} on:keydown={sekmeKlavye}>{t.ad}</button>
-			{/each}
-		</div>
+	{/if}
+		<div class="admin-layout" hidden={kontrol !== 'admin'}>
+			<nav class="menu" aria-label="Yönetim bölümleri">
+				{#each GRUPLAR as grup (grup.ad)}
+					<section class="menu-grup" aria-label={grup.ad}>
+						<h2>{grup.ad}</h2>
+						<div class="menu-ogeleri">
+							{#each TABLAR.filter((oge) => grup.sekmeler.includes(oge.id)) as t (t.id)}
+									<button type="button" id="yt-{t.id}" class="menu-dugme" class:aktif={sekme === t.id} aria-current={sekme === t.id ? 'page' : undefined} aria-controls="yp" on:click={() => sekmeSec(t.id)}>{t.ad}</button>
+							{/each}
+						</div>
+					</section>
+				{/each}
+			</nav>
 
-		<div id="yp" role="tabpanel" aria-labelledby="yt-{sekme}" class="panel">
-			{#if sekme === 'quizler'}
+		<div id="yp" class="panel" aria-labelledby="yt-{sekme}">
+			{#if sekme === 'istatistik'}
+				<IstatistikYonetimi />
+			{:else if sekme === 'yedek'}
+				<IcerikYedekleme />
+			{:else if sekme === 'quizler'}
 				<QuizYonetimi />
 			{:else if sekme === 'galeri'}
 				<GaleriYonetimi />
@@ -345,17 +354,22 @@
 			</section>
 			{/if}
 		</div>
-	{/if}
+	</div>
 </div>
 
 <style>
 	.sayfa { margin-bottom: 60px; display: flex; flex-direction: column; gap: 20px; }
-	.tabs { display: flex; gap: 6px; padding: 5px; width: fit-content; max-width: 100%; overflow-x: auto; border-radius: var(--radius-sm); border: 1px solid var(--border-strong); background: var(--bg-alt); }
-	.tab { white-space: nowrap; min-height: 42px; padding: 8px 18px; border: 1px solid transparent; border-radius: 9px; background: transparent; color: var(--text-muted); font-family: var(--font-display); font-size: var(--fs-sm); font-weight: 600; cursor: pointer; }
-	.tab:hover { color: var(--text); }
-	.tab.on { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
-	.tab:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-	.panel { display: flex; flex-direction: column; gap: 28px; }
+	.admin-layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); align-items: start; gap: 28px; }
+	.admin-layout[hidden] { display: none; }
+	.menu { position: sticky; top: 18px; display: flex; flex-direction: column; gap: 18px; padding: 16px 12px; max-height: calc(100vh - 36px); overflow-y: auto; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--bg-alt); }
+	.menu-grup { display: flex; flex-direction: column; gap: 6px; }
+	.menu-grup h2 { margin: 0 8px 3px; color: var(--text-muted); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: .08em; }
+	.menu-ogeleri { display: flex; flex-direction: column; gap: 3px; }
+	.menu-dugme { width: 100%; min-height: 40px; padding: 8px 10px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--text-muted); text-align: left; font: 600 var(--fs-sm)/1.35 var(--font-display); cursor: pointer; }
+	.menu-dugme:hover { color: var(--text); background: var(--bg); }
+	.menu-dugme.aktif { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+	.menu-dugme:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+	.panel { min-width: 0; display: flex; flex-direction: column; gap: 28px; }
 	.form { display: flex; flex-direction: column; gap: 14px; max-width: 760px; }
 	.form h2 { margin: 0; font-size: var(--fs-lg); }
 	.field { display: flex; flex-direction: column; gap: 6px; }
@@ -387,4 +401,16 @@
 	.onizleme-karti { max-width: 460px; display: flex; flex-direction: column; gap: 8px; }
 	.onizleme-karti h3, .onizleme-karti p { margin: 0; }
 	.onizleme-grup { color: var(--accent); font-size: var(--fs-xs); font-weight: 600; }
+	@media (max-width: 850px) {
+		.admin-layout { grid-template-columns: minmax(0, 1fr); gap: 18px; }
+		.menu { position: static; max-height: none; flex-direction: row; gap: 12px; padding: 8px; overflow-x: auto; }
+		.menu-grup { flex-direction: row; flex: 0 0 auto; }
+		.menu-grup h2 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+		.menu-ogeleri { flex-direction: row; }
+		.menu-dugme { width: auto; min-height: 38px; white-space: nowrap; }
+	}
+	@media (max-width: 520px) {
+		.menu { margin-inline: -4px; }
+		.menu-dugme { padding-inline: 9px; font-size: var(--fs-xs); }
+	}
 </style>

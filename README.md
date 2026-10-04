@@ -112,6 +112,12 @@ kontrolünden sonra panelden yayına alınabilir. Herkese açık sayfalama, pane
   yönetilebilir seri/tiyatro kartları ve mevcut yöneticilerin yönetici ekleme/kaldırma işlemleri.
   Önce `2026-10-03` ve `2026-10-06` migration'ları gerekir.
 - `supabase/2026-10-08-oneri-yonetimi.sql` — öneri paneli; önce öneri tablosu ve yönetici SQL'i.
+- `supabase/2026-10-09-quiz-skoru-dogrulama.sql` — konu quiz puanlarını sunucuda doğrular ve
+  doğrudan tarayıcıdan skor eklenmesini kapatır. Önce temel `schema.sql` ile quiz tabloları
+  (`2026-10-04`) ve puan/ilerleme tabloları (`2026-10-05`) kurulmuş olmalı.
+- `supabase/2026-10-10-yonetim-istatistik-oneri-takip.sql` — yönetici için toplu kullanım
+  istatistiklerini ve kullanıcının kendi önerilerinin durum/yanıt takibini açar. Önce
+  `2026-10-05-puan-ve-ilerleme.sql` ve `2026-10-08-oneri-yonetimi.sql` uygulanmış olmalı.
 
 Bu migration dosyalarını Supabase Dashboard → SQL Editor'de bir kez çalıştır. İlk yönetici
 hesabının eklenmesi hariç, tabloları kurduktan sonra içerik ve yönetici değişiklikleri panelden
@@ -122,6 +128,20 @@ yapılabilir.
   Koddaki hazır konulara (fizik, kimya…) eklenen sorular aynı konunun havuzuna katılır; yeni konular
   Yarışmalar sayfasında kart olarak, Günlük Mini Quiz'de ise soru havuzunda görünür.
 - **Galeri:** fotoğraf(lar) seç, başlık yaz, yükle. Fotoğraflar tarayıcıda küçültülüp yüklenir.
+
+### Yedekleme ve kullanım özeti
+
+- `/yonetim` → **İçerik yedeği**, yönetilebilir duyuru, fırsat, gezi, video, seri/tiyatro kartı,
+  quiz konusu ve sorularını JSON olarak indirir. Galeri fotoğraf dosyaları, profiller, yöneticiler
+  ve öneriler yedeğe dahil değildir.
+- Yedeği geri yüklemek mevcut kayıtların üzerine yazmaz; aynı kayıtları atlar ve yeni kayıtları
+  yayından kapalı ekler. Geri yüklenen öğeleri ilgili yönetim listesinden gözden geçirip yayınla.
+- **İstatistikler** yalnızca toplu sayıları gösterir; kişisel kullanıcı kayıtları bu RPC üzerinden
+  döndürülmez.
+- Sunucu tarafı puan doğrulama, istemciden uydurma quiz skorları gönderilmesini önler. Yerleşik
+  quiz soruları ve cevapları uygulamanın tarayıcı paketinde bulunduğundan, teknik bilgisi olan
+  bir kullanıcı cevap anahtarını yine inceleyebilir; bu yöntem doğru skor hesaplamasını güvenceye
+  alır, soruların gizliliğini değil.
 
 ## Bilim Puanı, hesaba bağlı seri ve İlerlemem sayfası
 

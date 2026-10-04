@@ -1,6 +1,7 @@
 import { supabase } from '$lib/supabaseClient.js';
 import { hataMetni as hataMetniGenel } from '$lib/yonetim.js';
 import { quizData } from '$lib/data/bilim-quizleri.js';
+import { soruDogrula } from '$lib/quizValidation.js';
 
 // Yönetici paneli: quiz konuları / soruları + CSV'den toplu içe aktarma.
 // Yetki kontrolü veritabanında (RLS + is_yonetici) yapılır; burası sadece arayüzü besler.
@@ -100,49 +101,7 @@ export function csvAyristir(metin) {
 	return { ayirici, kayitlar };
 }
 
-// ---------------------------------------------------------------- tek soru doğrulama
-// ham: { soru, secenekler: [..konumlu, boşlar dahil..], dogru: 'A' | '2' | 'şık metni', aciklama, zorluk }
-// Döndürür: { hata } ya da { soru: { soru, secenekler, dogru, aciklama, zorluk } }
-export function soruDogrula(ham) {
-	const soru = String(ham.soru ?? '').trim();
-	if (soru.length < SORU_MIN) return { hata: `Soru metni en az ${SORU_MIN} karakter olmalı.` };
-	if (soru.length > SORU_MAX) return { hata: `Soru metni en fazla ${SORU_MAX} karakter olabilir.` };
-
-	const konumlu = (ham.secenekler || []).map((x) => String(x ?? '').trim());
-	const dolu = konumlu.filter(Boolean);
-	if (dolu.length < 2) return { hata: 'En az 2 şık gerekli.' };
-	if (dolu.length > 6) return { hata: 'En fazla 6 şık olabilir.' };
-	if (dolu.some((x) => x.length > SIK_MAX)) return { hata: `Şıklar en fazla ${SIK_MAX} karakter olabilir.` };
-	if (new Set(dolu.map(normMetin)).size !== dolu.length) return { hata: 'Aynı şık birden fazla kez yazılmış.' };
-
-	const d = String(ham.dogru ?? '').trim();
-	if (!d) return { hata: 'Doğru cevap belirtilmemiş.' };
-	let dogru = dolu.find((x) => x === d) || dolu.find((x) => normMetin(x) === normMetin(d));
-	if (!dogru) {
-		let idx = -1;
-		if (/^[A-Fa-f]$/.test(d)) idx = d.toUpperCase().charCodeAt(0) - 65;
-		else if (/^[1-6]$/.test(d)) idx = Number(d) - 1;
-		if (idx >= 0) {
-			dogru = konumlu[idx];
-			if (!dogru) return { hata: `Doğru cevap olarak "${d}" yazılmış ama bu şık boş.` };
-		}
-	}
-	if (!dogru) return { hata: `Doğru cevap ("${d.slice(0, 40)}") şıklardan biriyle eşleşmiyor.` };
-
-	const aciklama = String(ham.aciklama ?? '').trim();
-	if (aciklama.length > ACIKLAMA_MAX) return { hata: `Açıklama en fazla ${ACIKLAMA_MAX} karakter olabilir.` };
-
-	let zorluk = 'Orta';
-	const z = anahtar(ham.zorluk);
-	if (z) {
-		if (['kolay', 'easy', '1'].includes(z)) zorluk = 'Kolay';
-		else if (['orta', 'medium', 'normal', '2'].includes(z)) zorluk = 'Orta';
-		else if (['zor', 'hard', '3'].includes(z)) zorluk = 'Zor';
-		else return { hata: `Zorluk "${ham.zorluk}" anlaşılamadı (Kolay, Orta veya Zor olmalı).` };
-	}
-
-	return { soru: { soru, secenekler: dolu, dogru, aciklama: aciklama || null, zorluk } };
-}
+export { soruDogrula };
 
 // ---------------------------------------------------------------- CSV → sorular
 const SUTUN = {
@@ -191,6 +150,14 @@ export function csvdenSorular(metin, opts = {}) {
 		return sonuc;
 	}
 	const basliklar = kayitlar[0].hucreler.map(anahtar);
+	if (new Set(basliklar).size !== basliklar.length) {
+		sonuc.ustHata = 'Başlık satırında aynı sütun adı birden fazla kez kullanılmış.';
+		return sonuc;
+	}
+	if (kayitlar.length - 1 > 1000) {
+		sonuc.ustHata = 'Bir CSV dosyasında en fazla 1000 soru içe aktarılabilir.';
+		return sonuc;
+	}
 	const iKonu = sutunBul(basliklar, SUTUN.konu);
 	const iSoru = sutunBul(basliklar, SUTUN.soru);
 	const iDogru = sutunBul(basliklar, SUTUN.dogru);
@@ -208,6 +175,7 @@ export function csvdenSorular(metin, opts = {}) {
 	const konuHaritasi = new Map();
 	const varsayilan = konuBilgisi(varsayilanKonu, bilinenKonular);
 	const bilinen = [...bilinenKonular];
+	const soruAnahtarlari = new Set();
 
 	for (const k of kayitlar.slice(1)) {
 		const h = k.hucreler;
@@ -247,6 +215,12 @@ export function csvdenSorular(metin, opts = {}) {
 			sonuc.hatalar.push({ no: k.no, mesaj: r.hata });
 			continue;
 		}
+		const soruAnahtari = `${konu.slug}|${normMetin(r.soru.soru)}`;
+		if (soruAnahtarlari.has(soruAnahtari)) {
+			sonuc.hatalar.push({ no: k.no, mesaj: 'Bu dosyada aynı konu ve soru metni daha önce kullanılmış.' });
+			continue;
+		}
+		soruAnahtarlari.add(soruAnahtari);
 		if (!konuHaritasi.has(konu.slug)) {
 			konuHaritasi.set(konu.slug, konu);
 			bilinen.push(konu);
