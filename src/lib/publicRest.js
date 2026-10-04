@@ -5,13 +5,14 @@ import { PUBLIC_SUPABASE_URL, PUBLIC_SUPABASE_ANON_KEY } from '$env/static/publi
 // Hata olursa fırlatır; çağıran yedeğe düşer.
 /**
  * @param {string} tablo
- * @param {{ select?: string, eq?: Record<string, string | number | boolean>, order?: string[], limit?: number }} [secenek]
+ * @param {{ select?: string, eq?: Record<string, string | number | boolean>, and?: string[], order?: string[], limit?: number }} [secenek]
  * @returns {Promise<any[]>}
  */
-export async function restSelect(tablo, { select = '*', eq = {}, order = [], limit } = {}) {
+export async function restSelect(tablo, { select = '*', eq = {}, and = [], order = [], limit } = {}) {
 	const p = new URLSearchParams();
 	p.set('select', select.replace(/\s+/g, ''));
 	for (const [k, v] of Object.entries(eq)) p.set(k, `eq.${v}`);
+	if (and.length) p.set('and', `(${and.join(',')})`);
 	if (order.length) p.set('order', order.join(','));
 	if (limit) p.set('limit', String(limit));
 

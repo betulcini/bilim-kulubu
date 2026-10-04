@@ -4,6 +4,7 @@
 	import InterestPicker from '$lib/components/InterestPicker.svelte';
 	import SanaOzel from '$lib/components/SanaOzel.svelte';
 	import Onerilerim from '$lib/components/Onerilerim.svelte';
+	import Bildirimlerim from '$lib/components/Bildirimlerim.svelte';
 	import { user, authReady, signOut, updateProfile } from '$lib/stores/auth.js';
 	import { activity } from '$lib/stores/activity.js';
 	import { streak, visibleStreak } from '$lib/stores/streak.js';
@@ -184,6 +185,7 @@
 		</section>
 
 		<Onerilerim />
+		<Bildirimlerim />
 
 		{#if toplulukHazir && !herkeseAcik}
 			<div class="bracket-card notice">

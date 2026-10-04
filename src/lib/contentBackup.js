@@ -11,12 +11,12 @@ const TABLES = {
 	},
 	duyurular: {
 		key: 'id',
-		fields: ['baslik', 'etiket', 'tarih', 'ozet', 'link', 'kaynak_ad', 'aktif'],
+		fields: ['baslik', 'etiket', 'tarih', 'ozet', 'link', 'kaynak_ad', 'yayina_basla', 'yayindan_kaldir', 'aktif'],
 		draft: true
 	},
 	firsatlar: {
 		key: 'id',
-		fields: ['baslik', 'kurum', 'tur', 'durum', 'son', 'son_tarih', 'ozet', 'link', 'link_ad', 'kaynak', 'kaynak_ad', 'aktif'],
+		fields: ['baslik', 'kurum', 'tur', 'durum', 'son', 'son_tarih', 'ozet', 'link', 'link_ad', 'kaynak', 'kaynak_ad', 'yayina_basla', 'yayindan_kaldir', 'aktif'],
 		draft: true
 	},
 	geziler: {

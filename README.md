@@ -118,6 +118,10 @@ kontrolünden sonra panelden yayına alınabilir. Herkese açık sayfalama, pane
 - `supabase/2026-10-10-yonetim-istatistik-oneri-takip.sql` — yönetici için toplu kullanım
   istatistiklerini ve kullanıcının kendi önerilerinin durum/yanıt takibini açar. Önce
   `2026-10-05-puan-ve-ilerleme.sql` ve `2026-10-08-oneri-yonetimi.sql` uygulanmış olmalı.
+- `supabase/2026-10-11-planli-yayin-ve-yonetici-gecmisi.sql` — duyuru/fırsat zamanlı yayını,
+  hesaplı öneriler için uygulama içi bildirimleri ve yönetici işlem geçmişini açar. Bu migration
+  öncesinde yönetici, duyuru/fırsat, gezi, video, quiz/galeri ve öneri migration'larını; ayrıca
+  `2026-10-10-yonetim-istatistik-oneri-takip.sql` dosyasını uygulayın.
 
 Bu migration dosyalarını Supabase Dashboard → SQL Editor'de bir kez çalıştır. İlk yönetici
 hesabının eklenmesi hariç, tabloları kurduktan sonra içerik ve yönetici değişiklikleri panelden
@@ -138,6 +142,14 @@ yapılabilir.
   yayından kapalı ekler. Geri yüklenen öğeleri ilgili yönetim listesinden gözden geçirip yayınla.
 - **İstatistikler** yalnızca toplu sayıları gösterir; kişisel kullanıcı kayıtları bu RPC üzerinden
   döndürülmez.
+- Duyuru ve fırsatlarda **Yayın başlangıcı** ile **Yayından kaldırma zamanı** yerel saat diliminde
+  ayarlanabilir. Zaman gelmeden içerik halka açık API'den de gizlenir. Öneri bildirimleri sadece
+  hesapla gönderilen önerilere üretilir ve Profilim açıkken dakikada bir yenilenir.
+- **İçerik kalite kontrolü** eksik alanları, biçimsel olarak hatalı/tekrarlanan bağlantıları ve
+  süresi geçmiş fırsatları listeler. Tarayıcılar başka sitelerin HTTP durum kodunu CORS nedeniyle
+  güvenilir biçimde doğrulayamadığından bağlantıların açılarak gözle kontrol edilmesi gerekir.
+- **Yönetici işlem geçmişi** ekleme, güncelleme ve silme işlemlerini kullanıcı adı, zaman ve değişen
+  alan adlarıyla listeler; içerik metnini, öneri mesajını veya özel yönetici notlarını kaydetmez.
 - Sunucu tarafı puan doğrulama, istemciden uydurma quiz skorları gönderilmesini önler. Yerleşik
   quiz soruları ve cevapları uygulamanın tarayıcı paketinde bulunduğundan, teknik bilgisi olan
   bir kullanıcı cevap anahtarını yine inceleyebilir; bu yöntem doğru skor hesaplamasını güvenceye

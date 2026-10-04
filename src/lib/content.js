@@ -4,9 +4,14 @@ import { restSelect } from '$lib/publicRest.js';
 
 export async function loadAnnouncements() {
 	try {
+		const now = new Date().toISOString();
 		const data = await restSelect('duyurular', {
-			select: 'baslik, etiket, tarih, ozet, link, kaynak_ad, created_at',
+			select: 'baslik, etiket, tarih, ozet, link, kaynak_ad, created_at, yayina_basla, yayindan_kaldir',
 			eq: { aktif: true },
+			and: [
+				`or(yayina_basla.is.null,yayina_basla.lte.${now})`,
+				`or(yayindan_kaldir.is.null,yayindan_kaldir.gt.${now})`
+			],
 			order: ['tarih.desc'],
 			limit: 40
 		});
@@ -27,9 +32,14 @@ export async function loadAnnouncements() {
 
 export async function loadOpportunities() {
 	try {
+		const now = new Date().toISOString();
 		const data = await restSelect('firsatlar', {
-			select: 'baslik, kurum, tur, durum, son, son_tarih, ozet, link, link_ad, kaynak, kaynak_ad, created_at',
+			select: 'baslik, kurum, tur, durum, son, son_tarih, ozet, link, link_ad, kaynak, kaynak_ad, created_at, yayina_basla, yayindan_kaldir',
 			eq: { aktif: true },
+			and: [
+				`or(yayina_basla.is.null,yayina_basla.lte.${now})`,
+				`or(yayindan_kaldir.is.null,yayindan_kaldir.gt.${now})`
+			],
 			limit: 60
 		});
 		if (data.length === 0) return null;
@@ -40,6 +50,8 @@ export async function loadOpportunities() {
 			durum: d.durum,
 			son: d.son,
 			sonTarih: d.son_tarih,
+			yayinaBasla: d.yayina_basla,
+			yayindanKaldir: d.yayindan_kaldir,
 			ozet: d.ozet,
 			link: d.link,
 			linkAd: d.link_ad,

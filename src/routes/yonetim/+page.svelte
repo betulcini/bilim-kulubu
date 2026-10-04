@@ -9,6 +9,8 @@
 	import OneriYonetimi from '$lib/components/OneriYonetimi.svelte';
 	import IstatistikYonetimi from '$lib/components/IstatistikYonetimi.svelte';
 	import IcerikYedekleme from '$lib/components/IcerikYedekleme.svelte';
+	import IcerikKalitesi from '$lib/components/IcerikKalitesi.svelte';
+	import YoneticiGecmisi from '$lib/components/YoneticiGecmisi.svelte';
 	import VideoTanitimKarti from '$lib/components/VideoTanitimKarti.svelte';
 	import YoutubeOynatici from '$lib/components/YoutubeOynatici.svelte';
 	import { user, authReady } from '$lib/stores/auth.js';
@@ -79,12 +81,15 @@
 		{ id: 'yoneticiler', ad: 'Yöneticiler' },
 		{ id: 'oneriler', ad: 'Öneriler' },
 		{ id: 'istatistik', ad: 'İstatistikler' },
-		{ id: 'yedek', ad: 'İçerik yedeği' }
+		{ id: 'yedek', ad: 'İçerik yedeği' },
+		{ id: 'kalite', ad: 'İçerik kalite kontrolü' },
+		{ id: 'gecmis', ad: 'Yönetici işlem geçmişi' }
 	];
 	const GRUPLAR = [
 		{ ad: 'İçerik', sekmeler: ['duyurular', 'firsatlar', 'geziler', 'videolar', 'kartlar'] },
 		{ ad: 'Öğrenme', sekmeler: ['quizler', 'galeri'] },
-		{ ad: 'Yönetim', sekmeler: ['oneriler', 'yoneticiler', 'istatistik', 'yedek'] }
+		{ ad: 'Yönetim', sekmeler: ['oneriler', 'yoneticiler', 'istatistik', 'yedek'] },
+		{ ad: 'Kontrol', sekmeler: ['kalite', 'gecmis'] }
 	];
 	const FORMLU = ['duyurular', 'firsatlar', 'geziler', 'videolar', 'kartlar']; // ortak form + liste kullanan sekmeler
 
@@ -119,6 +124,10 @@
 					: satir.youtube_id
 						? `https://www.youtube.com/watch?v=${satir.youtube_id}`
 						: '';
+			} else if (a.t === 'datetime-local' && satir[a.k]) {
+				const dt = new Date(satir[a.k]);
+				dt.setMinutes(dt.getMinutes() - dt.getTimezoneOffset());
+				f[a.k] = dt.toISOString().slice(0, 16);
 			} else {
 				f[a.k] = satir[a.k] ?? (a.k === 'sira' ? 0 : '');
 			}
@@ -200,12 +209,20 @@
 	const YENI = { duyurular: 'Yeni duyuru ekle', firsatlar: 'Yeni fırsat ekle', geziler: 'Yeni gezi duyurusu ekle', videolar: 'Yeni video ekle', kartlar: 'Yeni seri / tiyatro kartı ekle' };
 	const ad = (s) => s.baslik ?? s.yer ?? '';
 	const etiketOf = (liste, id) => liste.find((x) => x.id === id)?.label || id;
+	const yayinEtiketi = (s) => {
+		if (!s.aktif) return 'Gizli';
+		const now = Date.now();
+		if (s.yayina_basla && new Date(s.yayina_basla).getTime() > now) return 'Zamanlandı';
+		if (s.yayindan_kaldir && new Date(s.yayindan_kaldir).getTime() <= now) return 'Süresi doldu';
+		return 'Yayında';
+	};
 	const meta = (s) => {
-		if (sekme === 'duyurular') return [formatTarih(s.tarih), s.etiket].filter(Boolean).join(' · ');
+		const yayin = [s.yayina_basla && `Başlangıç: ${new Date(s.yayina_basla).toLocaleString('tr-TR')}`, s.yayindan_kaldir && `Bitiş: ${new Date(s.yayindan_kaldir).toLocaleString('tr-TR')}`].filter(Boolean);
+		if (sekme === 'duyurular') return [formatTarih(s.tarih), s.etiket, ...yayin].filter(Boolean).join(' · ');
 		if (sekme === 'geziler') return [etiketOf(GEZI_DURUMLARI, s.durum), s.tarih_metni || formatTarih(s.gun)].filter(Boolean).join(' · ');
 		if (sekme === 'videolar') return [etiketOf(VIDEO_BOLUMLERI, s.bolum), s.grup, `Sıra: ${s.sira ?? 0}`].filter(Boolean).join(' · ');
 		if (sekme === 'kartlar') return [etiketOf(VIDEO_BOLUMLERI, s.bolum), s.rozet, `Sıra: ${s.sira ?? 0}`].filter(Boolean).join(' · ');
-		return [s.kurum, s.durum].filter(Boolean).join(' · ');
+		return [s.kurum, s.durum, ...yayin].filter(Boolean).join(' · ');
 	};
 	$: onizleme = sekme === 'videolar' ? youtubeMedia(form.youtube) : null;
 	$: kartOnizleme = {
@@ -237,12 +254,13 @@
 	{/if}
 		<div class="admin-layout" hidden={kontrol !== 'admin'}>
 			<nav class="menu" aria-label="Yönetim bölümleri">
+				<p class="menu-yardim">BÖLÜMLER <span>İçerik açmak için bir düğme seç</span></p>
 				{#each GRUPLAR as grup (grup.ad)}
 					<section class="menu-grup" aria-label={grup.ad}>
 						<h2>{grup.ad}</h2>
 						<div class="menu-ogeleri">
 							{#each TABLAR.filter((oge) => grup.sekmeler.includes(oge.id)) as t (t.id)}
-									<button type="button" id="yt-{t.id}" class="menu-dugme" class:aktif={sekme === t.id} aria-current={sekme === t.id ? 'page' : undefined} aria-controls="yp" on:click={() => sekmeSec(t.id)}>{t.ad}</button>
+									<button type="button" id="yt-{t.id}" class="menu-dugme" class:aktif={sekme === t.id} aria-current={sekme === t.id ? 'page' : undefined} aria-controls="yp" on:click={() => sekmeSec(t.id)}><span class="menu-ikon" aria-hidden="true">{sekme === t.id ? '●' : '○'}</span>{t.ad}</button>
 							{/each}
 						</div>
 					</section>
@@ -254,6 +272,10 @@
 				<IstatistikYonetimi />
 			{:else if sekme === 'yedek'}
 				<IcerikYedekleme />
+			{:else if sekme === 'kalite'}
+				<IcerikKalitesi />
+			{:else if sekme === 'gecmis'}
+				<YoneticiGecmisi />
 			{:else if sekme === 'quizler'}
 				<QuizYonetimi />
 			{:else if sekme === 'galeri'}
@@ -287,6 +309,7 @@
 							</select>
 						{:else}
 							<input id="y-{a.k}" type={a.t === 'youtube' ? 'text' : a.t} min={a.min} max={a.max} maxlength={a.max} bind:value={form[a.k]} list={a.liste ? 'liste-' + a.k : undefined} autocomplete="off" />
+							{#if a.t === 'datetime-local'}<small class="ipucu">Saat, bu cihazın yerel saat dilimine göre kaydedilir.</small>{/if}
 							{#if a.liste}<datalist id="liste-{a.k}">{#each a.liste as x}<option value={x}></option>{/each}</datalist>{/if}
 						{/if}
 					</div>
@@ -336,7 +359,7 @@
 							<li class="bracket-card oge" class:gizli={!s.aktif}>
 								<div class="oge-ust">
 									<strong>{ad(s)}</strong>
-									<span class="badge {s.aktif ? 'live' : 'muted'}">{s.aktif ? 'Yayında' : 'Gizli'}</span>
+									<span class="badge {yayinEtiketi(s) === 'Yayında' ? 'live' : yayinEtiketi(s) === 'Zamanlandı' ? 'info' : 'muted'}">{yayinEtiketi(s)}</span>
 								</div>
 								<p class="oge-meta">{meta(s)}</p>
 								<div class="eylem">
@@ -362,12 +385,16 @@
 	.admin-layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); align-items: start; gap: 28px; }
 	.admin-layout[hidden] { display: none; }
 	.menu { position: sticky; top: 18px; display: flex; flex-direction: column; gap: 18px; padding: 16px 12px; max-height: calc(100vh - 36px); overflow-y: auto; border: 1px solid var(--border-strong); border-radius: var(--radius-md); background: var(--bg-alt); }
+	.menu-yardim { display: flex; flex-direction: column; gap: 4px; margin: 0 8px; padding-bottom: 12px; color: var(--text); font-size: var(--fs-xs); font-weight: 800; letter-spacing: .08em; border-bottom: 1px solid var(--border-strong); }
+	.menu-yardim span { color: var(--text-muted); font-weight: 400; letter-spacing: normal; }
 	.menu-grup { display: flex; flex-direction: column; gap: 6px; }
-	.menu-grup h2 { margin: 0 8px 3px; color: var(--text-muted); font-size: var(--fs-xs); text-transform: uppercase; letter-spacing: .08em; }
+	.menu-grup h2 { margin: 0 8px 3px; padding-bottom: 5px; color: var(--text-muted); font-size: var(--fs-xs); font-weight: 800; text-transform: uppercase; letter-spacing: .08em; border-bottom: 1px solid var(--border); }
 	.menu-ogeleri { display: flex; flex-direction: column; gap: 3px; }
-	.menu-dugme { width: 100%; min-height: 40px; padding: 8px 10px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--text-muted); text-align: left; font: 600 var(--fs-sm)/1.35 var(--font-display); cursor: pointer; }
+	.menu-dugme { display: flex; align-items: center; gap: 9px; width: 100%; min-height: 40px; padding: 8px 10px; border: 1px solid transparent; border-radius: 8px; background: transparent; color: var(--text-muted); text-align: left; font: 600 var(--fs-sm)/1.35 var(--font-display); cursor: pointer; }
+	.menu-ikon { width: 14px; color: var(--text-faint); font-size: 9px; }
 	.menu-dugme:hover { color: var(--text); background: var(--bg); }
-	.menu-dugme.aktif { color: var(--accent); border-color: var(--accent); background: var(--accent-soft); }
+	.menu-dugme.aktif { color: var(--accent); border-color: var(--accent); border-left-width: 4px; background: var(--accent-soft); }
+	.menu-dugme.aktif .menu-ikon { color: var(--accent); }
 	.menu-dugme:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 	.panel { min-width: 0; display: flex; flex-direction: column; gap: 28px; }
 	.form { display: flex; flex-direction: column; gap: 14px; max-width: 760px; }
@@ -405,6 +432,8 @@
 		.admin-layout { grid-template-columns: minmax(0, 1fr); gap: 18px; }
 		.menu { position: static; max-height: none; flex-direction: row; gap: 12px; padding: 8px; overflow-x: auto; }
 		.menu-grup { flex-direction: row; flex: 0 0 auto; }
+		.menu-grup + .menu-grup { border-left: 1px solid var(--border-strong); padding-left: 10px; }
+		.menu-yardim { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 		.menu-grup h2 { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 		.menu-ogeleri { flex-direction: row; }
 		.menu-dugme { width: auto; min-height: 38px; white-space: nowrap; }

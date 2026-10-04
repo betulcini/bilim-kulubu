@@ -31,6 +31,8 @@ export const ALANLAR = {
 		{ k: 'baslik', l: 'Başlık', t: 'text', min: 5, max: 160, zorunlu: true },
 		{ k: 'etiket', l: 'Etiket', t: 'text', min: 2, max: 30, zorunlu: true, liste: ETIKETLER },
 		{ k: 'tarih', l: 'Haber tarihi', t: 'date', zorunlu: true },
+		{ k: 'yayina_basla', l: 'Yayın başlangıcı (boşsa hemen)', t: 'datetime-local' },
+		{ k: 'yayindan_kaldir', l: 'Yayından kaldırma zamanı (isteğe bağlı)', t: 'datetime-local' },
 		{ k: 'ozet', l: 'Özet', t: 'textarea', min: 20, max: 700, zorunlu: true },
 		{ k: 'link', l: 'Haber bağlantısı (https://…)', t: 'url', max: 500 },
 		{ k: 'kaynak_ad', l: 'Kaynak adı (örn. AA, CHIP Online)', t: 'text', max: 80 }
@@ -42,6 +44,8 @@ export const ALANLAR = {
 		{ k: 'durum', l: 'Durum', t: 'select', zorunlu: true, secenekler: DURUMLAR },
 		{ k: 'son', l: 'Kartta görünen tarih metni (örn. Başvuru: 23 Eylül – 4 Ocak)', t: 'text', max: 160 },
 		{ k: 'son_tarih', l: 'Son başvuru günü (geçince kart "Kapandı" olur)', t: 'date' },
+		{ k: 'yayina_basla', l: 'Yayın başlangıcı (boşsa hemen)', t: 'datetime-local' },
+		{ k: 'yayindan_kaldir', l: 'Yayından kaldırma zamanı (isteğe bağlı)', t: 'datetime-local' },
 		{ k: 'ozet', l: 'Özet', t: 'textarea', min: 20, max: 700, zorunlu: true },
 		{ k: 'link', l: 'Başvuru / detay bağlantısı (https://…)', t: 'url', max: 500 },
 		{ k: 'link_ad', l: 'Buton yazısı (örn. Başvuru sayfası)', t: 'text', max: 60 },
@@ -120,7 +124,17 @@ export function dogrula(tablo, form) {
 		if (a.t === 'url' && !httpsMi(v)) return { hata: `"${a.l}" http:// veya https:// ile başlayan geçerli bir adres olmalı.` };
 		if (a.t === 'select' && !a.secenekler.some((s) => s.id === v)) return { hata: `"${a.l}" için geçersiz seçim.` };
 		if (a.t === 'date' && Number.isNaN(new Date(v + 'T12:00:00').getTime())) return { hata: `"${a.l}" geçerli bir tarih olmalı.` };
+		if (a.t === 'datetime-local') {
+			const date = new Date(v);
+			if (Number.isNaN(date.getTime())) return { hata: `"${a.l}" geçerli bir tarih ve saat olmalı.` };
+			satir[a.k] = date.toISOString();
+			continue;
+		}
 		satir[a.k] = v;
+	}
+	if ((tablo === 'duyurular' || tablo === 'firsatlar') && satir.yayina_basla && satir.yayindan_kaldir
+		&& new Date(satir.yayindan_kaldir) <= new Date(satir.yayina_basla)) {
+		return { hata: 'Yayından kaldırma zamanı, yayın başlangıcından sonra olmalı.' };
 	}
 	return { satir };
 }
@@ -146,13 +160,16 @@ export async function isAdmin() {
 const KURULUM = {
 	geziler: '2026-10-06-video-ve-gezi-yonetimi.sql',
 	videolar: '2026-10-07-video-katalogu-siralama-yonetici.sql',
-	kartlar: '2026-10-07-video-katalogu-siralama-yonetici.sql'
+	kartlar: '2026-10-07-video-katalogu-siralama-yonetici.sql',
+	duyurular: '2026-10-11-planli-yayin-ve-yonetici-gecmisi.sql',
+	firsatlar: '2026-10-11-planli-yayin-ve-yonetici-gecmisi.sql',
+	quizler: '2026-10-04-quiz-galeri-yonetimi.sql'
 };
 const hataTablo = (tablo, error) => hataMetni(error, KURULUM[tablo]);
 
 export const LISTE_SAYFA_BOYUTU = 50;
 
-const TABLO_ADI = { kartlar: 'video_kartlari' };
+const TABLO_ADI = { kartlar: 'video_kartlari', quizler: 'quiz_sorulari' };
 
 export async function listRows(tablo, sayfa = 0) {
 	const tabloAdi = TABLO_ADI[tablo] || tablo;
@@ -215,6 +232,17 @@ export async function loadAdminStats() {
 	return {
 		data: data || null,
 		hata: hataMetni(error, '2026-10-10-yonetim-istatistik-oneri-takip.sql')
+	};
+}
+
+export async function listAdminAudit(beforeId = null, limit = 50) {
+	const { data, error } = await supabase.rpc('yonetici_islem_gecmisi_listele', {
+		p_before_id: beforeId,
+		p_limit: limit
+	});
+	return {
+		data: data || [],
+		hata: hataMetni(error, '2026-10-11-planli-yayin-ve-yonetici-gecmisi.sql')
 	};
 }
 
