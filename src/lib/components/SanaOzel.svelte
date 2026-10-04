@@ -3,12 +3,51 @@
 	import { user } from '$lib/stores/auth.js';
 	import { interestById } from '$lib/data/interests.js';
 	import { scientists } from '$lib/data/bilim-insanlari.js';
+	import { quizData } from '$lib/data/bilim-quizleri.js';
 	import { takvimOlaylari } from '$lib/data/bilim-takvimi.js';
 	import { announcements } from '$lib/data/announcements.js';
+	import { supabase } from '$lib/supabaseClient.js';
+	import { streak, dayKey } from '$lib/stores/streak.js';
+	import { buildLearningRoute } from '$lib/learningRoute.js';
 	import { sfx } from '$lib/sound.js';
 
 	// compact: anasayfada daha az öğe göstermek için
 	export let compact = false;
+	let konuSkorlari = [];
+	let skorlarHazir = false;
+	let skorHata = '';
+	let skorlarUid = null;
+
+	$: if ($user?.id && skorlarUid !== $user.id) {
+		skorlarUid = $user.id;
+		skorlariYukle($user.id);
+	}
+
+	async function skorlariYukle(uid) {
+		skorlarHazir = false;
+		skorHata = '';
+		try {
+			const { data, error } = await supabase
+				.from('quiz_scores')
+				.select('subject, score')
+				.eq('user_id', uid)
+				.order('created_at', { ascending: false })
+				.limit(300);
+			if (error) {
+				skorHata = 'Quiz geçmişi şu an yüklenemedi; rotayı ilgi alanlarına göre hazırladık.';
+				konuSkorlari = [];
+			} else {
+				if ($user?.id === uid) konuSkorlari = data || [];
+			}
+		} catch (e) {
+			if ($user?.id === uid) {
+				skorHata = 'Quiz geçmişi şu an yüklenemedi; rotayı ilgi alanlarına göre hazırladık.';
+				konuSkorlari = [];
+			}
+		} finally {
+			if ($user?.id === uid) skorlarHazir = true;
+		}
+	}
 
 	const OYUNLAR = [
 		{ id: 'biyoloji-enerji', href: '/oyunlar/biyoloji-enerji', ad: 'Hücresel Solunum & Fotosentez', acik: 'Enerji akışını adım adım çöz.' },
@@ -29,6 +68,13 @@
 
 	$: secilenler = ($user?.interests || []).map((id) => interestById[id]).filter(Boolean);
 	$: adet = compact ? 3 : 6;
+	$: ogrenmeRotasi = buildLearningRoute({
+		interests: secilenler,
+		scores: konuSkorlari,
+		quizTopics: quizData,
+		scientists,
+		dailyCompleted: Boolean($streak.results[dayKey()])
+	});
 
 	// Her ilgi alanından sırayla bir bilim insanı seç (günlük döner, herkese aynı sıra)
 	function bilimInsanlariSec(list, n) {
@@ -92,6 +138,29 @@
 				<a class="btn btn-primary" href="/profil" on:click={() => sfx.nav()}>İlgi alanlarını seç</a>
 			</div>
 		{:else}
+			<section class="bracket-card rota" aria-labelledby="ogrenme-rotasi-baslik">
+				<div class="rota-baslik">
+					<div>
+						<h3 id="ogrenme-rotasi-baslik">Öğrenme rotan</h3>
+						<p>İlgi alanların ve quiz geçmişine göre sıradaki adımlar.</p>
+					</div>
+					{#if !skorlarHazir}<span class="muted" role="status">Geçmiş yükleniyor…</span>{/if}
+				</div>
+				{#if skorHata}<p class="rota-uyari" role="status">{skorHata}</p>{/if}
+				<ol class="rota-adimlar">
+					{#each ogrenmeRotasi as adim, i (adim.id)}
+						<li class:tamam={adim.done}>
+							<span class="adim-no" aria-hidden="true">{adim.done ? '✓' : i + 1}</span>
+							<div class="adim-metin">
+								<strong>{adim.title}</strong>
+								<small>{adim.description}</small>
+							</div>
+							<a class="btn btn-ghost rota-link" href={adim.href} on:click={() => sfx.nav()}>{adim.done ? 'Tekrar gör' : 'Başla'}</a>
+						</li>
+					{/each}
+				</ol>
+			</section>
+
 			<div class="grid">
 				<div class="bracket-card block">
 					<h3>İlham veren bilim insanları</h3>
@@ -262,4 +331,18 @@
 	.empty a {
 		text-decoration: none;
 	}
+	.rota { margin-bottom: 18px; }
+	.rota-baslik { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+	.rota-baslik h3 { margin: 0; font-size: var(--fs-md); }
+	.rota-baslik p { margin: 4px 0 0; color: var(--text-muted); font-size: var(--fs-xs); }
+	.rota-adimlar { list-style: none; padding: 0; margin: 14px 0 0; display: grid; gap: 8px; }
+	.rota-adimlar li { display: flex; align-items: center; gap: 10px; }
+	.adim-no { flex: none; width: 28px; height: 28px; display: grid; place-items: center; border-radius: 50%; background: var(--accent-soft); color: var(--accent); font-weight: 700; font-size: var(--fs-xs); }
+	.rota-adimlar li.tamam .adim-no { background: var(--accent); color: var(--accent-contrast); }
+	.adim-metin { display: flex; flex: 1; min-width: 0; flex-direction: column; gap: 2px; }
+	.adim-metin strong { font-size: var(--fs-sm); }
+	.adim-metin small, .muted { color: var(--text-muted); font-size: var(--fs-xs); }
+	.rota-link { padding: 6px 10px; font-size: var(--fs-xs); white-space: nowrap; }
+	.rota-uyari { margin: 10px 0 0; color: var(--text-muted); font-size: var(--fs-xs); }
+	@media (max-width: 520px) { .rota-adimlar li { align-items: flex-start; } .rota-link { margin-left: auto; } }
 </style>

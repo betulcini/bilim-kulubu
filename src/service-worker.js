@@ -13,6 +13,7 @@ const FONT = 'btk-font';
 const GORSEL = 'btk-galeri'; // galeri fotoğrafları (dosya adları değişmez, bir kez indirilince saklanır)
 const ASSETS = [...build, ...files.filter((f) => !f.endsWith('.map'))];
 const SAYFALAR = [...prerendered];
+const CEVRIMDISI_SAYFALAR = ['/gunluk-quiz'];
 
 // Önbelleğe alınacak herkese açık Supabase tabloları
 const HERKESE_ACIK = ['/rest/v1/duyurular', '/rest/v1/firsatlar', '/rest/v1/galeri', '/rest/v1/geziler', '/rest/v1/videolar', '/rest/v1/quiz_konulari', '/rest/v1/quiz_sorulari'];
@@ -24,7 +25,7 @@ self.addEventListener('install', (event) => {
 			.then(async (cache) => {
 				await cache.addAll(ASSETS);
 				// Sayfalar tek tek eklenir: biri alınamazsa kurulum bozulmaz
-				await Promise.allSettled(SAYFALAR.map((p) => cache.add(p)));
+				await Promise.allSettled([...new Set([...SAYFALAR, ...CEVRIMDISI_SAYFALAR])].map((p) => cache.add(p)));
 			})
 			.then(() => self.skipWaiting())
 	);

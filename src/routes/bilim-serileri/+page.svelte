@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import VideoBolumu from '$lib/components/VideoBolumu.svelte';
+	import VideoTanitimKarti from '$lib/components/VideoTanitimKarti.svelte';
 	import { loadVideoKartlari } from '$lib/videoDb.js';
 	import { series } from '$lib/data/series.js';
 
@@ -25,25 +26,7 @@
 	<VideoBolumu bolum="seri" baslik="Yayındaki videolar" />
 	<div class="card-grid" style="margin-bottom:48px">
 		{#each kartlar as s}
-			<div class="bracket-card">
-				{#if s.rozet || s.devBadge}<span class="badge dev">{s.rozet || 'Geliştirme aşamasında'}</span>{/if}
-				<h3 aria-level="2" style="margin-top:12px">{s.title}</h3>
-				<p>{s.desc}</p>
-				<div class="meta">
-					{#if s.detay || s.bolum}<span>{s.detay || s.bolum}</span>{/if}
-					{#if (s.detay || s.bolum) && s.durum}<span>·</span>{/if}
-					{#if s.durum}<span>{s.durum}</span>{/if}
-				</div>
-			</div>
+			<VideoTanitimKarti kart={s} />
 		{/each}
 	</div>
 </div>
-
-<style>
-	.meta {
-		display: flex;
-		gap: 8px;
-		font-size: var(--fs-xs);
-		color: var(--text-faint);
-	}
-</style>

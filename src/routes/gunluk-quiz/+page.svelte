@@ -4,52 +4,19 @@
 	import Icon from '$lib/components/Icon.svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import { quizData } from '$lib/data/bilim-quizleri.js';
+	import { buildDaily } from '$lib/dailyQuiz.js';
 	import { loadDbQuiz, birlestir } from '$lib/quizDb.js';
 	import { streak, dayKey, visibleStreak } from '$lib/stores/streak.js';
 	import { user, authReady } from '$lib/stores/auth.js';
 	import { ilerleme, gunlukQuizKaydet } from '$lib/stores/ilerleme.js';
 	import { sfx } from '$lib/sound.js';
 
-	const SORU_SAYISI = 5;
-
-	// Aynı gün herkese aynı sorular gelsin diye tarihe bağlı sabit rastgelelik
-	function mulberry32(a) {
-		return function () {
-			a |= 0;
-			a = (a + 0x6d2b79f5) | 0;
-			let t = Math.imul(a ^ (a >>> 15), 1 | a);
-			t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-			return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-		};
-	}
-	function seededShuffle(arr, rnd) {
-		const a = [...arr];
-		for (let i = a.length - 1; i > 0; i--) {
-			const j = Math.floor(rnd() * (i + 1));
-			[a[i], a[j]] = [a[j], a[i]];
-		}
-		return a;
-	}
-	function seedOf(key) {
-		return Number(key.replaceAll('-', '')); // 20261002 gibi
-	}
-
-	// Her gün farklı konulardan birer soru: önce konular karıştırılır, sonra her konudan bir soru seçilir
-	function buildDaily(key) {
-		const rnd = mulberry32(seedOf(key));
-		const konular = seededShuffle(Object.keys(havuz), rnd).slice(0, SORU_SAYISI);
-		return konular.map((k) => {
-			const q = seededShuffle(havuz[k].questions, rnd)[0];
-			return { ...q, konu: havuz[k].title.replace(' Quiz', ''), secenekler: seededShuffle(q.secenekler, rnd) };
-		});
-	}
-
 	// Soru havuzu: yerleşik sorular + yönetici panelinden eklenen konular (Supabase)
 	/** @type {Record<string, any>} */
 	let havuz = quizData;
 
 	let today = dayKey(); // SSR/prerender sırasında sabit kalır, onMount'ta yenilenir
-	let sorular = buildDaily(today);
+	let sorular = buildDaily(today, havuz);
 	let index = 0;
 	let secilen = null;
 	let puan = 0;
@@ -59,20 +26,44 @@
 	let kalan = '';
 	let kazanilan = null; // bu quizden kazanılan Bilim Puanı (giriş yapılmışsa)
 	let sunucuHata = '';
+	let cevrimici = true;
+	let sunucuyaKaydediliyor = false;
 
 	onMount(() => {
+		cevrimici = navigator.onLine;
 		today = dayKey();
-		sorular = buildDaily(today);
+		sorular = buildDaily(today, havuz);
 		onceki = streak.todayResult();
 		if (onceki) bitti = true;
 		kalan = geceyeKalan();
 		hazir = true;
-		loadDbQuiz().then((db) => {
-			if (!db) return;
-			havuz = birlestir(quizData, db);
-			// Oyuncu henüz başlamadıysa güncel havuzdan bugünün sorularını yeniden kur
-			if (!onceki && !bitti && index === 0 && secilen === null && puan === 0) sorular = buildDaily(today);
-		});
+
+		function yerlesikHavuzuYenile() {
+			if (!cevrimici) return;
+			loadDbQuiz().then((db) => {
+				if (!db) return;
+				havuz = birlestir(quizData, db);
+				// Oyuncu henüz başlamadıysa güncel havuzdan bugünün sorularını yeniden kur
+				if (!onceki && !bitti && index === 0 && secilen === null && puan === 0) {
+					sorular = buildDaily(today, havuz);
+				}
+			});
+		}
+
+		function agDurumuGuncelle() {
+			cevrimici = navigator.onLine;
+			if (!cevrimici) return;
+			yerlesikHavuzuYenile();
+			if (onceki && $user) hesabaKaydet(onceki.score);
+		}
+
+		window.addEventListener('online', agDurumuGuncelle);
+		window.addEventListener('offline', agDurumuGuncelle);
+		yerlesikHavuzuYenile();
+		return () => {
+			window.removeEventListener('online', agDurumuGuncelle);
+			window.removeEventListener('offline', agDurumuGuncelle);
+		};
 	});
 
 	function geceyeKalan() {
@@ -86,7 +77,7 @@
 
 	$: soru = sorular[index];
 	$: gorunenSeri = visibleStreak($streak);
-	$: son = onceki || { score: puan, total: SORU_SAYISI };
+	$: son = onceki || { score: puan, total: 5 };
 
 	function cevapla(opt) {
 		if (secilen !== null) return;
@@ -105,8 +96,8 @@
 			index += 1;
 			secilen = null;
 		} else {
-			streak.complete(puan, SORU_SAYISI);
-			onceki = { score: puan, total: SORU_SAYISI };
+			streak.complete(puan, 5);
+			onceki = { score: puan, total: 5 };
 			bitti = true;
 			if ($user) hesabaKaydet(puan);
 		}
@@ -114,10 +105,21 @@
 
 	// Giriş yapmış kullanıcının seri ve puanı hesabına işlenir (telefon/bilgisayar arasında senkron kalır)
 	async function hesabaKaydet(dogru) {
+		if (!cevrimici || sunucuyaKaydediliyor) return;
+		sunucuyaKaydediliyor = true;
 		sunucuHata = '';
-		const r = await gunlukQuizKaydet($user.id, today, dogru);
-		if (r.hata) sunucuHata = r.hata === 'giris' ? '' : r.hata;
-		else kazanilan = r.kazanilan;
+		try {
+			const r = await gunlukQuizKaydet($user.id, today, dogru);
+			if (r.hata) sunucuHata = r.hata === 'giris' ? '' : r.hata;
+			else {
+				sunucuHata = '';
+				kazanilan = r.kazanilan;
+			}
+		} catch (e) {
+			sunucuHata = 'Sonuç hesabına kaydedilemedi; cihazındaki sonuç korunuyor. Bağlantı gelince tekrar denenecek.';
+		} finally {
+			sunucuyaKaydediliyor = false;
+		}
 	}
 
 	// Başka cihazda bugünkü quiz çözüldüyse (hesaptan gelen veri) tekrar çözdürme
@@ -149,6 +151,11 @@
 
 <div class="content-max wrap">
 	<div class="bracket-card box">
+		{#if !cevrimici}
+			<p class="offline-status" role="status">
+				Çevrimdışısın. Quiz oynanabilir; sonucun bu cihazda saklanacak{#if $user} ve bağlantı gelince hesabına aktarılacak{:else} ve daha sonra giriş yaparsan hesabına aktarılacak{/if}.
+			</p>
+		{/if}
 		<div class="seri-bar">
 			<div class="seri" aria-label="Seri sayacı">
 				<span class="flame" class:off={gorunenSeri === 0} aria-hidden="true">
@@ -259,6 +266,7 @@
 	.sonuc h2 { margin: 0 0 6px; }
 	.skor { font-size: var(--fs-lg); margin: 0 0 8px; }
 	.muted { color: var(--text-muted); margin: 0 auto 18px; max-width: 420px; }
+	.offline-status { margin: 0 0 16px; padding: 10px 12px; border: 1px solid var(--border-strong); border-radius: var(--radius-sm); color: var(--text-muted); font-size: var(--fs-sm); }
 	.actions { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
 	@media (max-width: 520px) {
 		.hafta { gap: 3px; }

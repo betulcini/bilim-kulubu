@@ -4,9 +4,15 @@
     import { sfx } from '$lib/sound.js';
     import { activity } from '$lib/stores/activity.js';
     import { scientists } from '$lib/data/bilim-insanlari.js';
+    import { onMount } from 'svelte';
 
     let searchQuery = '';
     let selectedCategory = 'Tümü';
+
+    onMount(() => {
+        const ara = new URLSearchParams(window.location.search).get('ara');
+        if (ara) searchQuery = ara;
+    });
 
     const categories = ['Tümü', 'Fizik', 'Biyoloji & Tıp', 'Bilgisayar & Mühendislik', 'Kimya', 'Astronomi', 'Matematik', 'Diğer'];
 

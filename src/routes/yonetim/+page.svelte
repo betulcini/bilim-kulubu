@@ -6,6 +6,9 @@
 	import QuizYonetimi from '$lib/components/QuizYonetimi.svelte';
 	import GaleriYonetimi from '$lib/components/GaleriYonetimi.svelte';
 	import YoneticiYonetimi from '$lib/components/YoneticiYonetimi.svelte';
+	import OneriYonetimi from '$lib/components/OneriYonetimi.svelte';
+	import VideoTanitimKarti from '$lib/components/VideoTanitimKarti.svelte';
+	import YoutubeOynatici from '$lib/components/YoutubeOynatici.svelte';
 	import { user, authReady } from '$lib/stores/auth.js';
 	import { ALANLAR, VIDEO_BOLUMLERI, GEZI_DURUMLARI, LISTE_SAYFA_BOYUTU, bosForm, dogrula, isAdmin, listRows, saveRow, setAktif, removeRow } from '$lib/yonetim.js';
 	import { youtubeMedia, kapakAdresi } from '$lib/video.js';
@@ -26,6 +29,7 @@
 	let hata = '';
 	let bilgi = '';
 	let kaydediyor = false;
+	let yayinda = false;
 
 	let kontrolEdilen = null;
 	$: if (browser && $user && kontrolEdilen !== $user.id) {
@@ -70,7 +74,8 @@
 		{ id: 'kartlar', ad: 'Seri / tiyatro kartları' },
 		{ id: 'quizler', ad: 'Quizler' },
 		{ id: 'galeri', ad: 'Galeri' },
-		{ id: 'yoneticiler', ad: 'Yöneticiler' }
+		{ id: 'yoneticiler', ad: 'Yöneticiler' },
+		{ id: 'oneriler', ad: 'Öneriler' }
 	];
 	const FORMLU = ['duyurular', 'firsatlar', 'geziler', 'videolar', 'kartlar']; // ortak form + liste kullanan sekmeler
 
@@ -104,6 +109,7 @@
 
 	function temizle() {
 		form = bosForm(sekme);
+		yayinda = sekme !== 'videolar' && sekme !== 'kartlar';
 		duzenlenen = null;
 		hata = '';
 		bilgi = '';
@@ -123,6 +129,7 @@
 			}
 		}
 		form = f;
+		yayinda = Boolean(satir.aktif);
 		duzenlenen = satir.id;
 		hata = '';
 		bilgi = '';
@@ -142,16 +149,21 @@
 			return;
 		}
 		kaydediyor = true;
-		const s = await saveRow(sekme, r.satir, duzenlenen);
+		const s = await saveRow(sekme, r.satir, duzenlenen, yayinda);
 		kaydediyor = false;
 		if (s.hata) {
 			hata = s.hata;
 			sfx.error();
 			return;
 		}
-		bilgi = duzenlenen ? 'Değişiklikler kaydedildi.' : 'Yayınlandı. Sitede hemen görünür.';
+		bilgi = (sekme === 'videolar' || sekme === 'kartlar') && !yayinda
+			? 'Taslak kaydedildi. Yayına alana kadar ziyaretçiler göremez.'
+			: duzenlenen
+				? 'Değişiklikler kaydedildi.'
+				: 'Yayınlandı. Sitede hemen görünür.';
 		sfx.success();
 		form = bosForm(sekme);
+		yayinda = sekme !== 'videolar' && sekme !== 'kartlar';
 		duzenlenen = null;
 		sayfa = 0;
 		await yukle();
@@ -201,6 +213,13 @@
 		return [s.kurum, s.durum].filter(Boolean).join(' · ');
 	};
 	$: onizleme = sekme === 'videolar' ? youtubeMedia(form.youtube) : null;
+	$: kartOnizleme = {
+		title: form.baslik || 'Kart başlığı',
+		desc: form.aciklama || 'Kart açıklaması burada görünür.',
+		durum: form.durum || '',
+		detay: form.alt_bilgi || '',
+		rozet: form.rozet || ''
+	};
 </script>
 
 <svelte:head><title>Yönetim · Bilim ve Teknoloji Kulübü</title></svelte:head>
@@ -232,9 +251,20 @@
 				<GaleriYonetimi />
 			{:else if sekme === 'yoneticiler'}
 				<YoneticiYonetimi />
+			{:else if sekme === 'oneriler'}
+				<OneriYonetimi />
 			{:else}
 			<form id="yform" class="bracket-card form" on:submit={kaydet} novalidate>
 				<h2>{duzenlenen ? 'Kaydı düzenle' : YENI[sekme]}</h2>
+				{#if sekme === 'videolar' || sekme === 'kartlar'}
+					<div class="field">
+						<label for="y-yayin-durumu">Yayın durumu</label>
+						<select id="y-yayin-durumu" bind:value={yayinda}>
+							<option value={false}>Taslak — sitede gösterme</option>
+							<option value={true}>Yayında — ziyaretçilere göster</option>
+						</select>
+					</div>
+				{/if}
 				{#each ALANLAR[sekme] as a (a.k)}
 					<div class="field">
 						<label for="y-{a.k}">{a.l}{#if a.zorunlu} <span class="zor" aria-hidden="true">*</span><span class="sr">(zorunlu)</span>{/if}</label>
@@ -260,6 +290,18 @@
 						<p class="ipucu">Oynatma listesi bulundu. Liste kartta gömülü oynatıcı olarak açılacak.</p>
 					{/if}
 					<small class="ipucu">Video ya da oynatma listesi gömülemiyorsa YouTube Studio'daki yerleştirme izinlerini kontrol et. Gizli (özel) içerikler gömülemez.</small>
+					<div class="onizleme-karti" aria-label="Video kartı önizlemesi">
+						{#if onizleme}
+							<YoutubeOynatici id={onizleme.videoId} playlistId={onizleme.playlistId} baslik={form.baslik || 'Video başlığı'} />
+						{/if}
+						{#if form.grup}<span class="onizleme-grup">{form.grup}</span>{/if}
+						<h3>{form.baslik || 'Video başlığı'}</h3>
+						{#if form.aciklama}<p>{form.aciklama}</p>{/if}
+					</div>
+				{:else if sekme === 'kartlar'}
+					<div class="onizleme-karti" aria-label="Seri / tiyatro kartı önizlemesi">
+						<VideoTanitimKarti kart={kartOnizleme} />
+					</div>
 				{:else if sekme === 'geziler'}
 					<small class="ipucu">Gezi yapıldıktan sonra durumu "Gerçekleşti" yap; iptal olursa "İptal edildi" seç. Kaldırmak istersen "Yayından kaldır" ya da "Sil" kullan.</small>
 				{/if}
@@ -268,7 +310,7 @@
 				{#if bilgi}<p class="msg ok" role="status">{bilgi}</p>{/if}
 
 				<div class="alt">
-					<button type="submit" class="btn btn-primary" disabled={kaydediyor}>{kaydediyor ? 'Kaydediliyor…' : duzenlenen ? 'Değişiklikleri kaydet' : 'Yayınla'}</button>
+					<button type="submit" class="btn btn-primary" disabled={kaydediyor}>{kaydediyor ? 'Kaydediliyor…' : duzenlenen ? 'Değişiklikleri kaydet' : (sekme === 'videolar' || sekme === 'kartlar') && !yayinda ? 'Taslağı kaydet' : 'Yayınla'}</button>
 					{#if duzenlenen}<button type="button" class="btn btn-ghost" on:click={temizle}>Vazgeç</button>{/if}
 				</div>
 			</form>
@@ -342,4 +384,7 @@
 	.onizleme { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
 	.onizleme img { width: 160px; max-width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-strong); }
 	.onizleme small { color: var(--text-muted); font-size: var(--fs-xs); flex: 1 1 160px; }
+	.onizleme-karti { max-width: 460px; display: flex; flex-direction: column; gap: 8px; }
+	.onizleme-karti h3, .onizleme-karti p { margin: 0; }
+	.onizleme-grup { color: var(--accent); font-size: var(--fs-xs); font-weight: 600; }
 </style>

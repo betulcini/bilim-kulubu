@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import VideoBolumu from '$lib/components/VideoBolumu.svelte';
+	import VideoTanitimKarti from '$lib/components/VideoTanitimKarti.svelte';
 	import { loadVideoKartlari } from '$lib/videoDb.js';
 	import { shows } from '$lib/data/theater.js';
 
@@ -25,20 +26,7 @@
 	<VideoBolumu bolum="tiyatro" baslik="Gösteri kayıtları" />
 	<div class="card-grid" style="margin-bottom:48px">
 		{#each kartlar as s}
-			<div class="bracket-card">
-				{#if s.rozet || s.devBadge}<span class="badge dev theater-status">{s.rozet || s.durum}</span>{/if}
-				<h3 aria-level="2" style="margin-top:12px">{s.title}</h3>
-				<p>{s.desc}</p>
-				<div class="meta">{s.detay || s.sahne}{#if s.durum && s.rozet}<span> · {s.durum}</span>{/if}</div>
-			</div>
+			<VideoTanitimKarti kart={s} />
 		{/each}
 	</div>
 </div>
-
-<style>
-	.meta {
-		font-size: var(--fs-xs);
-		color: var(--text-faint);
-	}
-	.theater-status { align-items: flex-start; line-height: 1.35; }
-</style>

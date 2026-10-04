@@ -18,6 +18,15 @@ jobs:
 
       - run: npm ci
 
+      - name: Tests
+        run: npm test
+
+      - name: Svelte check
+        run: npm run check
+        env:
+          PUBLIC_SUPABASE_URL: https://example.supabase.co
+          PUBLIC_SUPABASE_ANON_KEY: build-check
+
       - name: Build
         run: npm run build
         env:

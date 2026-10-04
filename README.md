@@ -18,6 +18,16 @@ npm run dev
 
 Terminalde çıkan adresi (genellikle `http://localhost:5173`) tarayıcında açman yeterli.
 
+## Kontroller ve testler
+
+```bash
+npm test       # Node.js yerleşik test çalıştırıcısı
+npm run check  # Svelte / JavaScript kontrolleri
+npm run build  # üretim derlemesi
+```
+
+GitHub Actions, push ve pull request'lerde bu üç kontrolü çalıştırır.
+
 ## Yayınlamaya hazır sürüm oluşturma
 
 ```bash
@@ -31,22 +41,21 @@ hizmetine yükleyebilirsin.
 
 ## İçeriği güncelleme
 
-Örnek/başlangıç içerikleri düzenlemeni kolaylaştırmak için ayrı dosyalarda tutuluyor —
-bileşen kodlarına dokunmadan güncelleyebilirsin:
+Örnek/başlangıç içerikleri düzenlemeni kolaylaştırmak için ayrı dosyalarda tutuluyor.
+Supabase tablosu kurulmamışsa ya da tabloda henüz kart yoksa ilgili yedek veri gösterilir:
 
-- `src/lib/data/series.js` — Bilim Serileri
-- `src/lib/data/theater.js` — Bilim Tiyatrosu
+- `src/lib/data/series.js` — Bilim Serileri yedek kartları
+- `src/lib/data/theater.js` — Bilim Tiyatrosu yedek kartları
 - `src/lib/data/trips.js` — Kulüp Gezileri
 - `src/lib/data/announcements.js` — Duyurular
 - `src/lib/data/opportunities.js` — Fırsatlar
 - `src/lib/data/competitions.js` — Yarışmalar
 - `src/lib/data/gallery.js` — Galeri kartları (gerçek fotoğraf eklemek için `galeri/+page.svelte`
   içindeki `<Icon>` yer tutucusunu bir `<img>` etiketiyle değiştirebilirsin)
-- `src/lib/data/quiz.js` — Bilim Bilgi Yarışması soruları
+- `src/lib/data/bilim-quizleri.js` — yerleşik quiz soru havuzları
 
-Öneri Kutusu ve Ayarlar > Profilim bölümleri şu an yalnızca tarayıcının `localStorage`
-alanında veri tutuyor (gerçek bir sunucu/veritabanı yok); ileride bir backend eklemek
-istersen bu iki sayfadaki kaydetme fonksiyonlarını bir API çağrısıyla değiştirmen yeterli.
+Yönetim panelinden eklenen güncel duyuru, fırsat, gezi, video, seri/tiyatro kartı, quiz ve
+galeri içerikleri Supabase'de tutulur.
 
 ## Tasarım sistemi
 
@@ -71,20 +80,42 @@ Tablolar boşsa ya da bağlantı yoksa `src/lib/data/announcements.js` ve `oppor
 
 ## Öneri Kutusu
 
-Öneriler `oneriler` tablosuna yazılır; sadece Supabase → Table Editor'dan okunabilir.
-Kurulum: `supabase/2026-09-30-oneri-kutusu.sql`.
+Öneriler `oneriler` tablosuna yazılır. Mevcut yöneticiler `/yonetim` → **Öneriler** sekmesinden
+önerileri durumlarına göre işaretleyebilir ve yalnızca yönetici ekibinin görebildiği iç not
+ekleyebilir. Bu notlar öneri sahibine otomatik olarak iletilmez. Anonim öneriler de kabul edilir.
+
+- `supabase/2026-09-30-oneri-kutusu.sql` — öneri tablosu ve herkese açık gönderim izni.
+- `supabase/2026-10-08-oneri-yonetimi.sql` — durumlar ve yönetici paneli yetkileri. Önce
+  `2026-09-30-oneri-kutusu.sql` ve `2026-10-03-yonetici-formu.sql` çalışmış olmalı.
 
 ## Paylaşım önizlemesi (WhatsApp vb.)
 
 Önizleme görseli `static/og-image.png`. Görselin görünmesi için sitenin tam adresi gerekir:
 build ortamına `VITE_SITE_URL` değişkenini ekle (ör. `https://siteadresin.com`) ya da `src/lib/site.js` dosyasına yaz.
 
-## Yönetici paneli: Quiz ve Galeri (Supabase)
+## Yönetici paneli (Supabase)
 
-`/yonetim` sayfasında Duyurular ve Fırsatların yanında **Quizler** ve **Galeri** sekmeleri vardır.
-Kurulum (bir kez): `supabase/2026-10-04-quiz-galeri-yonetimi.sql` dosyasını SQL Editor'de çalıştır
-(önce `2026-10-03-yonetici-formu.sql` çalışmış olmalı). Bu dosya `quiz_konulari`, `quiz_sorulari`, `galeri`
-tablolarını ve herkese açık `galeri` fotoğraf deposunu kurar; ekleme/silme sadece yöneticilere açıktır.
+İlk yönetici kurulumu `supabase/2026-10-03-yonetici-formu.sql` ile yapılır. Bu ilk yönetici
+SQL'den eklendikten sonra mevcut yöneticiler `/yonetim` → **Yöneticiler** sekmesinden başka
+kayıtlı kullanıcıları ekleyebilir/kaldırabilir. Son yönetici ve oturum açmış yöneticinin kendi
+erişimi panelden kaldırılamaz.
+
+İçerik sekmeleri duyuru, fırsat, gezi, video, seri/tiyatro kartı, quiz, galeri ve yönetici
+işlemlerini içerir. Video ve tanıtım kartları için yeni kayıtlar taslak olarak başlar; önizleme
+kontrolünden sonra panelden yayına alınabilir. Herkese açık sayfalama, panelde 50 kayıtlık
+**Daha fazla yükle** adımıyla yapılır.
+
+- `supabase/2026-10-04-quiz-galeri-yonetimi.sql` — `quiz_konulari`, `quiz_sorulari`, `galeri`
+  tabloları ve herkese açık galeri deposu. Önce yönetici SQL'i çalışmış olmalı.
+- `supabase/2026-10-06-video-ve-gezi-yonetimi.sql` — videolar ve geziler; önce yönetici SQL'i.
+- `supabase/2026-10-07-video-katalogu-siralama-yonetici.sql` — video sırası, oynatma listeleri,
+  yönetilebilir seri/tiyatro kartları ve mevcut yöneticilerin yönetici ekleme/kaldırma işlemleri.
+  Önce `2026-10-03` ve `2026-10-06` migration'ları gerekir.
+- `supabase/2026-10-08-oneri-yonetimi.sql` — öneri paneli; önce öneri tablosu ve yönetici SQL'i.
+
+Bu migration dosyalarını Supabase Dashboard → SQL Editor'de bir kez çalıştır. İlk yönetici
+hesabının eklenmesi hariç, tabloları kurduktan sonra içerik ve yönetici değişiklikleri panelden
+yapılabilir.
 
 - **Quizler:** konu oluştur, tek soru ekle/düzenle/gizle/sil ya da **CSV dosyasından toplu soru ekle**.
   Örnek dosya: `supabase/ornek-quiz.csv` (sütunlar: konu, soru, secenek_a…secenek_d, dogru, aciklama, zorluk).
@@ -101,3 +132,13 @@ Bu dosya `gunluk_aktivite` tablosunu, puan/seri fonksiyonlarını ve `toplam_pua
 - **Seri:** giriş yapmış kullanıcıda Supabase'de tutulur (telefon/bilgisayar senkron). Giriş yapmadan çözülmüş günler ilk girişte hesaba aktarılır.
 - **Profilim → İlerlemem** (`/profil/ilerleme`): seviye, puan dökümü, seri, son 5 hafta takvimi, konu bazlı en iyi skorlar.
 - Yarışmalar sayfasındaki sıralama panelinde yeni **Toplam puan** sekmesi var.
+
+## Çevrimdışı kullanım ve öğrenme rotası
+
+- Service worker uygulama dosyalarını ve günlük quiz sayfasını önbelleğe alır. Günlük Mini Quiz'in
+  yerleşik soruları bağlantı yokken de oynanır; sonuç cihazdaki yerel seriye yazılır. Giriş yapılmış
+  kullanıcıda bağlantı geri geldiğinde bugünkü sonuç hesaba eşitlenmeye çalışılır. Çevrimiçi quiz
+  ve diğer Supabase işlemleri bağlantı gerektirir.
+- Profil/anasayfadaki **Öğrenme rotan**, seçilen ilgi alanlarını, hesapta saklanan konu quizlerinin
+  en iyi skorlarını ve günlük quiz durumunu kullanarak sıradaki adımları önerir. Quiz geçmişi
+  yüklenemezse ilgi alanlarına dayalı öneri gösterilir.

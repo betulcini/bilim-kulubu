@@ -182,11 +182,40 @@ export async function removeManager(userId) {
 	return { hata: hataMetni(error, '2026-10-07-video-katalogu-siralama-yonetici.sql') };
 }
 
-export async function saveRow(tablo, satir, id = null) {
+export const ONERI_DURUMLARI = [
+	{ id: 'yeni', label: 'Yeni' },
+	{ id: 'inceleniyor', label: 'İnceleniyor' },
+	{ id: 'planlandi', label: 'Planlandı' },
+	{ id: 'tamamlandi', label: 'Tamamlandı' },
+	{ id: 'reddedildi', label: 'Uygun bulunmadı' }
+];
+
+export async function listSuggestions(sayfa = 0) {
+	const { data, error } = await supabase
+		.from('oneriler')
+		.select('id, isim, kategori, mesaj, user_id, created_at, status, response')
+		.order('created_at', { ascending: false })
+		.range(sayfa * LISTE_SAYFA_BOYUTU, (sayfa + 1) * LISTE_SAYFA_BOYUTU - 1);
+	return {
+		data: data || [],
+		hata: hataMetni(error, '2026-10-08-oneri-yonetimi.sql')
+	};
+}
+
+export async function updateSuggestion(id, alanlar) {
+	const { error } = await supabase
+		.from('oneriler')
+		.update(alanlar)
+		.eq('id', id);
+	return { hata: hataMetni(error, '2026-10-08-oneri-yonetimi.sql') };
+}
+
+export async function saveRow(tablo, satir, id = null, yayinda = true) {
 	const tabloAdi = TABLO_ADI[tablo] || tablo;
+	const icerik = tablo === 'videolar' || tablo === 'kartlar' ? { ...satir, aktif: yayinda } : satir;
 	const q = id
-		? supabase.from(tabloAdi).update(satir).eq('id', id)
-		: supabase.from(tabloAdi).insert({ ...satir, aktif: true });
+		? supabase.from(tabloAdi).update(icerik).eq('id', id)
+		: supabase.from(tabloAdi).insert({ ...icerik, aktif: true });
 	const { error } = await q;
 	return { hata: hataTablo(tablo, error) };
 }
