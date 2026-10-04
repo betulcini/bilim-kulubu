@@ -1,5 +1,6 @@
 <script>
 	import PageHeader from '$lib/components/PageHeader.svelte';
+	import VideoBolumu from '$lib/components/VideoBolumu.svelte';
 	import { series } from '$lib/data/series.js';
 </script>
 
@@ -8,10 +9,11 @@
 <PageHeader
 	eyebrow="Bilim Serileri"
 	title="Kısa video serileriyle bilim anlatımı"
-	desc="Kulübün ürettiği ya da üretmeyi planladığı eğitici video serileri. Şu an bölümlerin video içerikleri geliştirme aşamasında; metin ve planlama kısımları burada güncel tutulacak."
+	desc="Kulübün ürettiği ve üretmeyi planladığı eğitici video serileri. Yayına giren videolar aşağıda izlenebilir; planlanan seriler hazırlandıkça burada güncellenecek."
 />
 
 <div class="content-max">
+	<VideoBolumu bolum="seri" baslik="Yayındaki videolar" />
 	<div class="card-grid" style="margin-bottom:48px">
 		{#each series as s}
 			<div class="bracket-card">

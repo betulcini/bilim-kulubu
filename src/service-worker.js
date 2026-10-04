@@ -15,7 +15,7 @@ const ASSETS = [...build, ...files.filter((f) => !f.endsWith('.map'))];
 const SAYFALAR = [...prerendered];
 
 // Önbelleğe alınacak herkese açık Supabase tabloları
-const HERKESE_ACIK = ['/rest/v1/duyurular', '/rest/v1/firsatlar', '/rest/v1/galeri', '/rest/v1/quiz_konulari', '/rest/v1/quiz_sorulari'];
+const HERKESE_ACIK = ['/rest/v1/duyurular', '/rest/v1/firsatlar', '/rest/v1/galeri', '/rest/v1/geziler', '/rest/v1/videolar', '/rest/v1/quiz_konulari', '/rest/v1/quiz_sorulari'];
 
 self.addEventListener('install', (event) => {
 	event.waitUntil(

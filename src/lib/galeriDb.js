@@ -1,23 +1,25 @@
 // Galeri fotoğrafları Supabase'den okunur (tablo: `galeri`, depo: `galeri` kovası).
 // Bağlantı yoksa ya da tablo boşsa null döner; sayfa src/lib/data/gallery.js'teki yedek listeyi gösterir.
-import { supabase } from '$lib/supabaseClient.js';
+import { PUBLIC_SUPABASE_URL } from '$env/static/public';
+import { restSelect } from '$lib/publicRest.js';
 
 export const GALERI_KOVA = 'galeri';
 
 export function gorselAdresi(yol) {
-	return supabase.storage.from(GALERI_KOVA).getPublicUrl(yol).data.publicUrl;
+	// supabase-js yüklemeden herkese açık kova adresi (getPublicUrl ile aynı biçim)
+	const parca = String(yol).split('/').map(encodeURIComponent).join('/');
+	return `${PUBLIC_SUPABASE_URL}/storage/v1/object/public/${GALERI_KOVA}/${parca}`;
 }
 
 export async function loadGaleri() {
 	try {
-		const { data, error } = await supabase
-			.from('galeri')
-			.select('id, baslik, aciklama, gorsel_yolu, tarih, created_at')
-			.eq('aktif', true)
-			.order('tarih', { ascending: false, nullsFirst: false })
-			.order('created_at', { ascending: false })
-			.limit(200);
-		if (error || !data || data.length === 0) return null;
+		const data = await restSelect('galeri', {
+			select: 'id, baslik, aciklama, gorsel_yolu, tarih, created_at',
+			eq: { aktif: true },
+			order: ['tarih.desc.nullslast', 'created_at.desc'],
+			limit: 200
+		});
+		if (data.length === 0) return null;
 		return data.map((g) => ({
 			id: g.id,
 			baslik: g.baslik,

@@ -1,4 +1,5 @@
 import { supabase } from '$lib/supabaseClient.js';
+import { youtubeId } from '$lib/video.js';
 
 // Yönetici formu için Supabase yardımcıları.
 // Asıl yetki kontrolü veritabanında (RLS + is_yonetici) yapılır:
@@ -12,6 +13,16 @@ export const DURUMLAR = [
 	{ id: 'yaklasan', label: 'Yaklaşan' },
 	{ id: 'etkinlik', label: 'Etkinlik' },
 	{ id: 'okul-ici', label: 'Okul içi' }
+];
+
+export const VIDEO_BOLUMLERI = [
+	{ id: 'seri', label: 'Bilim Serileri' },
+	{ id: 'tiyatro', label: 'Bilim Tiyatrosu' }
+];
+export const GEZI_DURUMLARI = [
+	{ id: 'planlaniyor', label: 'Planlanıyor' },
+	{ id: 'gerceklesti', label: 'Gerçekleşti' },
+	{ id: 'iptal', label: 'İptal edildi' }
 ];
 
 // Her tablo için form alanları (form ve doğrulama aynı listeden okunur)
@@ -36,6 +47,22 @@ export const ALANLAR = {
 		{ k: 'link_ad', l: 'Buton yazısı (örn. Başvuru sayfası)', t: 'text', max: 60 },
 		{ k: 'kaynak', l: 'Bilginin alındığı sayfa (https://…)', t: 'url', max: 500 },
 		{ k: 'kaynak_ad', l: 'Kaynak adı', t: 'text', max: 80 }
+	],
+	geziler: [
+		{ k: 'yer', l: 'Gezi yeri / adı', t: 'text', min: 3, max: 140, zorunlu: true },
+		{ k: 'durum', l: 'Durum', t: 'select', zorunlu: true, secenekler: GEZI_DURUMLARI },
+		{ k: 'gun', l: 'Gezi günü (sıralama için; belli değilse boş bırak)', t: 'date' },
+		{ k: 'tarih_metni', l: 'Kartta görünen tarih metni (örn. 15 Kasım 2026, 09.00 – 17.00). Boşsa gezi günü yazılır', t: 'text', max: 120 },
+		{ k: 'ozet', l: 'Açıklama (program, buluşma yeri, neleri getirmeli…)', t: 'textarea', min: 10, max: 700, zorunlu: true },
+		{ k: 'link', l: 'Kayıt / bilgi bağlantısı (https://…)', t: 'url', max: 500 },
+		{ k: 'link_ad', l: 'Buton yazısı (örn. Kayıt formu)', t: 'text', max: 60 }
+	],
+	videolar: [
+		{ k: 'bolum', l: 'Hangi bölümde görünsün?', t: 'select', zorunlu: true, secenekler: VIDEO_BOLUMLERI },
+		{ k: 'youtube_id', l: 'YouTube video bağlantısı (adresi yapıştır)', t: 'youtube', max: 300, zorunlu: true },
+		{ k: 'baslik', l: 'Video başlığı', t: 'text', min: 3, max: 140, zorunlu: true },
+		{ k: 'grup', l: 'Seri / gösteri adı (isteğe bağlı, örn. Günlük Hayatta Fizik)', t: 'text', max: 80 },
+		{ k: 'aciklama', l: 'Kısa açıklama (isteğe bağlı)', t: 'textarea', max: 500 }
 	]
 };
 
@@ -44,6 +71,8 @@ export function bosForm(tablo) {
 	for (const a of ALANLAR[tablo]) f[a.k] = '';
 	if (tablo === 'duyurular') f.tarih = new Date().toISOString().slice(0, 10);
 	if (tablo === 'firsatlar') f.durum = 'yaklasan';
+	if (tablo === 'geziler') f.durum = 'planlaniyor';
+	if (tablo === 'videolar') f.bolum = 'seri';
 	return f;
 }
 
@@ -57,6 +86,12 @@ export function dogrula(tablo, form) {
 		if (!v) {
 			if (a.zorunlu) return { hata: `"${a.l}" boş bırakılamaz.` };
 			satir[a.k] = null;
+			continue;
+		}
+		if (a.t === 'youtube') {
+			const id = youtubeId(v);
+			if (!id) return { hata: `"${a.l}" geçerli bir YouTube video adresi olmalı (youtube.com/watch?v=… ya da youtu.be/…). Oynatma listesi bağlantısı değil, tek bir video adresi yapıştır.` };
+			satir[a.k] = id;
 			continue;
 		}
 		if (a.min && v.length < a.min) return { hata: `"${a.l}" en az ${a.min} karakter olmalı.` };
@@ -87,10 +122,13 @@ export async function isAdmin() {
 	return { admin: data === true, hata: null };
 }
 
+const KURULUM = { geziler: '2026-10-06-video-ve-gezi-yonetimi.sql', videolar: '2026-10-06-video-ve-gezi-yonetimi.sql' };
+const hataTablo = (tablo, error) => hataMetni(error, KURULUM[tablo]);
+
 export async function listRows(tablo) {
 	const sira = tablo === 'duyurular' ? 'tarih' : 'created_at';
 	const { data, error } = await supabase.from(tablo).select('*').order(sira, { ascending: false }).limit(150);
-	return { data: data || [], hata: hataMetni(error) };
+	return { data: data || [], hata: hataTablo(tablo, error) };
 }
 
 export async function saveRow(tablo, satir, id = null) {
@@ -98,15 +136,15 @@ export async function saveRow(tablo, satir, id = null) {
 		? supabase.from(tablo).update(satir).eq('id', id)
 		: supabase.from(tablo).insert({ ...satir, aktif: true });
 	const { error } = await q;
-	return { hata: hataMetni(error) };
+	return { hata: hataTablo(tablo, error) };
 }
 
 export async function setAktif(tablo, id, aktif) {
 	const { error } = await supabase.from(tablo).update({ aktif }).eq('id', id);
-	return { hata: hataMetni(error) };
+	return { hata: hataTablo(tablo, error) };
 }
 
 export async function removeRow(tablo, id) {
 	const { error } = await supabase.from(tablo).delete().eq('id', id);
-	return { hata: hataMetni(error) };
+	return { hata: hataTablo(tablo, error) };
 }

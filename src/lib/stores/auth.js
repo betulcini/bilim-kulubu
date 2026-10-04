@@ -1,6 +1,6 @@
 import { writable } from 'svelte/store';
 import { browser } from '$app/environment';
-import { supabase } from '$lib/supabaseClient.js';
+import { supabase, getSupabase, istemciOlusunca, oturumKayitliMi } from '$lib/supabaseClient.js';
 import { cleanInterests } from '$lib/data/interests.js';
 
 // user: null (bilinmiyor/çıkış yapılmış) | { id, email, full_name, class_name, interests }
@@ -59,13 +59,25 @@ export function initAuth() {
 	if (!browser || initialized) return;
 	initialized = true;
 
-	supabase.auth.getSession().then(({ data }) => {
-		loadProfile(data.session?.user ?? null).finally(() => authReady.set(true));
+	// Oturum değişimlerini (giriş, çıkış, yenileme) dinle. Kitaplık henüz yüklenmediyse
+	// (giriş yapılmamış ziyaretçi) dinleyici, giriş/kayıt sayfası kitaplığı yüklediği an kurulur.
+	istemciOlusunca((c) => {
+		c.auth.onAuthStateChange((_event, session) => {
+			loadProfile(session?.user ?? null);
+		});
 	});
 
-	supabase.auth.onAuthStateChange((_event, session) => {
-		loadProfile(session?.user ?? null);
-	});
+	// Bu tarayıcıda kayıtlı oturum yoksa supabase-js'i hiç indirmeden devam et.
+	if (!oturumKayitliMi()) {
+		authReady.set(true);
+		return;
+	}
+
+	getSupabase()
+		.then((c) => c.auth.getSession())
+		.then(({ data }) => loadProfile(data.session?.user ?? null))
+		.catch(() => user.set(null))
+		.finally(() => authReady.set(true));
 }
 
 export async function signOut() {

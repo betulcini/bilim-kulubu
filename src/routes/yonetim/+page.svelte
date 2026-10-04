@@ -6,7 +6,8 @@
 	import QuizYonetimi from '$lib/components/QuizYonetimi.svelte';
 	import GaleriYonetimi from '$lib/components/GaleriYonetimi.svelte';
 	import { user, authReady } from '$lib/stores/auth.js';
-	import { ALANLAR, bosForm, dogrula, isAdmin, listRows, saveRow, setAktif, removeRow } from '$lib/yonetim.js';
+	import { ALANLAR, VIDEO_BOLUMLERI, GEZI_DURUMLARI, bosForm, dogrula, isAdmin, listRows, saveRow, setAktif, removeRow } from '$lib/yonetim.js';
+	import { youtubeId, kapakAdresi } from '$lib/video.js';
 	import { formatTarih } from '$lib/content.js';
 	import { sfx } from '$lib/sound.js';
 
@@ -53,10 +54,12 @@
 	const TABLAR = [
 		{ id: 'duyurular', ad: 'Duyurular' },
 		{ id: 'firsatlar', ad: 'Fırsatlar' },
+		{ id: 'geziler', ad: 'Geziler' },
+		{ id: 'videolar', ad: 'Videolar' },
 		{ id: 'quizler', ad: 'Quizler' },
 		{ id: 'galeri', ad: 'Galeri' }
 	];
-	const FORMLU = ['duyurular', 'firsatlar']; // ortak form + liste kullanan sekmeler
+	const FORMLU = ['duyurular', 'firsatlar', 'geziler', 'videolar']; // ortak form + liste kullanan sekmeler
 
 	async function sekmeSec(ad) {
 		if (sekme === ad) return;
@@ -141,7 +144,7 @@
 	}
 
 	async function sil(s) {
-		if (!confirm(`"${s.baslik}" kalıcı olarak silinsin mi? Geri alınamaz. (Silmek yerine "Yayından kaldır" da kullanabilirsin.)`)) return;
+		if (!confirm(`"${ad(s)}" kalıcı olarak silinsin mi? Geri alınamaz. (Silmek yerine "Yayından kaldır" da kullanabilirsin.)`)) return;
 		const r = await removeRow(sekme, s.id);
 		if (r.hata) {
 			hata = r.hata;
@@ -152,12 +155,21 @@
 		await yukle();
 	}
 
-	const meta = (s) => (sekme === 'duyurular' ? [formatTarih(s.tarih), s.etiket].filter(Boolean).join(' · ') : [s.kurum, s.durum].filter(Boolean).join(' · '));
+	const YENI = { duyurular: 'Yeni duyuru ekle', firsatlar: 'Yeni fırsat ekle', geziler: 'Yeni gezi duyurusu ekle', videolar: 'Yeni video ekle' };
+	const ad = (s) => s.baslik ?? s.yer ?? '';
+	const etiketOf = (liste, id) => liste.find((x) => x.id === id)?.label || id;
+	const meta = (s) => {
+		if (sekme === 'duyurular') return [formatTarih(s.tarih), s.etiket].filter(Boolean).join(' · ');
+		if (sekme === 'geziler') return [etiketOf(GEZI_DURUMLARI, s.durum), s.tarih_metni || formatTarih(s.gun)].filter(Boolean).join(' · ');
+		if (sekme === 'videolar') return [etiketOf(VIDEO_BOLUMLERI, s.bolum), s.grup].filter(Boolean).join(' · ');
+		return [s.kurum, s.durum].filter(Boolean).join(' · ');
+	};
+	$: onizlemeId = sekme === 'videolar' ? youtubeId(form.youtube_id) : null;
 </script>
 
 <svelte:head><title>Yönetim · Bilim ve Teknoloji Kulübü</title></svelte:head>
 
-<PageHeader eyebrow="Yönetici" title="Yönetim paneli" desc="Duyuru, fırsat, quiz ve galeri içeriklerini buradan ekle, düzenle, yayından kaldır ya da sil. Değişiklikler sitede hemen görünür." />
+<PageHeader eyebrow="Yönetici" title="Yönetim paneli" desc="Duyuru, fırsat, gezi, video, quiz ve galeri içeriklerini buradan ekle, düzenle, yayından kaldır ya da sil. Değişiklikler sitede hemen görünür." />
 
 <div class="content-max sayfa">
 	{#if kontrol === 'bekliyor'}
@@ -184,7 +196,7 @@
 				<GaleriYonetimi />
 			{:else}
 			<form id="yform" class="bracket-card form" on:submit={kaydet} novalidate>
-				<h2>{duzenlenen ? 'Kaydı düzenle' : sekme === 'duyurular' ? 'Yeni duyuru ekle' : 'Yeni fırsat ekle'}</h2>
+				<h2>{duzenlenen ? 'Kaydı düzenle' : YENI[sekme]}</h2>
 				{#each ALANLAR[sekme] as a (a.k)}
 					<div class="field">
 						<label for="y-{a.k}">{a.l}{#if a.zorunlu} <span class="zor" aria-hidden="true">*</span><span class="sr">(zorunlu)</span>{/if}</label>
@@ -197,11 +209,20 @@
 								{#each a.secenekler as o}<option value={o.id}>{o.label}</option>{/each}
 							</select>
 						{:else}
-							<input id="y-{a.k}" type={a.t} maxlength={a.max} bind:value={form[a.k]} list={a.liste ? 'liste-' + a.k : undefined} autocomplete="off" />
+							<input id="y-{a.k}" type={a.t === 'youtube' ? 'text' : a.t} maxlength={a.max} bind:value={form[a.k]} list={a.liste ? 'liste-' + a.k : undefined} autocomplete="off" />
 							{#if a.liste}<datalist id="liste-{a.k}">{#each a.liste as x}<option value={x}></option>{/each}</datalist>{/if}
 						{/if}
 					</div>
 				{/each}
+
+				{#if sekme === 'videolar'}
+					{#if onizlemeId}
+						<div class="onizleme"><img src={kapakAdresi(onizlemeId)} alt="Videonun kapak görüntüsü" loading="lazy" /><small>Video bulundu. Sitede kapak görüntüsüyle görünür, dokununca oynar.</small></div>
+					{/if}
+					<small class="ipucu">Video sitede oynamazsa YouTube Studio'da videonun "Yerleştirmeye izin ver" seçeneğinin açık olduğundan emin ol. Gizli (özel) videolar gömülemez; "Liste dışı" ya da "Herkese açık" olmalı.</small>
+				{:else if sekme === 'geziler'}
+					<small class="ipucu">Gezi yapıldıktan sonra durumu "Gerçekleşti" yap; iptal olursa "İptal edildi" seç. Kaldırmak istersen "Yayından kaldır" ya da "Sil" kullan.</small>
+				{/if}
 
 				{#if hata}<p class="msg err" role="alert">{hata}</p>{/if}
 				{#if bilgi}<p class="msg ok" role="status">{bilgi}</p>{/if}
@@ -223,14 +244,14 @@
 						{#each satirlar as s (s.id)}
 							<li class="bracket-card oge" class:gizli={!s.aktif}>
 								<div class="oge-ust">
-									<strong>{s.baslik}</strong>
+									<strong>{ad(s)}</strong>
 									<span class="badge {s.aktif ? 'live' : 'muted'}">{s.aktif ? 'Yayında' : 'Gizli'}</span>
 								</div>
 								<p class="oge-meta">{meta(s)}</p>
 								<div class="eylem">
-									<button type="button" class="btn btn-ghost mini" on:click={() => duzenle(s)} aria-label="{s.baslik} kaydını düzenle">Düzenle</button>
-									<button type="button" class="btn btn-ghost mini" on:click={() => durumDegistir(s)} aria-label="{s.baslik}: {s.aktif ? 'yayından kaldır' : 'yayına al'}">{s.aktif ? 'Yayından kaldır' : 'Yayına al'}</button>
-									<button type="button" class="btn btn-ghost mini" on:click={() => sil(s)} aria-label="{s.baslik} kaydını sil">Sil</button>
+									<button type="button" class="btn btn-ghost mini" on:click={() => duzenle(s)} aria-label="{ad(s)} kaydını düzenle">Düzenle</button>
+									<button type="button" class="btn btn-ghost mini" on:click={() => durumDegistir(s)} aria-label="{ad(s)}: {s.aktif ? 'yayından kaldır' : 'yayına al'}">{s.aktif ? 'Yayından kaldır' : 'Yayına al'}</button>
+									<button type="button" class="btn btn-ghost mini" on:click={() => sil(s)} aria-label="{ad(s)} kaydını sil">Sil</button>
 								</div>
 							</li>
 						{/each}
@@ -273,4 +294,8 @@
 	.oge-meta { margin: 4px 0 10px; color: var(--text-muted); font-size: var(--fs-xs); }
 	.eylem { display: flex; gap: 8px; flex-wrap: wrap; }
 	.mini { padding: 7px 12px; font-size: var(--fs-xs); }
+	.ipucu { color: var(--text-muted); font-size: var(--fs-xs); line-height: 1.5; }
+	.onizleme { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+	.onizleme img { width: 160px; max-width: 100%; aspect-ratio: 16 / 9; object-fit: cover; border-radius: 8px; border: 1px solid var(--border-strong); }
+	.onizleme small { color: var(--text-muted); font-size: var(--fs-xs); flex: 1 1 160px; }
 </style>

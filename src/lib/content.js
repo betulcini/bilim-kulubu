@@ -1,16 +1,16 @@
 // Duyurular ve fırsatlar Supabase'den okunur (tablolar: `duyurular`, `firsatlar`).
 // Bağlantı yoksa ya da tablo boşsa çağıran sayfa kendi yedek listesini (src/lib/data/*.js) göstermeye devam eder.
-import { supabase } from '$lib/supabaseClient.js';
+import { restSelect } from '$lib/publicRest.js';
 
 export async function loadAnnouncements() {
 	try {
-		const { data, error } = await supabase
-			.from('duyurular')
-			.select('baslik, etiket, tarih, ozet, link, kaynak_ad, created_at')
-			.eq('aktif', true)
-			.order('tarih', { ascending: false })
-			.limit(40);
-		if (error || !data || data.length === 0) return null;
+		const data = await restSelect('duyurular', {
+			select: 'baslik, etiket, tarih, ozet, link, kaynak_ad, created_at',
+			eq: { aktif: true },
+			order: ['tarih.desc'],
+			limit: 40
+		});
+		if (data.length === 0) return null;
 		return data.map((d) => ({
 			baslik: d.baslik,
 			etiket: d.etiket,
@@ -27,12 +27,12 @@ export async function loadAnnouncements() {
 
 export async function loadOpportunities() {
 	try {
-		const { data, error } = await supabase
-			.from('firsatlar')
-			.select('baslik, kurum, tur, durum, son, son_tarih, ozet, link, link_ad, kaynak, kaynak_ad, created_at')
-			.eq('aktif', true)
-			.limit(60);
-		if (error || !data || data.length === 0) return null;
+		const data = await restSelect('firsatlar', {
+			select: 'baslik, kurum, tur, durum, son, son_tarih, ozet, link, link_ad, kaynak, kaynak_ad, created_at',
+			eq: { aktif: true },
+			limit: 60
+		});
+		if (data.length === 0) return null;
 		return data.map((d) => ({
 			baslik: d.baslik,
 			kurum: d.kurum,

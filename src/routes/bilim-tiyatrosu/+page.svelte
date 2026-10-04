@@ -1,5 +1,6 @@
 <script>
 	import PageHeader from '$lib/components/PageHeader.svelte';
+	import VideoBolumu from '$lib/components/VideoBolumu.svelte';
 	import { shows } from '$lib/data/theater.js';
 </script>
 
@@ -8,10 +9,11 @@
 <PageHeader
 	eyebrow="Bilim Tiyatrosu"
 	title="Sahneye taşınan bilim"
-	desc="Kulübün okul etkinliklerinde sahnelemeyi planladığı kısa bilim gösterileri ve skeçler. Gösterilerin hiçbirine henüz başlanmadı; fikirler hazırlandıkça ve çalışmalar başladıkça burada güncellenecek."
+	desc="Kulübün okul etkinliklerinde sahnelemeyi planladığı kısa bilim gösterileri ve skeçler. Fikirler hazırlandıkça ve çalışmalar ilerledikçe burada güncellenecek; kayıtlar yayına girince aşağıda izlenebilir."
 />
 
 <div class="content-max">
+	<VideoBolumu bolum="tiyatro" baslik="Gösteri kayıtları" />
 	<div class="card-grid" style="margin-bottom:48px">
 		{#each shows as s}
 			<div class="bracket-card">

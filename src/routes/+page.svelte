@@ -3,7 +3,8 @@
     import { onMount } from 'svelte';
     import { announcements as yedekDuyurular } from '$lib/data/announcements.js';
     import { loadAnnouncements, loadOpportunities, sortOpportunities } from '$lib/content.js';
-    import { trips } from '$lib/data/trips.js';
+    import { trips as yedekGeziler } from '$lib/data/trips.js';
+    import { loadGeziler, sirala as geziSirala } from '$lib/gezilerDb.js';
     import { opportunities as yedekFirsatlar } from '$lib/data/opportunities.js';
     import { scientists } from '$lib/data/scientists.js';
     import { sfx } from '$lib/sound.js';
@@ -32,13 +33,15 @@
         .filter((n) => n.href !== '/' && n.href !== '/ayarlar')
         .map((n) => ({ ...n, desc: descriptions[n.href] }));
 
-    const yaklasanGezi = trips.find((t) => t.durum === 'planlanıyor');
+    let geziler = yedekGeziler;
+    $: yaklasanGezi = geziSirala(geziler).find((t) => t.durum === 'planlaniyor');
     let duyurular = yedekDuyurular;
     let firsatlar = yedekFirsatlar;
     onMount(async () => {
-        const [d, f] = await Promise.all([loadAnnouncements(), loadOpportunities()]);
+        const [d, f, g] = await Promise.all([loadAnnouncements(), loadOpportunities(), loadGeziler()]);
         if (d) duyurular = d;
         if (f) firsatlar = f;
+        if (g) geziler = g;
     });
     $: sonDuyuru = duyurular[0];
     $: yaklasanFirsat = sortOpportunities(firsatlar)[0];
