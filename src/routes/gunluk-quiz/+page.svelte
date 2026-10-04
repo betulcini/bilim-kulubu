@@ -79,7 +79,7 @@
 		const simdi = new Date();
 		const gece = new Date(simdi);
 		gece.setHours(24, 0, 0, 0);
-		const dk = Math.max(1, Math.round((gece - simdi) / 60000));
+		const dk = Math.max(1, Math.round((gece.getTime() - simdi.getTime()) / 60000));
 		const s = Math.floor(dk / 60);
 		return s > 0 ? `${s} saat ${dk % 60} dk` : `${dk} dk`;
 	}

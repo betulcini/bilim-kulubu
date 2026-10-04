@@ -18,7 +18,9 @@
 	];
 	const GENEL_TAKVIM = ['TÜBİTAK Yarışmaları', 'Festival'];
 
-	const gunSayisi = Math.floor((new Date() - new Date(new Date().getFullYear(), 0, 0)) / 86400000);
+	const gunSayisi = Math.floor(
+		(new Date().getTime() - new Date(new Date().getFullYear(), 0, 0).getTime()) / 86400000
+	);
 	const bugun = new Date().toISOString().slice(0, 10);
 
 	function tarihYaz(iso) {

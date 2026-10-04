@@ -32,8 +32,9 @@ export function initInstall() {
 	if (started || typeof window === 'undefined') return;
 	started = true;
 
+	const safariNavigator = /** @type {Navigator & { standalone?: boolean }} */ (window.navigator);
 	const standalone =
-		window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+		window.matchMedia('(display-mode: standalone)').matches || safariNavigator.standalone === true;
 	const ua = window.navigator.userAgent;
 	const ios =
 		/iphone|ipad|ipod/i.test(ua) || (window.navigator.platform === 'MacIntel' && window.navigator.maxTouchPoints > 1);

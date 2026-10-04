@@ -35,7 +35,7 @@
     function gununBilimInsani() {
         const bugun = new Date();
         const yilBasi = new Date(bugun.getFullYear(), 0, 0);
-        const gunSayisi = Math.floor((bugun - yilBasi) / 86400000);
+        const gunSayisi = Math.floor((bugun.getTime() - yilBasi.getTime()) / 86400000);
         return scientists[gunSayisi % scientists.length];
     }
     const gununKisisi = gununBilimInsani();

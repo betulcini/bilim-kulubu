@@ -43,7 +43,7 @@
 		const baslangic = tarihAyristir(olay.baslangic);
 		const bitis = olay.bitis ? tarihAyristir(olay.bitis) : baslangic;
 		bitis.setHours(23, 59, 59, 999);
-		const gunFarki = Math.ceil((baslangic - simdi) / 86400000);
+		const gunFarki = Math.ceil((baslangic.getTime() - simdi.getTime()) / 86400000);
 
 		if (simdi > bitis) return { etiket: 'Geçti', sinif: 'gecti' };
 		if (simdi >= baslangic && simdi <= bitis) return { etiket: 'Şu an devam ediyor', sinif: 'devam' };
@@ -53,7 +53,7 @@
 	}
 
 	$: siraliOlaylar = [...takvimOlaylari].sort(
-		(a, b) => tarihAyristir(a.baslangic) - tarihAyristir(b.baslangic)
+		(a, b) => tarihAyristir(a.baslangic).getTime() - tarihAyristir(b.baslangic).getTime()
 	);
 	$: filtreliOlaylar =
 		secilenKategori === 'Tümü'
