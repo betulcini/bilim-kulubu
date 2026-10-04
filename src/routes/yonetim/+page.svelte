@@ -254,7 +254,7 @@
 	{/if}
 		<div class="admin-layout" hidden={kontrol !== 'admin'}>
 			<nav class="menu" aria-label="Yönetim bölümleri">
-				<p class="menu-yardim">BÖLÜMLER <span>İçerik açmak için bir düğme seç</span></p>
+				<p class="menu-yardim">BÖLÜMLER</p>
 				{#each GRUPLAR as grup (grup.ad)}
 					<section class="menu-grup" aria-label={grup.ad}>
 						<h2>{grup.ad}</h2>
