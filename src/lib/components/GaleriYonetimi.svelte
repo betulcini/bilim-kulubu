@@ -1,7 +1,7 @@
 <script>
 	import { onMount, onDestroy } from 'svelte';
 	import {
-		KABUL, MAKS_DOSYA_MB, baslikOner, galeriDogrula, listGaleri,
+		KABUL, MAKS_DOSYA_MB, GALERI_SAYFA_BOYUTU, baslikOner, galeriDogrula, listGaleri,
 		fotografEkle, galeriGuncelle, galeriSil, gorselAdresi
 	} from '$lib/galeriAdmin.js';
 	import { formatTarih } from '$lib/content.js';
@@ -9,6 +9,7 @@
 
 	let kayitlar = [];
 	let yukleniyor = true;
+	let sonrakiVar = false;
 	let hata = '';
 	let bilgi = '';
 
@@ -25,14 +26,25 @@
 		bilgi = '';
 	}
 
-	async function yukle() {
-		const r = await listGaleri();
-		kayitlar = r.data;
-		if (r.hata) hata = r.hata;
+	async function yukle(devam = false) {
+		yukleniyor = true;
+		const r = await listGaleri(devam ? kayitlar.length : 0);
+		if (r.hata) {
+			hata = r.hata;
+			if (!devam) sonrakiVar = false;
+		} else {
+			kayitlar = devam ? [...kayitlar, ...r.data] : r.data;
+			sonrakiVar = r.data.length === GALERI_SAYFA_BOYUTU;
+		}
 		yukleniyor = false;
 	}
 	onMount(yukle);
 	onDestroy(() => dosyalar.forEach((d) => URL.revokeObjectURL(d.onizleme)));
+
+	async function dahaFazlaYukle() {
+		if (yukleniyor || !sonrakiVar) return;
+		await yukle(true);
+	}
 
 	function dosyaSec(e) {
 		mesajTemizle();
@@ -198,7 +210,7 @@
 	</form>
 
 	<section aria-labelledby="gy-liste-baslik">
-		<h2 id="gy-liste-baslik" class="liste-baslik">Galerideki fotoğraflar <span class="adet">({kayitlar.length})</span></h2>
+		<h2 id="gy-liste-baslik" class="liste-baslik">Galerideki fotoğraflar <span class="adet">({sonrakiVar ? `en az ${kayitlar.length}` : kayitlar.length})</span></h2>
 		{#if yukleniyor}
 			<p class="muted">Yükleniyor…</p>
 		{:else if kayitlar.length === 0}
@@ -245,6 +257,9 @@
 					</li>
 				{/each}
 			</ul>
+			{#if sonrakiVar}
+				<button type="button" class="btn btn-ghost daha-fazla" disabled={yukleniyor} on:click={dahaFazlaYukle}>{yukleniyor ? 'Yükleniyor…' : 'Daha fazla yükle'}</button>
+			{/if}
 		{/if}
 	</section>
 </div>
@@ -274,6 +289,7 @@
 	.liste-baslik { font-size: var(--fs-lg); margin: 0 0 12px; }
 	.adet { color: var(--text-muted); font-weight: 400; font-size: var(--fs-sm); }
 	.liste { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; max-width: 760px; }
+	.daha-fazla { margin-top: 14px; }
 	.oge { display: flex; gap: 14px; align-items: flex-start; }
 	.oge.gizli { opacity: 0.75; }
 	.kucuk { flex: none; width: 96px; height: 72px; object-fit: cover; border-radius: var(--radius-sm); border: 1px solid var(--border); }

@@ -18,7 +18,7 @@
 		<div class="izgara">
 			{#each videolar as v (v.id)}
 				<article class="bracket-card video">
-					<YoutubeOynatici id={v.youtubeId} baslik={v.baslik} />
+					<YoutubeOynatici id={v.youtubeId} playlistId={v.playlistId} baslik={v.baslik} />
 					{#if v.grup}<span class="grup">{v.grup}</span>{/if}
 					<h3 aria-level="3">{v.baslik}</h3>
 					{#if v.aciklama}<p>{v.aciklama}</p>{/if}

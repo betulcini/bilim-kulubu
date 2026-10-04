@@ -71,8 +71,14 @@ export function galeriDogrula(f) {
 	return { satir: { baslik, aciklama: aciklama || null, tarih: tarih || null } };
 }
 
-export async function listGaleri() {
-	const { data, error } = await supabase.from('galeri').select('*').order('created_at', { ascending: false }).limit(300);
+export const GALERI_SAYFA_BOYUTU = 50;
+
+export async function listGaleri(bas = 0) {
+	const { data, error } = await supabase
+		.from('galeri')
+		.select('*')
+		.order('created_at', { ascending: false })
+		.range(bas, bas + GALERI_SAYFA_BOYUTU - 1);
 	return { data: data || [], hata: hataMetni(error) };
 }
 

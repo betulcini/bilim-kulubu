@@ -1,5 +1,5 @@
 import { supabase } from '$lib/supabaseClient.js';
-import { youtubeId } from '$lib/video.js';
+import { youtubeMedia } from '$lib/video.js';
 
 // Yönetici formu için Supabase yardımcıları.
 // Asıl yetki kontrolü veritabanında (RLS + is_yonetici) yapılır:
@@ -59,10 +59,20 @@ export const ALANLAR = {
 	],
 	videolar: [
 		{ k: 'bolum', l: 'Hangi bölümde görünsün?', t: 'select', zorunlu: true, secenekler: VIDEO_BOLUMLERI },
-		{ k: 'youtube_id', l: 'YouTube video bağlantısı (adresi yapıştır)', t: 'youtube', max: 300, zorunlu: true },
+		{ k: 'sira', l: 'Sıra (büyük numara üstte)', t: 'number', min: 0, max: 100000, zorunlu: true },
+		{ k: 'youtube', l: 'YouTube video veya oynatma listesi bağlantısı', t: 'youtube', max: 300, zorunlu: true },
 		{ k: 'baslik', l: 'Video başlığı', t: 'text', min: 3, max: 140, zorunlu: true },
 		{ k: 'grup', l: 'Seri / gösteri adı (isteğe bağlı, örn. Günlük Hayatta Fizik)', t: 'text', max: 80 },
 		{ k: 'aciklama', l: 'Kısa açıklama (isteğe bağlı)', t: 'textarea', max: 500 }
+	],
+	kartlar: [
+		{ k: 'bolum', l: 'Bölüm', t: 'select', zorunlu: true, secenekler: VIDEO_BOLUMLERI },
+		{ k: 'sira', l: 'Sıra (küçük numara önce)', t: 'number', min: 0, max: 100000, zorunlu: true },
+		{ k: 'baslik', l: 'Kart başlığı', t: 'text', min: 3, max: 140, zorunlu: true },
+		{ k: 'aciklama', l: 'Açıklama', t: 'textarea', min: 10, max: 700, zorunlu: true },
+		{ k: 'rozet', l: 'Rozet yazısı (isteğe bağlı)', t: 'text', max: 60 },
+		{ k: 'alt_bilgi', l: 'Kart alt bilgisi (isteğe bağlı)', t: 'text', max: 120 },
+		{ k: 'durum', l: 'Durum (isteğe bağlı)', t: 'text', max: 100 }
 	]
 };
 
@@ -73,6 +83,8 @@ export function bosForm(tablo) {
 	if (tablo === 'firsatlar') f.durum = 'yaklasan';
 	if (tablo === 'geziler') f.durum = 'planlaniyor';
 	if (tablo === 'videolar') f.bolum = 'seri';
+	if (tablo === 'videolar' || tablo === 'kartlar') f.sira = 0;
+	if (tablo === 'kartlar') f.bolum = 'seri';
 	return f;
 }
 
@@ -89,13 +101,22 @@ export function dogrula(tablo, form) {
 			continue;
 		}
 		if (a.t === 'youtube') {
-			const id = youtubeId(v);
-			if (!id) return { hata: `"${a.l}" geçerli bir YouTube video adresi olmalı (youtube.com/watch?v=… ya da youtu.be/…). Oynatma listesi bağlantısı değil, tek bir video adresi yapıştır.` };
-			satir[a.k] = id;
+			const media = youtubeMedia(v);
+			if (!media) return { hata: `"${a.l}" geçerli bir YouTube video veya oynatma listesi bağlantısı olmalı.` };
+			satir.youtube_id = media.videoId;
+			satir.playlist_id = media.playlistId;
 			continue;
 		}
 		if (a.min && v.length < a.min) return { hata: `"${a.l}" en az ${a.min} karakter olmalı.` };
 		if (a.max && v.length > a.max) return { hata: `"${a.l}" en fazla ${a.max} karakter olabilir.` };
+		if (a.t === 'number') {
+			const number = Number(v);
+			if (!Number.isInteger(number) || number < a.min || number > a.max) {
+				return { hata: `"${a.l}" ${a.min} ile ${a.max} arasında tam sayı olmalı.` };
+			}
+			satir[a.k] = number;
+			continue;
+		}
 		if (a.t === 'url' && !httpsMi(v)) return { hata: `"${a.l}" http:// veya https:// ile başlayan geçerli bir adres olmalı.` };
 		if (a.t === 'select' && !a.secenekler.some((s) => s.id === v)) return { hata: `"${a.l}" için geçersiz seçim.` };
 		if (a.t === 'date' && Number.isNaN(new Date(v + 'T12:00:00').getTime())) return { hata: `"${a.l}" geçerli bir tarih olmalı.` };
@@ -112,7 +133,7 @@ export function hataMetni(error, kurulum = '2026-10-03-yonetici-formu.sql') {
 	if (error.code === '42P01' || /does not exist|schema cache|Bucket not found/i.test(error.message || '')) {
 		return `Veritabanı kurulumu eksik: supabase/${kurulum} dosyasını çalıştır.`;
 	}
-	if (error.code === '23514') return 'Girilen bir alan kuralları karşılamıyor (bağlantılar https:// ile başlamalı).';
+	if (error.code === '23514') return 'Girilen alanlar veritabanı kurallarını karşılamıyor.';
 	return 'İşlem yapılamadı: ' + (error.message || 'bilinmeyen hata');
 }
 
@@ -122,29 +143,60 @@ export async function isAdmin() {
 	return { admin: data === true, hata: null };
 }
 
-const KURULUM = { geziler: '2026-10-06-video-ve-gezi-yonetimi.sql', videolar: '2026-10-06-video-ve-gezi-yonetimi.sql' };
+const KURULUM = {
+	geziler: '2026-10-06-video-ve-gezi-yonetimi.sql',
+	videolar: '2026-10-07-video-katalogu-siralama-yonetici.sql',
+	kartlar: '2026-10-07-video-katalogu-siralama-yonetici.sql'
+};
 const hataTablo = (tablo, error) => hataMetni(error, KURULUM[tablo]);
 
-export async function listRows(tablo) {
+export const LISTE_SAYFA_BOYUTU = 50;
+
+const TABLO_ADI = { kartlar: 'video_kartlari' };
+
+export async function listRows(tablo, sayfa = 0) {
+	const tabloAdi = TABLO_ADI[tablo] || tablo;
 	const sira = tablo === 'duyurular' ? 'tarih' : 'created_at';
-	const { data, error } = await supabase.from(tablo).select('*').order(sira, { ascending: false }).limit(150);
+	let query = supabase.from(tabloAdi).select('*');
+	if (tablo === 'videolar' || tablo === 'kartlar') {
+		query = query.order('sira', { ascending: tablo === 'kartlar' }).order('created_at', { ascending: false });
+	} else {
+		query = query.order(sira, { ascending: false });
+	}
+	const { data, error } = await query.range(sayfa * LISTE_SAYFA_BOYUTU, (sayfa + 1) * LISTE_SAYFA_BOYUTU - 1);
 	return { data: data || [], hata: hataTablo(tablo, error) };
 }
 
+export async function listManagers() {
+	const { data, error } = await supabase.rpc('yonetici_listesi');
+	return { data: data || [], hata: hataMetni(error, '2026-10-07-video-katalogu-siralama-yonetici.sql') };
+}
+
+export async function addManager(email) {
+	const { error } = await supabase.rpc('yonetici_ekle', { p_email: email });
+	return { hata: hataMetni(error, '2026-10-07-video-katalogu-siralama-yonetici.sql') };
+}
+
+export async function removeManager(userId) {
+	const { error } = await supabase.rpc('yonetici_kaldir', { p_user_id: userId });
+	return { hata: hataMetni(error, '2026-10-07-video-katalogu-siralama-yonetici.sql') };
+}
+
 export async function saveRow(tablo, satir, id = null) {
+	const tabloAdi = TABLO_ADI[tablo] || tablo;
 	const q = id
-		? supabase.from(tablo).update(satir).eq('id', id)
-		: supabase.from(tablo).insert({ ...satir, aktif: true });
+		? supabase.from(tabloAdi).update(satir).eq('id', id)
+		: supabase.from(tabloAdi).insert({ ...satir, aktif: true });
 	const { error } = await q;
 	return { hata: hataTablo(tablo, error) };
 }
 
 export async function setAktif(tablo, id, aktif) {
-	const { error } = await supabase.from(tablo).update({ aktif }).eq('id', id);
+	const { error } = await supabase.from(TABLO_ADI[tablo] || tablo).update({ aktif }).eq('id', id);
 	return { hata: hataTablo(tablo, error) };
 }
 
 export async function removeRow(tablo, id) {
-	const { error } = await supabase.from(tablo).delete().eq('id', id);
+	const { error } = await supabase.from(TABLO_ADI[tablo] || tablo).delete().eq('id', id);
 	return { hata: hataTablo(tablo, error) };
 }

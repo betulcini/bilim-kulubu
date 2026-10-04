@@ -5,9 +5,10 @@
 	import Icon from '$lib/components/Icon.svelte';
 	import QuizYonetimi from '$lib/components/QuizYonetimi.svelte';
 	import GaleriYonetimi from '$lib/components/GaleriYonetimi.svelte';
+	import YoneticiYonetimi from '$lib/components/YoneticiYonetimi.svelte';
 	import { user, authReady } from '$lib/stores/auth.js';
-	import { ALANLAR, VIDEO_BOLUMLERI, GEZI_DURUMLARI, bosForm, dogrula, isAdmin, listRows, saveRow, setAktif, removeRow } from '$lib/yonetim.js';
-	import { youtubeId, kapakAdresi } from '$lib/video.js';
+	import { ALANLAR, VIDEO_BOLUMLERI, GEZI_DURUMLARI, LISTE_SAYFA_BOYUTU, bosForm, dogrula, isAdmin, listRows, saveRow, setAktif, removeRow } from '$lib/yonetim.js';
+	import { youtubeMedia, kapakAdresi } from '$lib/video.js';
 	import { formatTarih } from '$lib/content.js';
 	import { sfx } from '$lib/sound.js';
 
@@ -18,6 +19,8 @@
 	let sekme = 'duyurular';
 	let satirlar = [];
 	let yukleniyor = false;
+	let sayfa = 0;
+	let sonrakiVar = false;
 	let form = bosForm('duyurular');
 	let duzenlenen = null; // düzenlenen satırın id'si
 	let hata = '';
@@ -43,11 +46,19 @@
 		}
 	}
 
-	async function yukle() {
+	async function yukle(devam = false) {
 		yukleniyor = true;
-		const r = await listRows(sekme);
-		satirlar = r.data;
-		if (r.hata) hata = r.hata;
+		const r = await listRows(sekme, sayfa);
+		if (r.hata) {
+			hata = r.hata;
+			if (!devam) {
+				satirlar = [];
+				sonrakiVar = false;
+			}
+		} else {
+			satirlar = devam ? [...satirlar, ...r.data] : r.data;
+			sonrakiVar = r.data.length === LISTE_SAYFA_BOYUTU;
+		}
 		yukleniyor = false;
 	}
 
@@ -56,10 +67,12 @@
 		{ id: 'firsatlar', ad: 'Fırsatlar' },
 		{ id: 'geziler', ad: 'Geziler' },
 		{ id: 'videolar', ad: 'Videolar' },
+		{ id: 'kartlar', ad: 'Seri / tiyatro kartları' },
 		{ id: 'quizler', ad: 'Quizler' },
-		{ id: 'galeri', ad: 'Galeri' }
+		{ id: 'galeri', ad: 'Galeri' },
+		{ id: 'yoneticiler', ad: 'Yöneticiler' }
 	];
-	const FORMLU = ['duyurular', 'firsatlar', 'geziler', 'videolar']; // ortak form + liste kullanan sekmeler
+	const FORMLU = ['duyurular', 'firsatlar', 'geziler', 'videolar', 'kartlar']; // ortak form + liste kullanan sekmeler
 
 	async function sekmeSec(ad) {
 		if (sekme === ad) return;
@@ -67,6 +80,7 @@
 		sfx.nav();
 		if (FORMLU.includes(ad)) {
 			temizle();
+			sayfa = 0;
 			await yukle();
 		} else {
 			hata = '';
@@ -97,7 +111,17 @@
 
 	function duzenle(satir) {
 		const f = bosForm(sekme);
-		for (const a of ALANLAR[sekme]) f[a.k] = satir[a.k] ?? '';
+		for (const a of ALANLAR[sekme]) {
+			if (a.k === 'youtube') {
+				f[a.k] = satir.playlist_id
+					? `https://www.youtube.com/playlist?list=${satir.playlist_id}`
+					: satir.youtube_id
+						? `https://www.youtube.com/watch?v=${satir.youtube_id}`
+						: '';
+			} else {
+				f[a.k] = satir[a.k] ?? (a.k === 'sira' ? 0 : '');
+			}
+		}
 		form = f;
 		duzenlenen = satir.id;
 		hata = '';
@@ -129,6 +153,7 @@
 		sfx.success();
 		form = bosForm(sekme);
 		duzenlenen = null;
+		sayfa = 0;
 		await yukle();
 	}
 
@@ -140,6 +165,7 @@
 		}
 		bilgi = s.aktif ? 'Yayından kaldırıldı (silinmedi, istersen geri alabilirsin).' : 'Yeniden yayında.';
 		sfx.toggle();
+		sayfa = 0;
 		await yukle();
 	}
 
@@ -152,24 +178,34 @@
 		}
 		bilgi = 'Silindi.';
 		if (duzenlenen === s.id) temizle();
+		sayfa = 0;
 		await yukle();
 	}
 
-	const YENI = { duyurular: 'Yeni duyuru ekle', firsatlar: 'Yeni fırsat ekle', geziler: 'Yeni gezi duyurusu ekle', videolar: 'Yeni video ekle' };
+	async function dahaFazlaYukle() {
+		if (yukleniyor || !sonrakiVar) return;
+		hata = '';
+		sayfa += 1;
+		await yukle(true);
+		if (hata) sayfa -= 1;
+	}
+
+	const YENI = { duyurular: 'Yeni duyuru ekle', firsatlar: 'Yeni fırsat ekle', geziler: 'Yeni gezi duyurusu ekle', videolar: 'Yeni video ekle', kartlar: 'Yeni seri / tiyatro kartı ekle' };
 	const ad = (s) => s.baslik ?? s.yer ?? '';
 	const etiketOf = (liste, id) => liste.find((x) => x.id === id)?.label || id;
 	const meta = (s) => {
 		if (sekme === 'duyurular') return [formatTarih(s.tarih), s.etiket].filter(Boolean).join(' · ');
 		if (sekme === 'geziler') return [etiketOf(GEZI_DURUMLARI, s.durum), s.tarih_metni || formatTarih(s.gun)].filter(Boolean).join(' · ');
-		if (sekme === 'videolar') return [etiketOf(VIDEO_BOLUMLERI, s.bolum), s.grup].filter(Boolean).join(' · ');
+		if (sekme === 'videolar') return [etiketOf(VIDEO_BOLUMLERI, s.bolum), s.grup, `Sıra: ${s.sira ?? 0}`].filter(Boolean).join(' · ');
+		if (sekme === 'kartlar') return [etiketOf(VIDEO_BOLUMLERI, s.bolum), s.rozet, `Sıra: ${s.sira ?? 0}`].filter(Boolean).join(' · ');
 		return [s.kurum, s.durum].filter(Boolean).join(' · ');
 	};
-	$: onizlemeId = sekme === 'videolar' ? youtubeId(form.youtube_id) : null;
+	$: onizleme = sekme === 'videolar' ? youtubeMedia(form.youtube) : null;
 </script>
 
 <svelte:head><title>Yönetim · Bilim ve Teknoloji Kulübü</title></svelte:head>
 
-<PageHeader eyebrow="Yönetici" title="Yönetim paneli" desc="Duyuru, fırsat, gezi, video, quiz ve galeri içeriklerini buradan ekle, düzenle, yayından kaldır ya da sil. Değişiklikler sitede hemen görünür." />
+<PageHeader eyebrow="Yönetici" title="Yönetim paneli" desc="Duyuru, fırsat, gezi, video, seri / tiyatro kartları, quiz, galeri ve yönetici erişimlerini buradan yönet." />
 
 <div class="content-max sayfa">
 	{#if kontrol === 'bekliyor'}
@@ -179,7 +215,7 @@
 	{:else if kontrol === 'yetkisiz'}
 		<div class="bracket-card bos" role="alert">
 			<h2>Bu sayfa sadece yöneticiler içindir</h2>
-			<p>Hesabın yönetici listesinde değil. Yönetici olarak eklenmen gerekiyorsa site sahibine ulaş.</p>
+			<p>Hesabın yönetici listesinde değil. Mevcut yöneticilerden biri hesabını yönetici olarak ekleyebilir.</p>
 			<a class="btn btn-ghost" href="/">Ana sayfaya dön</a>
 		</div>
 	{:else}
@@ -194,6 +230,8 @@
 				<QuizYonetimi />
 			{:else if sekme === 'galeri'}
 				<GaleriYonetimi />
+			{:else if sekme === 'yoneticiler'}
+				<YoneticiYonetimi />
 			{:else}
 			<form id="yform" class="bracket-card form" on:submit={kaydet} novalidate>
 				<h2>{duzenlenen ? 'Kaydı düzenle' : YENI[sekme]}</h2>
@@ -209,17 +247,19 @@
 								{#each a.secenekler as o}<option value={o.id}>{o.label}</option>{/each}
 							</select>
 						{:else}
-							<input id="y-{a.k}" type={a.t === 'youtube' ? 'text' : a.t} maxlength={a.max} bind:value={form[a.k]} list={a.liste ? 'liste-' + a.k : undefined} autocomplete="off" />
+							<input id="y-{a.k}" type={a.t === 'youtube' ? 'text' : a.t} min={a.min} max={a.max} maxlength={a.max} bind:value={form[a.k]} list={a.liste ? 'liste-' + a.k : undefined} autocomplete="off" />
 							{#if a.liste}<datalist id="liste-{a.k}">{#each a.liste as x}<option value={x}></option>{/each}</datalist>{/if}
 						{/if}
 					</div>
 				{/each}
 
 				{#if sekme === 'videolar'}
-					{#if onizlemeId}
-						<div class="onizleme"><img src={kapakAdresi(onizlemeId)} alt="Videonun kapak görüntüsü" loading="lazy" /><small>Video bulundu. Sitede kapak görüntüsüyle görünür, dokununca oynar.</small></div>
+					{#if onizleme?.videoId}
+						<div class="onizleme"><img src={kapakAdresi(onizleme.videoId)} alt="Videonun kapak görüntüsü" loading="lazy" /><small>Video bulundu. Sitede kapak görüntüsüyle görünür, dokununca oynar.</small></div>
+					{:else if onizleme?.playlistId}
+						<p class="ipucu">Oynatma listesi bulundu. Liste kartta gömülü oynatıcı olarak açılacak.</p>
 					{/if}
-					<small class="ipucu">Video sitede oynamazsa YouTube Studio'da videonun "Yerleştirmeye izin ver" seçeneğinin açık olduğundan emin ol. Gizli (özel) videolar gömülemez; "Liste dışı" ya da "Herkese açık" olmalı.</small>
+					<small class="ipucu">Video ya da oynatma listesi gömülemiyorsa YouTube Studio'daki yerleştirme izinlerini kontrol et. Gizli (özel) içerikler gömülemez.</small>
 				{:else if sekme === 'geziler'}
 					<small class="ipucu">Gezi yapıldıktan sonra durumu "Gerçekleşti" yap; iptal olursa "İptal edildi" seç. Kaldırmak istersen "Yayından kaldır" ya da "Sil" kullan.</small>
 				{/if}
@@ -234,7 +274,7 @@
 			</form>
 
 			<section aria-label="Mevcut kayıtlar">
-				<h2 class="liste-baslik">Mevcut kayıtlar <span class="adet">({satirlar.length})</span></h2>
+				<h2 class="liste-baslik">Mevcut kayıtlar <span class="adet">({sonrakiVar ? `en az ${satirlar.length}` : satirlar.length})</span></h2>
 				{#if yukleniyor}
 					<p class="muted">Yükleniyor…</p>
 				{:else if satirlar.length === 0}
@@ -256,6 +296,9 @@
 							</li>
 						{/each}
 					</ul>
+					{#if sonrakiVar}
+						<button type="button" class="btn btn-ghost daha-fazla" disabled={yukleniyor} on:click={dahaFazlaYukle}>{yukleniyor ? 'Yükleniyor…' : 'Daha fazla yükle'}</button>
+					{/if}
 				{/if}
 			</section>
 			{/if}
@@ -288,6 +331,7 @@
 	.liste-baslik { font-size: var(--fs-lg); margin: 0 0 12px; }
 	.adet { color: var(--text-muted); font-weight: 400; font-size: var(--fs-sm); }
 	.liste { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; max-width: 760px; }
+	.daha-fazla { margin-top: 14px; }
 	.oge.gizli { opacity: 0.75; }
 	.oge-ust { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
 	.oge-ust strong { overflow-wrap: anywhere; }
