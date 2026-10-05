@@ -122,6 +122,10 @@ kontrolünden sonra panelden yayına alınabilir. Herkese açık sayfalama, pane
   hesaplı öneriler için uygulama içi bildirimleri ve yönetici işlem geçmişini açar. Bu migration
   öncesinde yönetici, duyuru/fırsat, gezi, video, quiz/galeri ve öneri migration'larını; ayrıca
   `2026-10-10-yonetim-istatistik-oneri-takip.sql` dosyasını uygulayın.
+- `supabase/2026-10-12-guvenlik-linter-duzeltmeleri.sql` — iç tarih yardımcısının `search_path`
+  değerini sabitler ve tetikleyici fonksiyonlarının istemcilerden doğrudan çalıştırılmasını kapatır.
+  Önceki migration'ları uyguladıktan sonra bir kez çalıştırın. Supabase Auth'ın sızdırılmış parola
+  koruması SQL ile değil, Dashboard → Authentication → Attack Protection ayarlarından açılır.
 
 Bu migration dosyalarını Supabase Dashboard → SQL Editor'de bir kez çalıştır. İlk yönetici
 hesabının eklenmesi hariç, tabloları kurduktan sonra içerik ve yönetici değişiklikleri panelden
