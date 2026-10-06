@@ -1,14 +1,17 @@
 <script>
 	import { onMount } from 'svelte';
 	import { user } from '$lib/stores/auth.js';
-	import { addManager, listManagers, removeManager } from '$lib/yonetim.js';
+	import { addManagerWithAccess, listManagers, removeManager, updateManagerAccess, YONETICI_BOLUMLERI } from '$lib/yonetim.js';
 	import { sfx } from '$lib/sound.js';
 
 	let yoneticiler = [];
 	let email = '';
+	let rol = 'sinirli';
+	let bolumler = ['duyurular'];
 	let yukleniyor = true;
 	let listeYuklendi = false;
 	let kaydediyor = false;
+	let guncellenenId = null;
 	let hata = '';
 	let bilgi = '';
 
@@ -22,7 +25,11 @@
 			hata = sonuc.hata;
 			return;
 		}
-		yoneticiler = sonuc.data;
+		yoneticiler = sonuc.data.map((yonetici) => ({
+			...yonetici,
+			duzenlenenRol: yonetici.rol,
+			duzenlenenBolumler: [...(yonetici.bolumler || [])]
+		}));
 		listeYuklendi = true;
 	}
 
@@ -36,8 +43,12 @@
 			hata = 'E-posta adresi girin.';
 			return;
 		}
+		if (rol === 'sinirli' && bolumler.length === 0) {
+			hata = 'Sınırlı yetkili yönetici için en az bir bölüm seçin.';
+			return;
+		}
 		kaydediyor = true;
-		const sonuc = await addManager(adres);
+		const sonuc = await addManagerWithAccess(adres, rol, bolumler);
 		kaydediyor = false;
 		if (sonuc.hata) {
 			hata = sonuc.hata;
@@ -45,7 +56,34 @@
 			return;
 		}
 		email = '';
-		bilgi = 'Kullanıcı yönetici olarak eklendi.';
+		bilgi = 'Yönetici rolü kaydedildi.';
+		sfx.success();
+		await yukle();
+	}
+
+	async function yetkiKaydet(yonetici) {
+		if (kaydediyor || guncellenenId) return;
+		if (yonetici.duzenlenenRol === 'sinirli' && yonetici.duzenlenenBolumler.length === 0) {
+			hata = 'Sınırlı yetkili yönetici için en az bir bölüm seçin.';
+			return;
+		}
+		kaydediyor = true;
+		guncellenenId = yonetici.user_id;
+		hata = '';
+		bilgi = '';
+		const sonuc = await updateManagerAccess(
+			yonetici.user_id,
+			yonetici.duzenlenenRol,
+			yonetici.duzenlenenBolumler
+		);
+		kaydediyor = false;
+		guncellenenId = null;
+		if (sonuc.hata) {
+			hata = sonuc.hata;
+			sfx.error();
+			return;
+		}
+		bilgi = `${yonetici.email} için yönetici yetkileri güncellendi.`;
 		sfx.success();
 		await yukle();
 	}
@@ -69,13 +107,27 @@
 <section class="yoneticiler">
 	<div class="bracket-card form">
 		<h2>Yönetici ekle</h2>
-		<p>Yalnızca kayıtlı bir hesabın e-posta adresi eklenebilir. Bu işlemi mevcut yöneticiler yapabilir.</p>
+		<p>Yalnızca tam yetkili yöneticiler başka yöneticileri ekleyebilir ve yetkilerini değiştirebilir.</p>
 		<form on:submit={ekle}>
 			<label for="yonetici-email">Hesap e-posta adresi</label>
 			<div class="ekle-satir">
 				<input id="yonetici-email" type="email" autocomplete="email" bind:value={email} required />
-				<button class="btn btn-primary" type="submit" disabled={kaydediyor}>{kaydediyor ? 'Ekleniyor…' : 'Yönetici ekle'}</button>
+				<label class="rol-sec">Yetki türü
+					<select bind:value={rol}>
+						<option value="sinirli">Seçili bölümler</option>
+						<option value="tam">Tam yetki</option>
+					</select>
+				</label>
 			</div>
+			{#if rol === 'sinirli'}
+				<fieldset class="bolum-secimleri">
+					<legend>Erişebileceği bölümler</legend>
+					{#each YONETICI_BOLUMLERI as bolum}
+						<label><input type="checkbox" value={bolum.id} bind:group={bolumler} /> {bolum.label}</label>
+					{/each}
+				</fieldset>
+			{/if}
+			<button class="btn btn-primary" type="submit" disabled={kaydediyor}>{kaydediyor ? 'Ekleniyor…' : 'Yönetici ekle'}</button>
 		</form>
 		{#if hata}<p class="msg err" role="alert">{hata}</p>{/if}
 		{#if bilgi}<p class="msg ok" role="status">{bilgi}</p>{/if}
@@ -96,14 +148,36 @@
 						<div class="oge-ust">
 							<div>
 								<strong>{yonetici.email}</strong>
+								<small>{yonetici.rol === 'tam' ? 'Tam yetki' : `Seçili bölümler: ${YONETICI_BOLUMLERI.filter((bolum) => yonetici.bolumler.includes(bolum.id)).map((bolum) => bolum.label).join(', ')}`}</small>
 								<small>Eklenme: {new Date(yonetici.created_at).toLocaleDateString('tr-TR')}</small>
 							</div>
 							{#if yonetici.user_id !== $user?.id}
-								<button class="btn btn-ghost mini" type="button" on:click={() => kaldir(yonetici)}>Yöneticiliği kaldır</button>
+								<span class="oge-eylemler">
+									<button class="btn btn-ghost mini" type="button" on:click={() => kaldir(yonetici)}>Yöneticiliği kaldır</button>
+								</span>
 							{:else}
 								<span class="badge live">Siz</span>
 							{/if}
 						</div>
+						{#if yonetici.user_id !== $user?.id}
+							<div class="yetki-editor">
+								<label>Yetki türü
+									<select bind:value={yonetici.duzenlenenRol}>
+										<option value="sinirli">Seçili bölümler</option>
+										<option value="tam">Tam yetki</option>
+									</select>
+								</label>
+								{#if yonetici.duzenlenenRol === 'sinirli'}
+									<fieldset class="bolum-secimleri">
+										<legend>Erişebileceği bölümler</legend>
+										{#each YONETICI_BOLUMLERI as bolum}
+											<label><input type="checkbox" value={bolum.id} bind:group={yonetici.duzenlenenBolumler} /> {bolum.label}</label>
+										{/each}
+									</fieldset>
+								{/if}
+								<button class="btn btn-primary mini" type="button" disabled={kaydediyor} on:click={() => yetkiKaydet(yonetici)}>{guncellenenId === yonetici.user_id ? 'Kaydediliyor…' : 'Yetkileri kaydet'}</button>
+							</div>
+						{/if}
 					</li>
 				{/each}
 			</ul>
@@ -120,6 +194,11 @@
 	.form label { font-size: var(--fs-sm); font-weight: 600; }
 	.ekle-satir { display: flex; gap: 10px; flex-wrap: wrap; }
 	.ekle-satir input { flex: 1 1 260px; min-width: 0; }
+	.rol-sec, .yetki-editor > label { display: flex; flex-direction: column; gap: 5px; }
+	.bolum-secimleri { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 8px 14px; border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 12px; }
+	.bolum-secimleri legend { padding: 0 6px; color: var(--text-muted); font-size: var(--fs-xs); }
+	.bolum-secimleri label { display: flex; gap: 7px; align-items: center; font-weight: 400; font-size: var(--fs-xs); }
+	.bolum-secimleri input { accent-color: var(--accent); }
 	.msg { font-size: var(--fs-sm); }
 	.msg.ok { color: var(--accent); }
 	.msg.err { color: var(--danger); }
@@ -128,6 +207,8 @@
 	.oge-ust { display: flex; justify-content: space-between; gap: 10px; align-items: center; }
 	.oge-ust div { display: flex; flex-direction: column; gap: 4px; min-width: 0; overflow-wrap: anywhere; }
 	.oge-ust small, .muted { color: var(--text-muted); font-size: var(--fs-xs); }
+	.oge-eylemler { display: flex; gap: 8px; flex-wrap: wrap; }
+	.yetki-editor { display: grid; gap: 12px; margin-top: 16px; padding-top: 14px; border-top: 1px solid var(--border); }
 	.mini { padding: 7px 12px; font-size: var(--fs-xs); }
 	.bos { padding: 18px; }
 	@media (max-width: 520px) { .oge-ust { align-items: flex-start; flex-direction: column; } }

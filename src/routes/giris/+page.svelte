@@ -2,11 +2,15 @@
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import { supabase } from '$lib/supabaseClient.js';
 	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
+	import { browser } from '$app/environment';
+	import { safeReturnPath } from '$lib/returnTo.js';
 
 	let email = '';
 	let password = '';
 	let loading = false;
 	let errorMsg = '';
+	$: sonraki = safeReturnPath(browser ? $page.url.searchParams.get('next') : null);
 
 	const HATA_MESAJLARI = {
 		'Invalid login credentials': 'E-posta veya şifre hatalı.',
@@ -22,7 +26,7 @@
 			errorMsg = HATA_MESAJLARI[error.message] || 'Giriş yapılamadı: ' + error.message;
 			return;
 		}
-		goto('/');
+		goto(sonraki);
 	}
 </script>
 
@@ -52,7 +56,7 @@
 		</button>
 
 		<p style="text-align: center; font-size: var(--fs-sm); color: var(--text-muted); margin: 4px 0 0;">
-			Hesabın yok mu? <a href="/kayit" style="color: var(--accent);">Kayıt ol</a>
+			Hesabın yok mu? <a href="/kayit?next={encodeURIComponent(sonraki)}" style="color: var(--accent);">Kayıt ol</a>
 		</p>
 	</form>
 </div>

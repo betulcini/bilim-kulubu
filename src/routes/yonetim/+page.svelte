@@ -8,6 +8,7 @@
 	import YoneticiYonetimi from '$lib/components/YoneticiYonetimi.svelte';
 	import OneriYonetimi from '$lib/components/OneriYonetimi.svelte';
 	import IstatistikYonetimi from '$lib/components/IstatistikYonetimi.svelte';
+	import UyeListesiYonetimi from '$lib/components/UyeListesiYonetimi.svelte';
 	import IcerikYedekleme from '$lib/components/IcerikYedekleme.svelte';
 	import IcerikKalitesi from '$lib/components/IcerikKalitesi.svelte';
 	import YoneticiGecmisi from '$lib/components/YoneticiGecmisi.svelte';
@@ -24,6 +25,7 @@
 	let kontrol = 'bekliyor'; // bekliyor | admin | yetkisiz | hata
 	let kontrolHata = '';
 	let sekme = 'duyurular';
+	let yetkiler = { tamYetkili: false, bolumler: [] };
 	let satirlar = [];
 	let yukleniyor = false;
 	let sayfa = 0;
@@ -48,6 +50,9 @@
 			kontrolHata = r.hata;
 		} else if (r.admin) {
 			kontrol = 'admin';
+			yetkiler = { tamYetkili: r.tamYetkili, bolumler: r.bolumler };
+			const firstTab = TABLAR.find((tab) => sekmeYetkili(tab.id));
+			if (firstTab) sekme = firstTab.id;
 			await yukle();
 		} else {
 			kontrol = 'yetkisiz';
@@ -81,6 +86,7 @@
 		{ id: 'yoneticiler', ad: 'Yöneticiler' },
 		{ id: 'oneriler', ad: 'Öneriler' },
 		{ id: 'istatistik', ad: 'İstatistikler' },
+		{ id: 'uyeler', ad: 'Üye listesi' },
 		{ id: 'yedek', ad: 'İçerik yedeği' },
 		{ id: 'kalite', ad: 'İçerik kalite kontrolü' },
 		{ id: 'gecmis', ad: 'Yönetici işlem geçmişi' }
@@ -88,13 +94,18 @@
 	const GRUPLAR = [
 		{ ad: 'İçerik', sekmeler: ['duyurular', 'firsatlar', 'geziler', 'videolar', 'kartlar'] },
 		{ ad: 'Öğrenme', sekmeler: ['quizler', 'galeri'] },
-		{ ad: 'Yönetim', sekmeler: ['oneriler', 'yoneticiler', 'istatistik', 'yedek'] },
+		{ ad: 'Yönetim', sekmeler: ['oneriler', 'yoneticiler', 'istatistik', 'uyeler', 'yedek'] },
 		{ ad: 'Kontrol', sekmeler: ['kalite', 'gecmis'] }
 	];
+	const sekmeYetkili = (id) => yetkiler.tamYetkili || yetkiler.bolumler.includes(id);
+	$: gorunenTablar = TABLAR.filter((tab) => sekmeYetkili(tab.id));
+	$: gorunenGruplar = GRUPLAR
+		.map((grup) => ({ ...grup, sekmeler: grup.sekmeler.filter(sekmeYetkili) }))
+		.filter((grup) => grup.sekmeler.length > 0);
 	const FORMLU = ['duyurular', 'firsatlar', 'geziler', 'videolar', 'kartlar']; // ortak form + liste kullanan sekmeler
 
 	async function sekmeSec(ad) {
-		if (sekme === ad) return;
+		if (!sekmeYetkili(ad) || sekme === ad) return;
 		sekme = ad;
 		sfx.nav();
 		if (FORMLU.includes(ad)) {
@@ -255,11 +266,11 @@
 		<div class="admin-layout" hidden={kontrol !== 'admin'}>
 			<nav class="menu" aria-label="Yönetim bölümleri">
 				<p class="menu-yardim">BÖLÜMLER</p>
-				{#each GRUPLAR as grup (grup.ad)}
+				{#each gorunenGruplar as grup (grup.ad)}
 					<section class="menu-grup" aria-label={grup.ad}>
 						<h2>{grup.ad}</h2>
 						<div class="menu-ogeleri">
-							{#each TABLAR.filter((oge) => grup.sekmeler.includes(oge.id)) as t (t.id)}
+							{#each gorunenTablar.filter((oge) => grup.sekmeler.includes(oge.id)) as t (t.id)}
 									<button type="button" id="yt-{t.id}" class="menu-dugme" class:aktif={sekme === t.id} aria-current={sekme === t.id ? 'page' : undefined} aria-controls="yp" on:click={() => sekmeSec(t.id)}><span class="menu-ikon" aria-hidden="true">{sekme === t.id ? '●' : '○'}</span>{t.ad}</button>
 							{/each}
 						</div>
@@ -270,6 +281,8 @@
 		<div id="yp" class="panel" aria-labelledby="yt-{sekme}">
 			{#if sekme === 'istatistik'}
 				<IstatistikYonetimi />
+			{:else if sekme === 'uyeler'}
+				<UyeListesiYonetimi />
 			{:else if sekme === 'yedek'}
 				<IcerikYedekleme />
 			{:else if sekme === 'kalite'}

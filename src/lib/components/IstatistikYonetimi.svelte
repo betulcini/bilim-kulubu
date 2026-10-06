@@ -33,6 +33,7 @@
 		<p class="muted" role="status">İstatistikler yükleniyor…</p>
 	{:else if istatistik}
 		<div class="kartlar">
+			<div class="bracket-card kart"><span>Toplam üye</span><strong>{sayi(istatistik.member_count)}</strong></div>
 			<div class="bracket-card kart"><span>Quiz denemesi</span><strong>{sayi(istatistik.quiz_attempts)}</strong></div>
 			<div class="bracket-card kart"><span>Quiz çözen hesap</span><strong>{sayi(istatistik.quiz_players)}</strong></div>
 			<div class="bracket-card kart"><span>Günlük quiz tamamlaması</span><strong>{sayi(istatistik.daily_quizzes)}</strong></div>

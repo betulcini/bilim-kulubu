@@ -15,6 +15,22 @@ export const DURUMLAR = [
 	{ id: 'okul-ici', label: 'Okul içi' }
 ];
 
+export const YONETICI_BOLUMLERI = [
+	{ id: 'duyurular', label: 'Duyurular' },
+	{ id: 'firsatlar', label: 'Fırsatlar' },
+	{ id: 'geziler', label: 'Geziler' },
+	{ id: 'videolar', label: 'Videolar' },
+	{ id: 'kartlar', label: 'Seri / tiyatro kartları' },
+	{ id: 'quizler', label: 'Quizler' },
+	{ id: 'galeri', label: 'Galeri' },
+	{ id: 'oneriler', label: 'Öneriler' },
+	{ id: 'istatistik', label: 'İstatistikler' },
+	{ id: 'uyeler', label: 'Üye listesi' },
+	{ id: 'yedek', label: 'İçerik yedeği' },
+	{ id: 'kalite', label: 'İçerik kalite kontrolü' },
+	{ id: 'gecmis', label: 'Yönetici işlem geçmişi' }
+];
+
 export const VIDEO_BOLUMLERI = [
 	{ id: 'seri', label: 'Bilim Serileri' },
 	{ id: 'tiyatro', label: 'Bilim Tiyatrosu' }
@@ -152,9 +168,15 @@ export function hataMetni(error, kurulum = '2026-10-03-yonetici-formu.sql') {
 }
 
 export async function isAdmin() {
-	const { data, error } = await supabase.rpc('is_yonetici');
-	if (error) return { admin: false, hata: hataMetni(error) };
-	return { admin: data === true, hata: null };
+	const { data, error } = await supabase.rpc('yonetici_yetkim');
+	if (error) return { admin: false, tamYetkili: false, bolumler: [], hata: hataMetni(error, '2026-10-06-uyelik-ve-yonetici-rolleri.sql') };
+	const bolumler = Array.isArray(data?.bolumler) ? data.bolumler : [];
+	return {
+		admin: data?.rol === 'tam' || data?.rol === 'sinirli',
+		tamYetkili: data?.rol === 'tam',
+		bolumler,
+		hata: null
+	};
 }
 
 const KURULUM = {
@@ -189,14 +211,27 @@ export async function listManagers() {
 	return { data: data || [], hata: hataMetni(error, '2026-10-07-video-katalogu-siralama-yonetici.sql') };
 }
 
-export async function addManager(email) {
-	const { error } = await supabase.rpc('yonetici_ekle', { p_email: email });
-	return { hata: hataMetni(error, '2026-10-07-video-katalogu-siralama-yonetici.sql') };
+export async function addManagerWithAccess(email, role, sections) {
+	const { error } = await supabase.rpc('yonetici_ekle', {
+		p_email: email,
+		p_rol: role,
+		p_bolumler: role === 'tam' ? [] : sections
+	});
+	return { hata: hataMetni(error, '2026-10-06-uyelik-ve-yonetici-rolleri.sql') };
+}
+
+export async function updateManagerAccess(userId, role, sections) {
+	const { error } = await supabase.rpc('yonetici_yetki_guncelle', {
+		p_user_id: userId,
+		p_rol: role,
+		p_bolumler: role === 'tam' ? [] : sections
+	});
+	return { hata: hataMetni(error, '2026-10-06-uyelik-ve-yonetici-rolleri.sql') };
 }
 
 export async function removeManager(userId) {
 	const { error } = await supabase.rpc('yonetici_kaldir', { p_user_id: userId });
-	return { hata: hataMetni(error, '2026-10-07-video-katalogu-siralama-yonetici.sql') };
+	return { hata: hataMetni(error, '2026-10-06-uyelik-ve-yonetici-rolleri.sql') };
 }
 
 export const ONERI_DURUMLARI = [
@@ -232,6 +267,17 @@ export async function loadAdminStats() {
 	return {
 		data: data || null,
 		hata: hataMetni(error, '2026-10-10-yonetim-istatistik-oneri-takip.sql')
+	};
+}
+
+export async function listMembers(offset = 0, limit = 50) {
+	const { data, error } = await supabase.rpc('yonetici_uye_listesi', {
+		p_offset: offset,
+		p_limit: limit
+	});
+	return {
+		data: data || [],
+		hata: hataMetni(error, '2026-10-06-uyelik-ve-yonetici-rolleri.sql')
 	};
 }
 

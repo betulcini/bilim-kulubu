@@ -126,6 +126,12 @@ kontrolünden sonra panelden yayına alınabilir. Herkese açık sayfalama, pane
   değerini sabitler ve tetikleyici fonksiyonlarının istemcilerden doğrudan çalıştırılmasını kapatır.
   Önceki migration'ları uyguladıktan sonra bir kez çalıştırın. Supabase Auth'ın sızdırılmış parola
   koruması SQL ile değil, Dashboard → Authentication → Attack Protection ayarlarından açılır.
+- `supabase/2026-10-06-uyelik-ve-yonetici-rolleri.sql` — oyun ve yarışma quizlerine giriş zorunluluğu
+  uygulama arayüzünde etkinleştirilir; üye sayısı, üye listesi dışa aktarımı ve tam/sınırlı yönetici
+  rolleri için veritabanı izinlerini kurar. Tüm mevcut migration'lardan sonra çalıştırın. Mevcut
+  yöneticiler tam yetkili olarak korunur; tam yetkili yöneticiler yeni yöneticileri belirli panellerle
+  sınırlandırabilir. Üye listesi yalnızca ad-soyad ve sınıf içerir; CSV dosyası Excel'de açılabilir,
+  yazdırma ekranından PDF kaydedilebilir.
 
 Bu migration dosyalarını Supabase Dashboard → SQL Editor'de bir kez çalıştır. İlk yönetici
 hesabının eklenmesi hariç, tabloları kurduktan sonra içerik ve yönetici değişiklikleri panelden

@@ -3,6 +3,10 @@
 	import PageHeader from '$lib/components/PageHeader.svelte';
 	import { supabase } from '$lib/supabaseClient.js';
 	import InterestPicker from '$lib/components/InterestPicker.svelte';
+	import { goto } from '$app/navigation';
+	import { page } from '$app/stores';
+	import { browser } from '$app/environment';
+	import { safeReturnPath } from '$lib/returnTo.js';
 
 	let fullName = '';
 	let sinif = '';
@@ -14,6 +18,7 @@
 	let errorMsg = '';
 	let doneStep = false; // kayıt tamamlandı, e-posta onayı bekleniyor
 	let autoLoggedIn = false; // e-posta onayı kapalıysa direkt oturum açılmış olabilir
+	$: sonraki = safeReturnPath(browser ? $page.url.searchParams.get('next') : null);
 
 	const HATA_MESAJLARI = {
 		'User already registered': 'Bu e-posta ile zaten bir hesap var. Giriş yapmayı dene.'
@@ -41,7 +46,7 @@
 			options: {
 				data: { full_name: fullName, class_name: sinif, interests: secilenIlgiler },
 				// Onay linki localhost'a değil, sitenin kendi adresine dönsün
-				emailRedirectTo: `${window.location.origin}/giris`
+				emailRedirectTo: `${window.location.origin}/giris?next=${encodeURIComponent(sonraki)}`
 			}
 		});
 		loading = false;
@@ -61,6 +66,8 @@
 		if (data.session) {
 			// E-posta onayı kapalıysa doğrudan oturum açılmış olur
 			autoLoggedIn = true;
+			goto(sonraki);
+			return;
 		}
 		doneStep = true;
 	}
@@ -77,7 +84,7 @@
 			{#if autoLoggedIn}
 				<h2 style="margin-bottom: 8px;">Hesabın hazır!</h2>
 				<p style="color: var(--text-muted); margin-bottom: 20px;">Artık giriş yaptın, skor tablosuna katılabilirsin.</p>
-				<a href="/" class="btn btn-primary" style="text-decoration: none;">Ana Sayfaya Dön</a>
+				<a href={sonraki} class="btn btn-primary" style="text-decoration: none;">Devam et</a>
 			{:else}
 				<h2 style="margin-bottom: 8px;">E-postanı kontrol et</h2>
 				<p style="color: var(--text-muted); margin-bottom: 6px;">
@@ -86,7 +93,7 @@
 				<p style="color: var(--text-muted); font-size: var(--fs-sm); margin-bottom: 20px;">
 					Mail gelmediyse birkaç dakika bekle ve <b>spam / gereksiz klasörünü</b> kontrol etmeyi unutma.
 				</p>
-				<a href="/giris" class="btn btn-primary" style="text-decoration: none;">Giriş sayfasına git</a>
+				<a href="/giris?next={encodeURIComponent(sonraki)}" class="btn btn-primary" style="text-decoration: none;">Giriş sayfasına git</a>
 			{/if}
 		</div>
 	{:else}
@@ -134,7 +141,7 @@
 			</button>
 
 			<p style="text-align: center; font-size: var(--fs-sm); color: var(--text-muted); margin: 4px 0 0;">
-				Zaten hesabın var mı? <a href="/giris" style="color: var(--accent);">Giriş yap</a>
+				Zaten hesabın var mı? <a href="/giris?next={encodeURIComponent(sonraki)}" style="color: var(--accent);">Giriş yap</a>
 			</p>
 		</form>
 	{/if}
