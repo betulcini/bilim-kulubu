@@ -98,9 +98,12 @@
 		{ ad: 'Kontrol', sekmeler: ['kalite', 'gecmis'] }
 	];
 	const sekmeYetkili = (id) => yetkiler.tamYetkili || yetkiler.bolumler.includes(id);
-	$: gorunenTablar = TABLAR.filter((tab) => sekmeYetkili(tab.id));
+	$: gorunenTablar = TABLAR.filter((tab) => yetkiler.tamYetkili || yetkiler.bolumler.includes(tab.id));
 	$: gorunenGruplar = GRUPLAR
-		.map((grup) => ({ ...grup, sekmeler: grup.sekmeler.filter(sekmeYetkili) }))
+		.map((grup) => ({
+			...grup,
+			sekmeler: grup.sekmeler.filter((id) => yetkiler.tamYetkili || yetkiler.bolumler.includes(id))
+		}))
 		.filter((grup) => grup.sekmeler.length > 0);
 	const FORMLU = ['duyurular', 'firsatlar', 'geziler', 'videolar', 'kartlar']; // ortak form + liste kullanan sekmeler
 
