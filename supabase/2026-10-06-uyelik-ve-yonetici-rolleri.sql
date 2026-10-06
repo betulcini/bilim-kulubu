@@ -96,8 +96,7 @@ begin
 end;
 $$;
 
-drop function if exists public.yonetici_ekle(text);
-create function public.yonetici_ekle(p_email text, p_rol text, p_bolumler text[])
+create or replace function public.yonetici_ekle(p_email text, p_rol text, p_bolumler text[])
 returns void
 language plpgsql
 security definer
@@ -444,3 +443,24 @@ end;
 $$;
 revoke all on function public.yonetici_uye_listesi(integer, integer) from public, anon;
 grant execute on function public.yonetici_uye_listesi(integer, integer) to authenticated;
+
+-- İstenen ana yönetici hesabı: adresin Supabase Auth'ta kayıtlı olması gerekir.
+do $$
+declare
+    ana_yonetici_id uuid;
+begin
+    select id into ana_yonetici_id
+    from auth.users
+    where lower(email) = lower('betul.cini61@gmail.com')
+    limit 1;
+
+    if ana_yonetici_id is null then
+        raise exception 'betul.cini61@gmail.com Supabase Auth kullanıcıları arasında bulunamadı. Önce bu hesapla kayıt olun.';
+    end if;
+
+    insert into public.yoneticiler (user_id, rol, bolumler)
+    values (ana_yonetici_id, 'tam', '{}')
+    on conflict (user_id) do update
+        set rol = 'tam', bolumler = '{}';
+end;
+$$;
