@@ -68,6 +68,15 @@ ayrı ayrı `[data-theme='dark']` ve `[data-theme='light']` blokları altında.
 Tüm arayüz sesleri (`src/lib/sound.js`) Web Audio API ile anlık üretiliyor; harici ses
 dosyası gerekmiyor. Ayarlar sayfasından açılıp kapatılabilir.
 
+## Uygulama önbelleği ve güncellemeler
+
+PWA service worker eski sürümün uygulama dosyası önbelleğini yeni sürüm etkinleştiğinde temizler;
+çevrimdışı içerik, yazı tipi ve galeri görseli önbellekleri korunur. Güncelleme sırasında eski bir
+JavaScript parçası yüklenemezse `src/hooks.client.js` bağlantı varken yalnızca sürümlü uygulama
+önbelleğini temizleyip service worker güncellemesini kontrol eder ve sayfayı bir kez yeniler.
+Kullanıcı tercihleri ve Supabase oturum bilgileri temizlenmez. Bağlantı yokken otomatik önbellek
+silinmez; çevrimdışı kullanım korunur.
+
 ## Duyurular ve Fırsatlar (Supabase)
 
 Duyurular ve Fırsatlar sayfaları içeriği Supabase'deki `duyurular` ve `firsatlar` tablolarından okur.
